@@ -1,0 +1,74 @@
+package com.example.theadsproject;
+
+import android.os.Bundle;
+import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.example.theadsproject.databinding.ActivityBarBottomBinding;
+public class BarBottom extends AppCompatActivity {
+    ActivityBarBottomBinding binding;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityBarBottomBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        // Đặt insets cho barBottom nếu tồn tại
+        View barBottom = findViewById(R.id.barBottom);
+        if (barBottom != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(barBottom, (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            });
+        }
+
+        // Set fragment mặc định
+        replaceFragment(new HomeFragment());
+        binding.bottomNavigationView.setBackground(null);
+        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            if(item.getItemId() == R.id.home) {
+                replaceFragment(new HomeFragment());
+            }else if(item.getItemId() == R.id.love) {
+                replaceFragment(new LoveFragment());
+            }else if(item.getItemId() == R.id.account) {
+                replaceFragment(new PersonalDetailFragment());
+            }else if(item.getItemId() == R.id.search) {
+                replaceFragment(new SearchFragment());
+            }else if(item.getItemId() == R.id.addPost) {
+                replaceFragment(new PostFragment());
+            }
+
+//            switch (item.getItemId()) {
+//                case R.id.home:
+//                    replaceFragment(new HomeFragment());
+//                    break;
+//                case R.id.love:
+//                    replaceFragment(new LoveFragment());
+//                    break;
+//                case R.id.search:
+//                    replaceFragment(new SearchFragment());
+//                    break;
+//                case R.id.account:  // Sửa lỗi thiếu ID
+//                    replaceFragment(new PersonalProfile());
+//                    break;
+
+            return true;
+        });
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout, fragment);
+        fragmentTransaction.commit();
+    }
+}
