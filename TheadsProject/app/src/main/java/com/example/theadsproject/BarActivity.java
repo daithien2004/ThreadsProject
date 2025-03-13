@@ -11,14 +11,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.theadsproject.databinding.ActivityBarBottomBinding;
-public class BarBottom extends AppCompatActivity {
-    ActivityBarBottomBinding binding;
+import com.example.theadsproject.databinding.ActivityBarBinding;
+public class BarActivity extends AppCompatActivity {
+    ActivityBarBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityBarBottomBinding.inflate(getLayoutInflater());
+        binding = ActivityBarBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Đặt insets cho barBottom nếu tồn tại

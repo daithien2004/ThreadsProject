@@ -4,146 +4,275 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PersonalDetailFragment">
+    tools:context=".PersonalDetailFragment"
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/world"
+                android:layout_marginStart="32dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+            </ImageView>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/stats"
+                app:layout_constraintEnd_toStartOf="@+id/imageViewInstagram"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintTop_toTopOf="parent">
+            </ImageView>
+            <ImageView
+                android:id="@+id/imageViewInstagram"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/instagram"
+                app:layout_constraintEnd_toStartOf="@+id/imageViewMenu"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintTop_toTopOf="parent">
+            </ImageView>
+            <ImageView
+                android:id="@+id/imageViewMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/menu"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="32dp">
+            </ImageView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintMenu"
+            android:paddingStart="32dp"
+            android:paddingTop="8dp">
+
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="_thienn10_"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+            </TextView>
+            <TextView
+                android:id="@+id/textViewDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="_thienn10_"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewName">
+            </TextView>
+
+            <TextView
+                android:id="@+id/textViewContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="🏐 🎸 ⚽︎ 𝄞"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewDesc">
+            </TextView>
+
+            <TextView
+                android:id="@+id/textViewFollower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="9 người theo dõi"
+                android:textSize="16sp"
+                android:alpha="0.6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewContent">
+            </TextView>
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/me"
+                android:background="@drawable/circle_bg"
+                android:layout_marginEnd="32dp"
+                android:scaleType="centerCrop"
+                android:clipToOutline="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+            </ImageView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintInfo"
+            android:layout_marginTop="8dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonEditProfile"
+                android:layout_width="150dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="32dp"
+                android:background="@drawable/bg_button_outline"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Chỉnh sửa trang cá nhân"
+                android:textColor="#000000"
+                android:textSize="8sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:padding="5dp">
+
+            </androidx.appcompat.widget.AppCompatButton>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="150dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_button_outline"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="5dp"
+                android:text="Chia sẻ"
+                android:textColor="#000000"
+                android:textSize="8sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/buttonEditProfile"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </androidx.appcompat.widget.AppCompatButton>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/llTab"
+        android:layout_width="435dp"
+        android:layout_height="61dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clButton"
+        android:layout_marginTop="8dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnThreads"
+            android:layout_width="108dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:backgroundTint="@android:color/white"
+            android:text="Threads"
+            android:textColor="@android:color/black" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReplies"
+            android:layout_width="108dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:backgroundTint="@android:color/white"
+            android:text="Replies"
+            android:alpha="0.6"
+            android:textColor="@android:color/black" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMedia"
+            android:layout_width="108dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:backgroundTint="@android:color/white"
+            android:text="Media"
+            android:alpha="0.6"
+            android:textColor="@android:color/black" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReports"
+            android:layout_width="108dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:backgroundTint="@android:color/white"
+            android:text="Reports"
+            android:alpha="0.6"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clPost"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        app:layout_constraintTop_toBottomOf="@+id/llTab"
+        app:layout_constraintStart_toStartOf="parent">
+
         <ImageView
-            android:id="@+id/profile_picture"
-            android:layout_width="76dp"
-            android:layout_height="69dp"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/circle"
-            android:src="@drawable/user"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.909"
+            android:id="@+id/imageView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/circle_bg"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/me"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Edit Profile and Share Buttons -->
+            app:layout_constraintTop_toTopOf="parent">
+        </ImageView>
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="40dp"
-            android:text="Username"
-            android:textColor="@color/black"
-            android:textSize="20sp"
+            android:text="_thienn10_"
+            android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="16dp">
+        </TextView>
 
-        <TextView
-            android:id="@+id/followers_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/tvName"
             android:layout_marginTop="4dp"
-            android:text="0 followers"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.049"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/username" />
+            android:layout_marginLeft="8dp"
+            android:text="Có gì mới?"
+            android:padding="8dp"
+            android:textSize="20sp"
+            android:background="@android:color/transparent"
+            android:alpha="0.6">
+        </EditText>
 
-        <LinearLayout
-            android:id="@+id/button_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/followers_count">
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </LinearLayout>
-
-        <!-- Tabs: Threads, Replies, Media, Reposts -->
-
-        <Button
-            android:id="@+id/btn_edit_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="36dp"
-            android:backgroundTint="@color/black"
-            android:text="Edit Profile"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toStartOf="@+id/btn_share_profile"
-            app:layout_constraintHorizontal_bias="0.797"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/followers_count" />
-
-        <Button
-            android:id="@+id/btn_share_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="60dp"
-            android:backgroundTint="@color/black"
-            android:text="Share Profile"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/followers_count" />
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="435dp"
-            android:layout_height="61dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_edit_profile">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnThreads"
-                android:layout_width="108dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:backgroundTint="@android:color/white"
-                android:text="Threads"
-                android:textColor="@android:color/black" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnReplies"
-                android:layout_width="108dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:backgroundTint="@android:color/white"
-                android:text="Replies"
-                android:textColor="@android:color/black" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnMedia"
-                android:layout_width="108dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:backgroundTint="@android:color/white"
-                android:text="Media"
-                android:textColor="@android:color/black" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnReports"
-                android:layout_width="108dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:backgroundTint="@android:color/white"
-                android:text="Reports"
-                android:textColor="@android:color/black" />
-
-
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="398dp"
-            android:layout_height="577dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clPost" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
