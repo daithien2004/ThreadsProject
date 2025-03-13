@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="lyhung_04"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/imgUser"
@@ -20,8 +20,8 @@
         android:id="@+id/txtTimePost"
         android:layout_width="35dp"
         android:layout_height="24dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
 
         android:text="5h"
         android:textStyle="bold"
@@ -30,36 +30,40 @@
 
     <TextView
         android:id="@+id/txtTextPost"
-        android:layout_width="306dp"
-        android:layout_height="41dp"
+        android:layout_width="321dp"
+        android:layout_height="39dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="44dp"
 
         android:text="Định mệnh rau muống xào măn vcl ra"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.72"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtUsername" />
 
     <ImageView
         android:id="@+id/imgUser"
         android:layout_width="44dp"
         android:layout_height="41dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/imgPosts"
-        android:layout_width="238dp"
-        android:layout_height="252dp"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.346"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtTextPost"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"
+        android:visibility="gone"/>
+
+
 
     <ImageView
         android:id="@+id/imgDots"
@@ -78,7 +82,7 @@
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.37"
+        app:layout_constraintHorizontal_bias="0.438"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgPosts">
 

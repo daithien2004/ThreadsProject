@@ -5,11 +5,13 @@ public class Post {
     private String time;
     private String content;
     private String imageUrl; // Nếu null => Không có ảnh
-    public Post(String username, String time, String content, String imageUrl) {
+    private String avatar;
+    public Post(String username, String time, String content, String imageUrl, String avatar) {
         this.username = username;
         this.time = time;
         this.content = content;
         this.imageUrl = imageUrl;
+        this.avatar = avatar;
     }
     public void setContent(String content) {
         this.content = content;
@@ -25,6 +27,13 @@ public class Post {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
     public String getUsername() { return username; }
     public String getTime() { return time; }
