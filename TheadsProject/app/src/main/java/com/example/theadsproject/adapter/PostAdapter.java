@@ -16,7 +16,12 @@ import com.example.theadsproject.DTO.PostResponse;
 import com.example.theadsproject.DTO.UserResponse;
 import com.example.theadsproject.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private final Context context;
@@ -40,6 +45,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         holder.txtUsername.setText(post.getUser().getUsername());
         holder.txtTextPost.setText(post.getContent());
+        String createdAt = post.getCreatedAt();
+        if (createdAt != null && !createdAt.isEmpty()) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC")); // Nếu server trả về UTC
+                Date date = sdf.parse(createdAt);
+
+                if (date != null) {
+                    long timestamp = date.getTime();
+                    holder.txtTime.setText(TimeUtils.getTimeAgo(timestamp));
+                } else {
+                    holder.txtTime.setText("none");
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+                holder.txtTime.setText("Lỗi định dạng");
+            }
+        } else {
+            holder.txtTime.setText("Không có dữ liệu");
+        }
+
 
         UserResponse userResponse = post.getUser(); // Lấy đối tượng user từ post
         Glide.with(context)
@@ -64,7 +90,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtUsername, txtTextPost;
+        TextView txtUsername, txtTextPost, txtTime;
         ImageView imgAvatar;
         RecyclerView recyclerViewImages;
 
@@ -72,6 +98,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             super(itemView);
             txtUsername = itemView.findViewById(R.id.txtUsername);
             txtTextPost = itemView.findViewById(R.id.txtTextPost);
+            txtTime = itemView.findViewById(R.id.txtTimePost);
             imgAvatar = itemView.findViewById(R.id.imgUser);
             recyclerViewImages = itemView.findViewById(R.id.rvImages);
 
