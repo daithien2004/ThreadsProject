@@ -8,19 +8,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.theadsproject.DTO.PostResponse;
+import com.example.theadsproject.DTO.UserResponse;
 import com.example.theadsproject.R;
-import com.example.theadsproject.entity.Post;
 
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
-    private Context context;
-    private List<Post> postList;
+    private final Context context;
+    private final List<PostResponse> postList;
 
-    public PostAdapter(Context context, List<Post> postList) {
+    public PostAdapter(Context context, List<PostResponse> postList) {
         this.context = context;
         this.postList = postList;
     }
@@ -34,44 +36,46 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        Post post = postList.get(position);
+        PostResponse post = postList.get(position);
 
-        holder.txtUsername.setText(post.getUsername());
-        holder.txtTimePost.setText(post.getTime());
+        holder.txtUsername.setText(post.getUser().getUsername());
         holder.txtTextPost.setText(post.getContent());
 
-        // Load avatar với Glide
-        Glide.with(holder.itemView.getContext())
-                .load(post.getAvatar())
-                .placeholder(R.drawable.user) // Ảnh mặc định nếu avatar null
-                .error(R.drawable.user) // Ảnh mặc định nếu lỗi
+        UserResponse userResponse = post.getUser(); // Lấy đối tượng user từ post
+        Glide.with(context)
+                .load(userResponse.getImage())
+                .placeholder(R.drawable.user)
+                .error(R.drawable.user)
                 .into(holder.imgAvatar);
 
-        // Kiểm tra nếu có ảnh => Hiển thị, nếu không => Ẩn
-        if (post.getImageUrl() != null && !post.getImageUrl().isEmpty()) {
-            holder.imgPosts.setVisibility(View.VISIBLE);
-            Glide.with(context).load(post.getImageUrl()).into(holder.imgPosts);
+        List<String> mediaUrls = post.getMediaUrls();
+        if (mediaUrls == null || mediaUrls.isEmpty()) {
+            holder.recyclerViewImages.setVisibility(View.GONE);
         } else {
-            holder.imgPosts.setVisibility(View.GONE);
+            holder.recyclerViewImages.setVisibility(View.VISIBLE);
+            ImageAdapter imageAdapter = new ImageAdapter(context, mediaUrls);
+            holder.recyclerViewImages.setAdapter(imageAdapter);
         }
     }
 
     @Override
     public int getItemCount() {
-        return postList.size();
+        return (postList != null) ? postList.size() : 0;
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtUsername, txtTimePost, txtTextPost;
-        ImageView imgPosts, imgAvatar;
+        TextView txtUsername, txtTextPost;
+        ImageView imgAvatar;
+        RecyclerView recyclerViewImages;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             txtUsername = itemView.findViewById(R.id.txtUsername);
-            txtTimePost = itemView.findViewById(R.id.txtTimePost);
             txtTextPost = itemView.findViewById(R.id.txtTextPost);
-            imgPosts = itemView.findViewById(R.id.imgPosts);
-            imgAvatar = itemView.findViewById(R.id.imgUser); // Thêm avatar
+            imgAvatar = itemView.findViewById(R.id.imgUser);
+            recyclerViewImages = itemView.findViewById(R.id.rvImages);
+
+            recyclerViewImages.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
     }
 }

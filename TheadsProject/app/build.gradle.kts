@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.theadsproject"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -46,10 +46,13 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.glide)
     implementation(libs.appcompat)
+    implementation(libs.okhttp.logging)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
+    implementation(libs.converter.scalars)
+
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }

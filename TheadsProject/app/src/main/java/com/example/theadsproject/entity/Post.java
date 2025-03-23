@@ -1,43 +1,44 @@
 package com.example.theadsproject.entity;
 
+import com.example.theadsproject.entity.User;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class Post {
-    private String username;
-    private String time;
+    private Long id;
     private String content;
-    private String imageUrl; // Nếu null => Không có ảnh
-    private String avatar;
-    public Post(String username, String time, String content, String imageUrl, String avatar) {
-        this.username = username;
-        this.time = time;
-        this.content = content;
-        this.imageUrl = imageUrl;
-        this.avatar = avatar;
-    }
-    public void setContent(String content) {
-        this.content = content;
-    }
+    private String visibility;
+    private LocalDateTime createdAt;
+    private User user;
+    private List<String> mediaUrls;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    // Getters và Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-    public String getUsername() { return username; }
-    public String getTime() { return time; }
     public String getContent() { return content; }
-    public String getImageUrl() { return imageUrl; }
+    public void setContent(String content) { this.content = content; }
+
+    public String getVisibility() { return visibility; }
+    public void setVisibility(String visibility) { this.visibility = visibility; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public List<String> getMediaUrls() { return mediaUrls; }
+    public void setMediaUrls(List<String> mediaUrls) { this.mediaUrls = mediaUrls; }
+
+    public Post(Long id, String content, String visibility, LocalDateTime createdAt, User user, List<String> mediaUrls) {
+        this.id = id;
+        this.content = content;
+        this.visibility = visibility;
+        this.createdAt = createdAt;
+        this.user = user;
+        this.mediaUrls = mediaUrls;
+    }
 }
 

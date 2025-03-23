@@ -1,70 +1,49 @@
 package com.androidpj.threads.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
-    @Id
-    private String user_id;
-    private String nickName;
-    private String bio;
-    private String image;
-    private String username;
-    private String password;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long  user_id;
 
-    public User(String nickName) {
-        this.nickName = nickName;
-    }
+	@Column(nullable = false, unique = true)
+	private String email;
+	@Column(nullable = false, unique = true)
 
-    public User() {
-    }
+	private String nickName;
+	@Column(nullable = false)
+	private String bio;
 
-    public String getNickName() {
-        return nickName;
-    }
+	@Column(nullable = false)
+	private String image;
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
+	@Column(nullable = false, unique = true)
 
-    public String getUsername() {
-        return username;
-    }
+	private String username;
+	@Column(nullable = false, unique = false)
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	private String password;
 
-    public String getPassword() {
-        return password;
-    }
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private Set<Post> posts;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
-    }
+	public User(String nickName) {
+		this.nickName = nickName;
+	}
 }
