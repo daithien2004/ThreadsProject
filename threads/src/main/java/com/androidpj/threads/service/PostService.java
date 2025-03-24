@@ -13,6 +13,8 @@ import com.androidpj.threads.entity.User;
 import com.androidpj.threads.repository.PostRepository;
 import com.androidpj.threads.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class PostService {
 	@Autowired
@@ -24,37 +26,27 @@ public class PostService {
 		return postRepository.findPublicPosts();
 	}
 
-//    public Page<Post> getPostsByUser(Long userId, Pageable pageable) {
-//        Optional<User> user = userRepository.findById(userId);
-//        if (user.isEmpty()) {
-//            throw new RuntimeException("User not found");
-//        }
-//        return postRepository.findByUser(user.get(), pageable);
-//    }
-
-	public Post createPost(Post post, Long userId) {
-		User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-
+	public PostResponse createPost(Post post) {
+		if (post.getUser() == null || post.getUser().getUser_id() == null) { // 👈 Đổi thành user.getUser_id()
+			throw new RuntimeException("User is required for creating a post");
+		}
+		User user = userRepository.findById(post.getUser().getUser_id()) // 👈 Đổi thành user.getUser_id()
+				.orElseThrow(() -> new RuntimeException("User not found"));
 		post.setUser(user);
-		return postRepository.save(post);
+		Post savedPost = postRepository.save(post);
+		return new PostResponse(savedPost);
 	}
 
-	public void deletePost(Long id) {
-		postRepository.deleteById(id);
-	}
+	 public void deletePost(Long postId) {
+	        if (!postRepository.existsById(postId)) {
+	            throw new RuntimeException("Post not found");
+	        }
+	        postRepository.deleteById(postId);
+	    }
 
-//	public Page<Post> getAllPosts(int page, int size) {
-//		Pageable pageable = PageRequest.of(page, size);
-//		return postRepository.findAll(pageable);
-//	}
-//	public List<PostResponse> getAllPosts() {
-//        List<Post> posts = postRepository.findAll();
-//        return posts.stream().map(PostResponse::fromEntity).collect(Collectors.toList());
-//    }
-	
 	public List<PostResponse> getAllPosts() {
-        List<Post> posts = postRepository.findAllWithImages();
-        return posts.stream().map(PostResponse::new).collect(Collectors.toList());
-    }
+		List<Post> posts = postRepository.findAllWithImages();
+		return posts.stream().map(PostResponse::new).collect(Collectors.toList());
+	}
 
 }

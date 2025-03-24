@@ -23,16 +23,7 @@ public class PostResponse {
     private LocalDateTime createdAt;
     private UserResponse user;
 
-//    public static PostResponse fromEntity(Post post) {
-//        return new PostResponse(
-//            post.getId(),
-//            post.getContent(),
-//            post.getMediaUrls(),
-//            post.getVisibility(),
-//            post.getCreatedAt(),
-//            new UserResponse(post.getUser())
-//        );
-//    }
+
     public PostResponse(Post post) {
         this.id = post.getId();
         this.content = post.getContent();

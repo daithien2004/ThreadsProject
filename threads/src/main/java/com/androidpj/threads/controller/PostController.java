@@ -33,18 +33,17 @@ public class PostController {
 //    }
 
 
-    // Tạo bài đăng mới
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post, @RequestParam Long userId) {
-        Post createdPost = postService.createPost(post, userId);
-        return ResponseEntity.ok(createdPost);
+    public ResponseEntity<PostResponse> createPost(@RequestBody Post post) {
+        PostResponse postResponse = postService.createPost(post);
+        return ResponseEntity.ok(postResponse);
     }
 
 
-    // Xóa bài đăng
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
-        return ResponseEntity.ok("Bài đăng đã được xóa thành công!");
+        return ResponseEntity.ok("Post deleted successfully");
     }
+
 }

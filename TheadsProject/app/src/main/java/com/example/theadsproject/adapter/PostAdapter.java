@@ -1,13 +1,17 @@
 package com.example.theadsproject.adapter;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.example.theadsproject.DTO.PostResponse;
 import com.example.theadsproject.DTO.UserResponse;
 import com.example.theadsproject.R;
+import com.example.theadsproject.activity.ConfigPostFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,6 +71,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.txtTime.setText("Không có dữ liệu");
         }
 
+        holder.imgDots.setOnClickListener(v -> {
+            ConfigPostFragment bottomSheet = new ConfigPostFragment(context);
+            bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
+        });
+
 
         UserResponse userResponse = post.getUser(); // Lấy đối tượng user từ post
         Glide.with(context)
@@ -91,7 +101,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView txtUsername, txtTextPost, txtTime;
-        ImageView imgAvatar;
+        ImageView imgAvatar, imgDots;
         RecyclerView recyclerViewImages;
 
         public PostViewHolder(@NonNull View itemView) {
@@ -100,6 +110,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             txtTextPost = itemView.findViewById(R.id.txtTextPost);
             txtTime = itemView.findViewById(R.id.txtTimePost);
             imgAvatar = itemView.findViewById(R.id.imgUser);
+            imgDots = itemView.findViewById(R.id.imgDots);
             recyclerViewImages = itemView.findViewById(R.id.rvImages);
 
             recyclerViewImages.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
