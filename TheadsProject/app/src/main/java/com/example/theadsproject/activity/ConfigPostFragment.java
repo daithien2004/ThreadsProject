@@ -61,9 +61,14 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
 
             AlertDialog alertDialog = builder.create();
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            // Hiển thị hộp thoại trước khi chỉnh kích thước
             alertDialog.show();
 
-            Button btnDelete = dialogView.findViewById(R.id.btnDelete);
+            // Chỉnh kích thước hộp thoại
+            alertDialog.getWindow().setLayout(600, 600); // Điều chỉnh chiều rộng và chiều cao theo px
+
+        Button btnDelete = dialogView.findViewById(R.id.btnDelete);
             Button btnCancel = dialogView.findViewById(R.id.btnCancel);
 
             btnDelete.setOnClickListener(view1 -> {

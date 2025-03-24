@@ -1,11 +1,19 @@
 package com.example.theadsproject.DTO;
 
+import com.google.gson.annotations.SerializedName;
+
 public class UserResponse {
+
+    @SerializedName("user_id")
     private Long userId;
     private String username;
 
     private String nickName;
     private String image;
+
+    public UserResponse(Long userId) {
+        this.userId = userId;
+    }
 
     public Long getUserId() {
         return userId;

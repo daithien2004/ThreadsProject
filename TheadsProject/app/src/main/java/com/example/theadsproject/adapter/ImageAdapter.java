@@ -1,7 +1,7 @@
 package com.example.theadsproject.adapter;
 
-
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.example.theadsproject.R;
 
@@ -16,9 +17,9 @@ import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context context;
-    private List<String> imageList;
+    private List<Object> imageList; // Chứa cả Uri và String
 
-    public ImageAdapter(Context context, List<String> imageList) {
+    public ImageAdapter(Context context, List<Object> imageList) {
         this.context = context;
         this.imageList = imageList;
     }
@@ -32,13 +33,23 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        String imageUrl = imageList.get(position);
+        Object image = imageList.get(position);
 
-        Glide.with(context)
-                .load(imageUrl)
-                .placeholder(R.drawable.loading)  // Hiển thị khi đang tải
-                .error(R.drawable.warning)    // Hiển thị khi lỗi
-                .into(holder.imageView);
+        if (image instanceof String) {
+            // Load ảnh từ URL
+            Glide.with(context)
+                    .load((String) image)
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.warning)
+                    .into(holder.imageView);
+        } else if (image instanceof Uri) {
+            // Load ảnh từ Uri (ảnh local)
+            Glide.with(context)
+                    .load((Uri) image)
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.warning)
+                    .into(holder.imageView);
+        }
     }
 
     @Override

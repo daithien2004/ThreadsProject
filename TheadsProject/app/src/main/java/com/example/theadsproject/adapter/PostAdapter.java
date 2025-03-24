@@ -23,6 +23,7 @@ import com.example.theadsproject.activity.ConfigPostFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -91,7 +92,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.recyclerViewImages.setVisibility(View.GONE);
         } else {
             holder.recyclerViewImages.setVisibility(View.VISIBLE);
-            ImageAdapter imageAdapter = new ImageAdapter(context, mediaUrls);
+            ImageAdapter imageAdapter = new ImageAdapter(context, new ArrayList<>(mediaUrls));
             holder.recyclerViewImages.setAdapter(imageAdapter);
         }
     }

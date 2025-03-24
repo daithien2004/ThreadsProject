@@ -10,6 +10,13 @@ public class PostResponse {
     private String createdAt;
     private UserResponse user;
 
+    public PostResponse(String content, List<String> mediaUrls, String visibility, UserResponse user) {
+        this.content = content;
+        this.mediaUrls = mediaUrls;
+        this.visibility = visibility;
+        this.user = user;
+    }
+
     public Long getId() {
         return id;
     }
@@ -41,4 +48,5 @@ public class PostResponse {
         this.createdAt = createdAt;
         this.user = user;
     }
+
 }
