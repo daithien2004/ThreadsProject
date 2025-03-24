@@ -67,11 +67,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtUsername = itemView.findViewById(R.id.txtUsername);
-            txtTimePost = itemView.findViewById(R.id.txtTimePost);
-            txtTextPost = itemView.findViewById(R.id.txtTextPost);
-            imgPosts = itemView.findViewById(R.id.imgPosts);
-            imgAvatar = itemView.findViewById(R.id.imgUser); // Thêm avatar
+            txtUsername = itemView.findViewById(R.id.tvUsername);
+            txtTimePost = itemView.findViewById(R.id.tvTimePost);
+            txtTextPost = itemView.findViewById(R.id.tvTextPost);
+            imgPosts = itemView.findViewById(R.id.ivPosts);
+            imgAvatar = itemView.findViewById(R.id.ivUserAvatar); // Thêm avatar
         }
     }
 }

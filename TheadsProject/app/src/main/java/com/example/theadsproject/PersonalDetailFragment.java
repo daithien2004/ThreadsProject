@@ -29,7 +29,9 @@ public class PersonalDetailFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         postList = new ArrayList<>();
-        postList.add(new Post("lyhung_04", "5h", "Định mệnh rau muống xào măn vcl ra", "https://beptruong.edu.vn/wp-content/uploads/2021/04/rau-muong-xao-toi-1.jpg"));
+        postList.add(new Post("lyhung_04", "5h", "Định mệnh rau muống xào măn vcl ra", "https://beptruong.edu.vn/wp-content/uploads/2021/04/rau-muong-xao-toi-1.jpg", "me.png"));
+        postList.add(new Post("lyhung_04", "5h", "Định mệnh rau muống xào măn vcl ra", "https://beptruong.edu.vn/wp-content/uploads/2021/04/rau-muong-xao-toi-1.jpg", "me.png"));
+        postList.add(new Post("lyhung_04", "5h", "Định mệnh rau muống xào măn vcl ra", "https://beptruong.edu.vn/wp-content/uploads/2021/04/rau-muong-xao-toi-1.jpg", "me.png"));
 
         postAdapter = new PostAdapter(getContext(), postList);
         recyclerView.setAdapter(postAdapter);
