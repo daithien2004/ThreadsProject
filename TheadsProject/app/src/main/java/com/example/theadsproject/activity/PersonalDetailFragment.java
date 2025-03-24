@@ -33,7 +33,7 @@ public class PersonalDetailFragment extends Fragment {
 
         postList = new ArrayList<>();
         postList.add(new PostResponse(
-                1L,
+                100L,
                 "Định mệnh rau muống xào mặn vcl ra",
                 Arrays.asList("https://beptruong.edu.vn/wp-content/uploads/2021/04/rau-muong-xao-toi-1.jpg"),
                 "public",

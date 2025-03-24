@@ -11,7 +11,7 @@ import retrofit2.http.Path;
 
 public interface ApiService {
     @DELETE("posts/{id}")
-    Call<Void> deletePost(@Path("id") int postId);
+    Call<Void> deletePost(@Path("id") Long postId);
     @GET("posts")
     Call<List<PostResponse>> getAllPosts();
 }

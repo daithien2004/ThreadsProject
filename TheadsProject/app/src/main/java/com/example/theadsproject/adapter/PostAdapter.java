@@ -70,11 +70,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         } else {
             holder.txtTime.setText("Không có dữ liệu");
         }
-
         holder.imgDots.setOnClickListener(v -> {
-            ConfigPostFragment bottomSheet = new ConfigPostFragment(context);
+            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(post.getId(), postId -> {
+                removePost(postId); // Xóa bài đăng khỏi RecyclerView ngay lập tức
+            });
             bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
         });
+
 
 
         UserResponse userResponse = post.getUser(); // Lấy đối tượng user từ post
@@ -116,4 +118,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             recyclerViewImages.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
     }
+    public void removePost(Long postId) {
+        int indexToRemove = -1;
+        for (int i = 0; i < postList.size(); i++) {
+            if (postList.get(i).getId().equals(postId)) {
+                indexToRemove = i;
+                break;
+            }
+        }
+        if (indexToRemove != -1) {
+            postList.remove(indexToRemove);
+            notifyItemRemoved(indexToRemove);
+        }
+    }
+
 }
