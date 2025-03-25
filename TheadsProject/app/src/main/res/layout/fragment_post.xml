@@ -70,6 +70,7 @@
                 android:layout_width="353dp"
                 android:layout_height="208dp"
                 android:layout_marginTop="4dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.489"
                 app:layout_constraintStart_toStartOf="parent"
@@ -92,12 +93,14 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imgClose"
             android:layout_width="28dp"
             android:layout_height="22dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:src="@drawable/close"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -111,7 +114,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/imageView2"
             app:layout_constraintHorizontal_bias="0.044"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/imgClose"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -122,7 +125,7 @@
             android:layout_marginTop="16dp"
             android:src="@drawable/draft"
             app:layout_constraintBottom_toTopOf="@+id/clPost"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/imgClose"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
@@ -139,37 +142,38 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:layout_width="408dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="264dp"
+            android:layout_width="407dp"
+            android:layout_height="68dp"
+            android:layout_marginTop="488dp"
             android:orientation="horizontal"
+            android:padding="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/clPost">
 
             <TextView
                 android:id="@+id/txtWhoCanReply"
-                android:layout_width="261dp"
+                android:layout_width="289dp"
                 android:layout_height="46dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:textSize="16dp"
                 android:text="Bất kì ai cũng có thể phản hồi"
+                android:textSize="16dp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <Button
                 android:id="@+id/btnPost"
-                android:layout_width="60dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="16dp"
                 android:layout_weight="1"
+                android:backgroundTint="#BBBBBB"
                 android:text="Post"
                 android:textColor="@color/white"
-                android:backgroundTint="#BBBBBB"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
         </LinearLayout>

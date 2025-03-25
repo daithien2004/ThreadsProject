@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -22,36 +23,32 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.example.theadsproject.DTO.PostResponse;
 import com.example.theadsproject.DTO.UserResponse;
 import com.example.theadsproject.R;
 import com.example.theadsproject.adapter.ImageAdapter;
-import com.example.theadsproject.entity.User;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
 import com.google.gson.Gson;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PostFragment extends Fragment {
-    private List<Object> imageList = new ArrayList<>(); // Chứa cả Uri và String
+    private List<Object> imageList = new ArrayList<>();
     private ImageAdapter imageAdapter;
     private ActivityResultLauncher<Intent> pickImagesLauncher;
     private EditText edtContent;
     private Button btnPost;
+    private RecyclerView rvImages;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         // Xử lý chọn ảnh từ thư viện
         pickImagesLauncher = registerForActivityResult(
@@ -70,27 +67,54 @@ public class PostFragment extends Fragment {
                             }
                         }
                         imageAdapter.notifyDataSetChanged();
+                        updateRecyclerViewVisibility();
                     }
                 }
         );
+
+        // Kiểm tra nếu activity không null để ẩn
+//        if (getActivity() != null) {
+//            View barBottom = getActivity().findViewById(R.id.bottomNavigationView);
+//            if (barBottom != null) {
+//                barBottom.setVisibility(View.GONE); // Ẩn toàn bộ BottomAppBar + BottomNavigationView
+//            }
+//        }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post, container, false);
 
-        RecyclerView rvImages = view.findViewById(R.id.rvImages);
+        rvImages = view.findViewById(R.id.rvImages);
         rvImages.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        // ản rc chứa ảnh
+        rvImages.setVisibility(View.GONE); // Ẩn ban đầu
 
         edtContent = view.findViewById(R.id.edtPostContent);
         btnPost = view.findViewById(R.id.btnPost);
 
-        // Khởi tạo Adapter với danh sách ảnh hỗn hợp (Uri và String)
+        // Khởi tạo Adapter
         imageAdapter = new ImageAdapter(requireContext(), imageList);
         rvImages.setAdapter(imageAdapter);
 
         view.findViewById(R.id.imGallery).setOnClickListener(v -> openGallery());
         btnPost.setOnClickListener(v -> uploadPost());
+
+        // Xử lý khi nhấn nút đóng (imgClose)
+        ImageView imgClose = view.findViewById(R.id.imgClose);
+        imgClose.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                View barBottom = getActivity().findViewById(R.id.barBottom);
+                if (barBottom != null) {
+                    barBottom.setVisibility(View.VISIBLE);
+                }
+            }
+            // Quay lại HomeFragment
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frame_layout, new HomeFragment())
+                    .commit();
+        });
 
         return view;
     }
@@ -103,10 +127,18 @@ public class PostFragment extends Fragment {
         pickImagesLauncher.launch(intent);
     }
 
-    // Thêm ảnh từ web vào danh sách
-    public void addImageFromWeb(String imageUrl) {
-        imageList.add(imageUrl);
+    // Cập nhật hiển thị RecyclerView
+    private void updateRecyclerViewVisibility() {
+        if (rvImages != null) {
+            rvImages.setVisibility(imageList.isEmpty() ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    // Xóa ảnh khỏi danh sách
+    public void removeImage(int position) {
+        imageList.remove(position);
         imageAdapter.notifyDataSetChanged();
+        updateRecyclerViewVisibility();
     }
 
     // Gửi bài viết lên server
@@ -121,26 +153,23 @@ public class PostFragment extends Fragment {
         List<String> mediaUrls = new ArrayList<>();
         for (Object obj : imageList) {
             if (obj instanceof Uri) {
-                mediaUrls.add(obj.toString());  // Sử dụng Uri.toString()
+                mediaUrls.add(obj.toString());
             } else if (obj instanceof String) {
                 mediaUrls.add((String) obj);
             }
         }
 
-        // Chuẩn bị request
-        UserResponse user = new UserResponse(9L);
-        mediaUrls.add("https://gamek.mediacdn.vn/133514250583805952/2021/7/20/photo-1-1626771137936858492623.jpg"); // Ảnh giả
+        // Test: Thêm một ảnh giả
+        mediaUrls.add("https://gamek.mediacdn.vn/133514250583805952/2021/7/20/photo-1-1626771137936858492623.jpg");
 
+        // Tạo request
+        UserResponse user = new UserResponse(9L);
         PostResponse postResponse = new PostResponse(content, mediaUrls, "public", user);
 
-        // ✅ Log dữ liệu JSON trước khi gửi request
+        // Log JSON request
         Gson gson = new Gson();
-        String json = gson.toJson(postResponse);
-        Log.d("UPLOAD_POST", "Request JSON: " + json);
-
-        // 🔥 Thêm log kiểm tra JSON request
-        gson = new Gson();
         Log.d("UPLOAD_POST", "Request JSON: " + gson.toJson(postResponse));
+
         // Gửi request lên server
         ApiService apiService = RetrofitClient.getApiService();
         Call<Void> call = apiService.createPost(postResponse);
