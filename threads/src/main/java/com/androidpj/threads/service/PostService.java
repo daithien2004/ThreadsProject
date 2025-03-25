@@ -27,10 +27,10 @@ public class PostService {
 	}
 
 	public PostResponse createPost(Post post) {
-		if (post.getUser() == null || post.getUser().getUser_id() == null) { // 👈 Đổi thành user.getUser_id()
+		if (post.getUser() == null || post.getUser().getUser_id() == null) { 
 			throw new RuntimeException("User is required for creating a post");
 		}
-		User user = userRepository.findById(post.getUser().getUser_id()) // 👈 Đổi thành user.getUser_id()
+		User user = userRepository.findById(post.getUser().getUser_id())
 				.orElseThrow(() -> new RuntimeException("User not found"));
 		post.setUser(user);
 		Post savedPost = postRepository.save(post);
