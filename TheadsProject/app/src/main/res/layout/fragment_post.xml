@@ -142,41 +142,33 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:layout_width="407dp"
-            android:layout_height="68dp"
-            android:layout_marginTop="488dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clPost">
+            android:background="@android:color/white">
 
             <TextView
                 android:id="@+id/txtWhoCanReply"
-                android:layout_width="289dp"
-                android:layout_height="46dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Bất kì ai cũng có thể phản hồi"
                 android:textSize="16dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:textStyle="bold"/>
 
             <Button
                 android:id="@+id/btnPost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_weight="1"
                 android:backgroundTint="#BBBBBB"
                 android:text="Post"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:textColor="@color/white"/>
         </LinearLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +32,8 @@ import com.example.theadsproject.R;
 import com.example.theadsproject.adapter.ImageAdapter;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -42,8 +47,8 @@ public class PostFragment extends Fragment {
     private List<Object> imageList = new ArrayList<>();
     private ImageAdapter imageAdapter;
     private ActivityResultLauncher<Intent> pickImagesLauncher;
-    private EditText edtContent;
-    private Button btnPost;
+    private EditText edtPostContent;
+    private Button btnPost ;
     private RecyclerView rvImages;
 
     @Override
@@ -71,14 +76,11 @@ public class PostFragment extends Fragment {
                     }
                 }
         );
-
-        // Kiểm tra nếu activity không null để ẩn
-//        if (getActivity() != null) {
-//            View barBottom = getActivity().findViewById(R.id.bottomNavigationView);
-//            if (barBottom != null) {
-//                barBottom.setVisibility(View.GONE); // Ẩn toàn bộ BottomAppBar + BottomNavigationView
-//            }
-//        }
+//        // ẩn thanh bar
+//        requireActivity().getWindow().getDecorView().setSystemUiVisibility(
+//                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
     @Override
@@ -87,10 +89,9 @@ public class PostFragment extends Fragment {
 
         rvImages = view.findViewById(R.id.rvImages);
         rvImages.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        // ản rc chứa ảnh
         rvImages.setVisibility(View.GONE); // Ẩn ban đầu
 
-        edtContent = view.findViewById(R.id.edtPostContent);
+        edtPostContent = view.findViewById(R.id.edtPostContent);
         btnPost = view.findViewById(R.id.btnPost);
 
         // Khởi tạo Adapter
@@ -100,15 +101,43 @@ public class PostFragment extends Fragment {
         view.findViewById(R.id.imGallery).setOnClickListener(v -> openGallery());
         btnPost.setOnClickListener(v -> uploadPost());
 
+        // Lắng nghe thay đổi trong EditText
+        edtPostContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updatePostButtonState();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Lắng nghe thay đổi trong danh sách ảnh
+        imageAdapter.setOnDataChangedListener(this::updatePostButtonState);
+
+        // Ẩn BottomAppBar & BottomNavigationView
+        if (getActivity() != null) {
+            BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottomAppBar);
+            BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottomNavigationView);
+
+            if (bottomAppBar != null) bottomAppBar.setVisibility(View.GONE);
+            if (bottomNav != null) bottomNav.setVisibility(View.GONE);
+        }
+
         // Xử lý khi nhấn nút đóng (imgClose)
         ImageView imgClose = view.findViewById(R.id.imgClose);
         imgClose.setOnClickListener(v -> {
             if (getActivity() != null) {
-                View barBottom = getActivity().findViewById(R.id.barBottom);
-                if (barBottom != null) {
-                    barBottom.setVisibility(View.VISIBLE);
-                }
+                BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottomAppBar);
+                BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottomNavigationView);
+
+                if (bottomAppBar != null) bottomAppBar.setVisibility(View.VISIBLE);
+                if (bottomNav != null) bottomNav.setVisibility(View.VISIBLE);
             }
+
             // Quay lại HomeFragment
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
@@ -119,12 +148,23 @@ public class PostFragment extends Fragment {
         return view;
     }
 
+
     // Mở thư viện ảnh để chọn nhiều ảnh
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.setType("image/*");
         pickImagesLauncher.launch(intent);
+    }
+    private void updatePostButtonState() {
+        boolean hasText = !edtPostContent.getText().toString().trim().isEmpty();
+        boolean hasImages = imageAdapter.getItemCount() > 0;
+
+        if (hasText || hasImages) {
+            btnPost.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.blue)); // Chuyển sang màu xanh biển
+        } else {
+            btnPost.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.gray)); // Chuyển về màu xám
+        }
     }
 
     // Cập nhật hiển thị RecyclerView
@@ -143,7 +183,7 @@ public class PostFragment extends Fragment {
 
     // Gửi bài viết lên server
     private void uploadPost() {
-        String content = edtContent.getText().toString().trim();
+        String content = edtPostContent.getText().toString().trim();
         if (content.isEmpty() && imageList.isEmpty()) {
             Toast.makeText(requireContext(), "Nội dung hoặc ảnh không được để trống!", Toast.LENGTH_SHORT).show();
             return;
@@ -206,4 +246,15 @@ public class PostFragment extends Fragment {
                 .replace(R.id.frame_layout, new HomeFragment())
                 .commit();
     }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottomAppBar);
+        BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottomNavigationView);
+
+        if (bottomAppBar != null) bottomAppBar.setVisibility(View.VISIBLE);
+        if (bottomNav != null) bottomNav.setVisibility(View.VISIBLE);
+    }
+
 }
