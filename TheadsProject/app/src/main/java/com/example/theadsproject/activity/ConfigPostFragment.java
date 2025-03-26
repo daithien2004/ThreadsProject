@@ -66,7 +66,7 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
             alertDialog.show();
 
             // Chỉnh kích thước hộp thoại
-            alertDialog.getWindow().setLayout(600, 600); // Điều chỉnh chiều rộng và chiều cao theo px
+            alertDialog.getWindow().setLayout(700, 600); // Điều chỉnh chiều rộng và chiều cao theo px
 
             Button btnDelete = dialogView.findViewById(R.id.btnDelete);
             Button btnCancel = dialogView.findViewById(R.id.btnCancel);

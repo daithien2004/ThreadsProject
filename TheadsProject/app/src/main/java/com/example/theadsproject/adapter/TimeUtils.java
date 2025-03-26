@@ -1,26 +1,42 @@
 package com.example.theadsproject.adapter;
 
+import android.util.Log;
+
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class TimeUtils {
     public static String getTimeAgo(long pastTimeMillis) {
+        pastTimeMillis = convertUtcToLocalTime(pastTimeMillis); // Chuyển về giờ địa phương
         long now = System.currentTimeMillis();
-        long diff = now - pastTimeMillis; // Khoảng cách thời gian
+
+        // Kiểm tra nếu thời gian quá khứ lớn hơn hiện tại, tránh lỗi hiển thị âm
+        if (pastTimeMillis > now) {
+            Log.e("TimeError", "pastTimeMillis lớn hơn thời gian hiện tại! pastTimeMillis = " + pastTimeMillis + ", now = " + now);
+            return "now";
+        }
+
+        long diff = now - pastTimeMillis;
 
         if (diff < TimeUnit.MINUTES.toMillis(1)) {
-            return TimeUnit.MILLISECONDS.toSeconds(diff) + "s"; // Dưới 1 phút: Giây
+            return TimeUnit.MILLISECONDS.toSeconds(diff) + "s";
         } else if (diff < TimeUnit.HOURS.toMillis(1)) {
-            return TimeUnit.MILLISECONDS.toMinutes(diff) + "m"; // Dưới 1 giờ: Phút
+            return TimeUnit.MILLISECONDS.toMinutes(diff) + "m";
         } else if (diff < TimeUnit.DAYS.toMillis(1)) {
-            return TimeUnit.MILLISECONDS.toHours(diff) + "h"; // Dưới 1 ngày: Giờ
+            return TimeUnit.MILLISECONDS.toHours(diff) + "h";
         } else if (diff < TimeUnit.DAYS.toMillis(7)) {
-            return TimeUnit.MILLISECONDS.toDays(diff) + "d"; // Dưới 1 tuần: Ngày
+            return TimeUnit.MILLISECONDS.toDays(diff) + "d";
         } else if (diff < TimeUnit.DAYS.toMillis(30)) {
-            return (TimeUnit.MILLISECONDS.toDays(diff) / 7) + "w"; // Dưới 1 tháng: Tuần
+            return (TimeUnit.MILLISECONDS.toDays(diff) / 7) + "w";
         } else if (diff < TimeUnit.DAYS.toMillis(365)) {
-            return (TimeUnit.MILLISECONDS.toDays(diff) / 30) + "mo"; // Dưới 1 năm: Tháng
+            return (TimeUnit.MILLISECONDS.toDays(diff) / 30) + "mo";
         } else {
-            return (TimeUnit.MILLISECONDS.toDays(diff) / 365) + "y"; // Trên 1 năm: Năm
+            return (TimeUnit.MILLISECONDS.toDays(diff) / 365) + "y";
         }
     }
+    // Chuyển từ UTC về giờ địa phương
+    public static long convertUtcToLocalTime(long utcTimeMillis) {
+        return utcTimeMillis - TimeZone.getDefault().getRawOffset();
+    }
+
 }

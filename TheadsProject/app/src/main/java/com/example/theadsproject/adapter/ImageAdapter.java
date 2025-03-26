@@ -20,6 +20,7 @@ import java.util.List;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context context;
     private List<Object> imageList; // Chứa cả Uri và String
+    private OnDataChangedListener onDataChangedListener;
 
     public ImageAdapter(Context context, List<Object> imageList) {
         this.context = context;
@@ -55,12 +56,24 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                     .into(holder.imageView);
         }
     }
+    public void setOnDataChangedListener(OnDataChangedListener listener) {
+        this.onDataChangedListener = listener;
+    }
 
+    public void addImage(String imagePath) {
+        imageList.add(imagePath);
+        notifyDataSetChanged();
+        if (onDataChangedListener != null) {
+            onDataChangedListener.onDataChanged();
+        }
+    }
     @Override
     public int getItemCount() {
         return imageList.size();
     }
-
+    public interface OnDataChangedListener {
+        void onDataChanged();
+    }
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
 

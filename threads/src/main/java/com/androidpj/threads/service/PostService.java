@@ -30,11 +30,11 @@ public class PostService {
 			throw new RuntimeException("User is required for creating a post");
 		}
 
-		// Tìm User từ userId
+		// T�m User t? userId
 		User user = userRepository.findById(postRequest.getUserId())
 				.orElseThrow(() -> new RuntimeException("User not found"));
 
-		// Tạo Post từ request
+		// T?o Post t? request
 		Post post = new Post();
 		post.setContent(postRequest.getContent());
 		post.setVisibility(postRequest.getVisibility());
