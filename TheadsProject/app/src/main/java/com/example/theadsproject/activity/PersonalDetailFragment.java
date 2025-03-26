@@ -1,4 +1,4 @@
-package com.example.theadsproject;
+package com.example.theadsproject.activity;
 
 import android.os.Bundle;
 
@@ -10,17 +10,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.theadsproject.dto.PostResponse;
+import com.example.theadsproject.dto.UserResponse; // ✅ Import đúng
+import com.example.theadsproject.R;
 import com.example.theadsproject.adapter.PostAdapter;
-import com.example.theadsproject.entity.Post;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
 
 public class PersonalDetailFragment extends Fragment {
     private RecyclerView recyclerView;
-    private List<Post> postList;
+    private List<PostResponse> postList; // ✅ Đổi từ List<Post> thành List<PostResponse>
     private PostAdapter postAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -29,9 +33,19 @@ public class PersonalDetailFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         postList = new ArrayList<>();
-        postList.add(new Post("lyhung_04", "5h", "Định mệnh rau muống xào măn vcl ra", "https://beptruong.edu.vn/wp-content/uploads/2021/04/rau-muong-xao-toi-1.jpg", "me.png"));
-        postList.add(new Post("lyhung_04", "5h", "Định mệnh rau muống xào măn vcl ra", "https://beptruong.edu.vn/wp-content/uploads/2021/04/rau-muong-xao-toi-1.jpg", "me.png"));
-        postList.add(new Post("lyhung_04", "5h", "Định mệnh rau muống xào măn vcl ra", "https://beptruong.edu.vn/wp-content/uploads/2021/04/rau-muong-xao-toi-1.jpg", "me.png"));
+        postList.add(new PostResponse(
+                100L,
+                "Định mệnh rau muống xào mặn vcl ra",
+                new ArrayList<>(Arrays.asList("https://beptruong.edu.vn/wp-content/uploads/2021/04/rau-muong-xao-toi-1.jpg")),
+                "public",
+                LocalDateTime.of(2025, 3, 25, 12, 0, 0),
+                new UserResponse(
+                        101L, // userId
+                        "lyhung_04", // username
+                        "Lý Hùng", // nickName
+                        "https://saigonbanme.vn/wp-content/uploads/2024/12/bo-99-anh-avatar-dep-cho-con-gai-ngau-chat-nhat-viet-nam-38.jpg"
+                )
+        ));
 
         postAdapter = new PostAdapter(getContext(), postList);
         recyclerView.setAdapter(postAdapter);

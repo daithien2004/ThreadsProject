@@ -1,4 +1,4 @@
-package com.example.theadsproject;
+package com.example.theadsproject.activity;
 
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.theadsproject.R;
 import com.example.theadsproject.databinding.ActivityBarBinding;
 public class BarActivity extends AppCompatActivity {
     ActivityBarBinding binding;
@@ -37,30 +38,15 @@ public class BarActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if(item.getItemId() == R.id.home) {
                 replaceFragment(new HomeFragment());
-            }else if(item.getItemId() == R.id.love) {
+            } else if(item.getItemId() == R.id.love) {
                 replaceFragment(new LoveFragment());
-            }else if(item.getItemId() == R.id.account) {
+            } else if(item.getItemId() == R.id.account) {
                 replaceFragment(new PersonalDetailFragment());
-            }else if(item.getItemId() == R.id.search) {
+            } else if(item.getItemId() == R.id.search) {
                 replaceFragment(new SearchFragment());
-            }else if(item.getItemId() == R.id.addPost) {
+            } else if(item.getItemId() == R.id.addPost) {
                 replaceFragment(new PostFragment());
             }
-
-//            switch (item.getItemId()) {
-//                case R.id.home:
-//                    replaceFragment(new HomeFragment());
-//                    break;
-//                case R.id.love:
-//                    replaceFragment(new LoveFragment());
-//                    break;
-//                case R.id.search:
-//                    replaceFragment(new SearchFragment());
-//                    break;
-//                case R.id.account:  // Sửa lỗi thiếu ID
-//                    replaceFragment(new PersonalProfile());
-//                    break;
-
             return true;
         });
     }

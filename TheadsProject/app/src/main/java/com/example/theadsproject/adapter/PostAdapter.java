@@ -8,19 +8,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.theadsproject.dto.PostResponse;
+import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.R;
-import com.example.theadsproject.entity.Post;
+import com.example.theadsproject.activity.ConfigPostFragment;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
-    private Context context;
-    private List<Post> postList;
+    private final Context context;
+    private final List<PostResponse> postList;
 
-    public PostAdapter(Context context, List<Post> postList) {
+    public PostAdapter(Context context, List<PostResponse> postList) {
         this.context = context;
         this.postList = postList;
     }
@@ -34,44 +46,83 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        Post post = postList.get(position);
+        PostResponse post = postList.get(position);
 
-        holder.txtUsername.setText(post.getUsername());
-        holder.txtTimePost.setText(post.getTime());
+        holder.txtUsername.setText(post.getUser().getUsername());
         holder.txtTextPost.setText(post.getContent());
+        LocalDateTime createdAt = post.getCreatedAt();
+        if (createdAt != null) {
+            try {
+                // Chuyển LocalDateTime thành timestamp (milliseconds)
+                long timestamp = createdAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                holder.txtTime.setText(TimeUtils.getTimeAgo(timestamp));
+            } catch (Exception e) {
+                e.printStackTrace();
+                holder.txtTime.setText("Lỗi định dạng thời gian");
+            }
+        } else {
+            holder.txtTime.setText("Không có dữ liệu");
+        }
+        holder.imgDots.setOnClickListener(v -> {
+            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(post.getId(), postId -> {
+                removePost(postId); // Xóa bài đăng khỏi RecyclerView ngay lập tức
+            });
+            bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
+        });
 
-        // Load avatar với Glide
-        Glide.with(holder.itemView.getContext())
-                .load(post.getAvatar())
-                .placeholder(R.drawable.user) // Ảnh mặc định nếu avatar null
-                .error(R.drawable.user) // Ảnh mặc định nếu lỗi
+
+
+        UserResponse userResponse = post.getUser(); // Lấy đối tượng user từ post
+        Glide.with(context)
+                .load(userResponse.getImage())
+                .placeholder(R.drawable.user)
+                .error(R.drawable.user)
                 .into(holder.imgAvatar);
 
-        // Kiểm tra nếu có ảnh => Hiển thị, nếu không => Ẩn
-        if (post.getImageUrl() != null && !post.getImageUrl().isEmpty()) {
-            holder.imgPosts.setVisibility(View.VISIBLE);
-            Glide.with(context).load(post.getImageUrl()).into(holder.imgPosts);
+        List<String> mediaUrls = post.getMediaUrls();
+        if (mediaUrls == null || mediaUrls.isEmpty()) {
+            holder.recyclerViewImages.setVisibility(View.GONE);
         } else {
-            holder.imgPosts.setVisibility(View.GONE);
+            holder.recyclerViewImages.setVisibility(View.VISIBLE);
+            ImageAdapter imageAdapter = new ImageAdapter(context, new ArrayList<>(mediaUrls));
+            holder.recyclerViewImages.setAdapter(imageAdapter);
         }
     }
 
     @Override
     public int getItemCount() {
-        return postList.size();
+        return (postList != null) ? postList.size() : 0;
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtUsername, txtTimePost, txtTextPost;
-        ImageView imgPosts, imgAvatar;
+        TextView txtUsername, txtTextPost, txtTime;
+        ImageView imgAvatar, imgDots;
+        RecyclerView recyclerViewImages;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             txtUsername = itemView.findViewById(R.id.tvUsername);
-            txtTimePost = itemView.findViewById(R.id.tvTimePost);
             txtTextPost = itemView.findViewById(R.id.tvTextPost);
-            imgPosts = itemView.findViewById(R.id.ivPosts);
-            imgAvatar = itemView.findViewById(R.id.ivUserAvatar); // Thêm avatar
+            txtTime = itemView.findViewById(R.id.tvTimePost);
+            imgAvatar = itemView.findViewById(R.id.ivUserAvatar);
+            imgDots = itemView.findViewById(R.id.ivDots);
+            recyclerViewImages = itemView.findViewById(R.id.rvImages);
+
+            recyclerViewImages.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
     }
+    public void removePost(Long postId) {
+        int indexToRemove = -1;
+        for (int i = 0; i < postList.size(); i++) {
+            if (postList.get(i).getId().equals(postId)) {
+                indexToRemove = i;
+                break;
+            }
+        }
+        if (indexToRemove != -1) {
+            postList.remove(indexToRemove);
+            notifyItemRemoved(indexToRemove);
+        }
+    }
+
 }
