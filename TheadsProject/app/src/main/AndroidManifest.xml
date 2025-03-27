@@ -7,6 +7,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <meta-data
+        android:name="android.hardware.opengles.aep"
+        android:value="false" />
 
     <application
         android:allowBackup="true"
@@ -19,13 +22,10 @@
         android:theme="@style/Theme.TheadsProject"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-<!--        <activity-->
-<!--            android:name=".ConfigPostFragment"-->
-<!--            android:exported="false" />-->
-<!--        <activity-->
-<!--            android:name=".HomeActivity"-->
-<!--            android:exported="false" />-->
 
+<!--        <activity-->
+<!--            android:name="TabLayoutHomeFragment"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".activity.BarActivity"
             android:exported="true"

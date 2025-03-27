@@ -1,6 +1,7 @@
 package com.example.theadsproject.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.theadsproject.R;
 import com.example.theadsproject.databinding.ActivityBarBinding;
+
 public class BarActivity extends AppCompatActivity {
     ActivityBarBinding binding;
 

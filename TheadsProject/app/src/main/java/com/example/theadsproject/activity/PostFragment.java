@@ -244,7 +244,7 @@ public class PostFragment extends Fragment {
     private void goToHomeFragment() {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_layout, new HomeFragment())
+                .replace(R.id.frame_layout, new TabLayoutHomeFragment())
                 .commit();
     }
 }
