@@ -7,18 +7,22 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +35,8 @@ import com.example.theadsproject.R;
 import com.example.theadsproject.adapter.ImageAdapter;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -44,7 +50,7 @@ public class PostFragment extends Fragment {
     private List<Object> imageList = new ArrayList<>(); // Chứa cả Uri và String
     private ImageAdapter imageAdapter;
     private ActivityResultLauncher<Intent> pickImagesLauncher;
-    private EditText edtContent;
+    private EditText edtPostContent;
     private Button btnPost;
     RecyclerView rvImages;
 
@@ -70,6 +76,7 @@ public class PostFragment extends Fragment {
                         }
                         rvImages.setVisibility(View.VISIBLE);
                         imageAdapter.notifyDataSetChanged();
+                        updatePostButtonState();
                     }
                 }
         );
@@ -91,7 +98,7 @@ public class PostFragment extends Fragment {
         rvImages.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
 
 
-        edtContent = view.findViewById(R.id.edtPostContent);
+        edtPostContent = view.findViewById(R.id.edtPostContent);
         btnPost = view.findViewById(R.id.btnPost);
 
         // Khởi tạo Adapter với danh sách ảnh hỗn hợp (Uri và String)
@@ -101,7 +108,63 @@ public class PostFragment extends Fragment {
         view.findViewById(R.id.imGallery).setOnClickListener(v -> openGallery());
         btnPost.setOnClickListener(v -> uploadPost());
 
+        // Xử lý khi nhấn nút đóng (ivClose)
+        ImageView ivClose = view.findViewById(R.id.ivClose);
+        ivClose.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottomAppBar);
+                BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottomNavigationView);
+
+                if (bottomAppBar != null) bottomAppBar.setVisibility(View.VISIBLE);
+                if (bottomNav != null) bottomNav.setVisibility(View.VISIBLE);
+            }
+
+            // Quay lại HomeFragment
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frame_layout, new HomeFragment())
+                    .commit();
+        });
+
+        // Lắng nghe thay đổi trong EditText
+        edtPostContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updatePostButtonState();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Lắng nghe thay đổi trong danh sách ảnh
+        imageAdapter.setOnDataChangedListener(this::updatePostButtonState);
+
+        // Ẩn BottomAppBar & BottomNavigationView
+        if (getActivity() != null) {
+            BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottomAppBar);
+            BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottomNavigationView);
+
+            if (bottomAppBar != null) bottomAppBar.setVisibility(View.GONE);
+            if (bottomNav != null) bottomNav.setVisibility(View.GONE);
+        }
+
         return view;
+    }
+    private void updatePostButtonState() {
+        boolean hasText = !edtPostContent.getText().toString().trim().isEmpty();
+        boolean hasImages = !imageList.isEmpty(); // Kiểm tra có ảnh hay không
+
+        if (hasText || hasImages) {
+            btnPost.setEnabled(true);
+            btnPost.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.blue)); // Màu xanh khi có nội dung/ảnh
+        } else {
+            btnPost.setEnabled(false);
+            btnPost.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.gray)); // Màu xám khi không có gì
+        }
     }
 
     // Mở thư viện ảnh để chọn nhiều ảnh
@@ -120,7 +183,7 @@ public class PostFragment extends Fragment {
 
     // Gửi bài viết lên server
     private void uploadPost() {
-        String content = edtContent.getText().toString().trim();
+        String content = edtPostContent.getText().toString().trim();
         if (content.isEmpty() && imageList.isEmpty()) {
             Toast.makeText(requireContext(), "Nội dung hoặc ảnh không được để trống!", Toast.LENGTH_SHORT).show();
             return;
