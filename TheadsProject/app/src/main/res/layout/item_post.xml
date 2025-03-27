@@ -11,9 +11,6 @@
         android:layout_height="50dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/circle_bg"
-        android:clipToOutline="true"
-        android:scaleType="centerCrop"
         android:src="@drawable/me"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -63,7 +60,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvImages"
             android:layout_width="0dp"
-            android:layout_height="300dp"
+            android:layout_height="150dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTextPost" />
@@ -76,99 +73,99 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/three_dots" />
 
-        <LinearLayout
-            android:id="@+id/llAll"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clAll"
             android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingEnd="160dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="22dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvImages">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/ivLove"
+                android:layout_width="14dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/heart"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <ImageView
-                    android:id="@+id/ivLove"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    app:srcCompat="@drawable/heart" />
+            <TextView
+                android:id="@+id/tvLove"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="4dp"
+                android:text="1314"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@id/ivLove"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <TextView
-                    android:id="@+id/tvLove"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="0" />
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/ivConversation"
+                android:layout_width="14dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="12dp"
+                app:srcCompat="@drawable/chat"
+                app:layout_constraintStart_toEndOf="@id/tvLove"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tvConversation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="4dp"
+                android:text="144"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@id/ivConversation"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <ImageView
-                    android:id="@+id/ivConversation"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    app:srcCompat="@drawable/chat" />
+            <ImageView
+                android:id="@+id/ivRepeat"
+                android:layout_width="14dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/retweet"
+                android:layout_marginStart="12dp"
+                app:layout_constraintStart_toEndOf="@id/tvConversation"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <TextView
-                    android:id="@+id/tvConversation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="0" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvRepeat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="4dp"
+                android:text="0"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@id/ivRepeat"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/ivSend"
+                android:layout_width="14dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/send"
+                android:layout_marginStart="12dp"
+                app:layout_constraintStart_toEndOf="@id/tvRepeat"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <ImageView
-                    android:id="@+id/ivRepeat"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    app:srcCompat="@drawable/retweet" />
+            <TextView
+                android:id="@+id/tvSend"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="4dp"
+                android:text="140"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@id/ivSend"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-                <TextView
-                    android:id="@+id/tvRepeat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="0" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/ivSend"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    app:srcCompat="@drawable/send" />
-
-                <TextView
-                    android:id="@+id/tvSend"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="0" />
-            </LinearLayout>
-        </LinearLayout>
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -181,7 +178,7 @@
         android:background="#D3D3D3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llAll" />
+        app:layout_constraintTop_toBottomOf="@+id/clAll" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

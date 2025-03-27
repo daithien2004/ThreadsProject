@@ -4,20 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.HomeFragment">
+    tools:context=".activity.HomeFragment"
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clMenu"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="40dp"
         app:layout_constraintBottom_toTopOf="@id/rvPosts"
         app:layout_constraintEnd_toEndOf="@+id/rvPosts"
         app:layout_constraintStart_toStartOf="@+id/rvPosts"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@drawable/threads_logo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

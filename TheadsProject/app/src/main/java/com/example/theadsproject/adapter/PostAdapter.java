@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.dto.PostResponse;
 import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.R;
@@ -77,6 +78,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 .load(userResponse.getImage())
                 .placeholder(R.drawable.user)
                 .error(R.drawable.user)
+                .apply(RequestOptions.circleCropTransform())
                 .into(holder.imgAvatar);
 
         List<String> mediaUrls = post.getMediaUrls();

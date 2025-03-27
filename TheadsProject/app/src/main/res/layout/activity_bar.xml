@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.BarActivity"
+    android:background="@color/white"
     android:id="@+id/barBottom">
 
     <FrameLayout
@@ -17,17 +18,18 @@
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:id="@+id/bottomAppBar"
         android:layout_gravity="bottom"
-        android:background="@color/white">
+        android:backgroundTint="@color/white">
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            app:labelVisibilityMode="labeled"
-            android:background="@android:color/transparent"
+            android:background="@color/white"
+            app:labelVisibilityMode="unlabeled"
+            app:itemIconSize="20dp"
             app:menu="@menu/bottom_menu">
         </com.google.android.material.bottomnavigation.BottomNavigationView>
     </com.google.android.material.bottomappbar.BottomAppBar>

@@ -102,8 +102,8 @@
 
             <ImageView
                 android:id="@+id/ivClose"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_weight="1"
                 android:src="@drawable/close" />
 
@@ -111,7 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:textSize="20sp"
+                android:textSize="12sp"
                 android:text="Thread mới"
                 android:textStyle="bold" />
         </LinearLayout>

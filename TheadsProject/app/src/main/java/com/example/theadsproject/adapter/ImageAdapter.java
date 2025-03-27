@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.theadsproject.R;
 
@@ -52,7 +53,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                     .load((Uri) image)
                     .placeholder(R.drawable.loading)
                     .error(R.drawable.warning)
-                    .transform(new CenterCrop(), new RoundedCorners(10))
+                    .transform(new FitCenter(), new RoundedCorners(10))
                     .into(holder.imageView);
         }
     }
