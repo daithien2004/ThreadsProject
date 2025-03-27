@@ -35,11 +35,11 @@ public class BarActivity extends AppCompatActivity {
         }
 
         // Set fragment mặc định
-        replaceFragment(new HomeFragment());
+        replaceFragment(new TabLayoutHomeFragment());
         binding.bottomNavigationView.setBackground(null);
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if(item.getItemId() == R.id.home) {
-                replaceFragment(new HomeFragment());
+                replaceFragment(new TabLayoutHomeFragment());
             } else if(item.getItemId() == R.id.love) {
                 replaceFragment(new LoveFragment());
             } else if(item.getItemId() == R.id.account) {
