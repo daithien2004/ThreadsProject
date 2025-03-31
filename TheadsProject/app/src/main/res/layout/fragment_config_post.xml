@@ -13,127 +13,124 @@
 
     <!-- Save Option -->
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/translateOption"
-        android:layout_width="318dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="40dp"
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="42dp"
         android:background="@drawable/bg_button_outline"
-        android:clickable="true"
-        android:focusable="true"
-        android:paddingHorizontal="16dp"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintVertical_bias="0.259">
 
-        <TextView
-            android:id="@+id/tvTranslate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Translate"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!-- Translate Option -->
 
-        <ImageView
-            android:id="@+id/iconTranslate"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/translate"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Save Option -->
+        <LinearLayout
+            android:id="@+id/translateOption"
+            android:layout_width="322dp"
+            android:layout_height="40dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp">
 
-    <!-- Pin Option -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/saveOption"
-        android:layout_width="319dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/bg_button_outline"
-        android:clickable="true"
-        android:focusable="true"
-        android:paddingHorizontal="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/translateOption">
+            <TextView
+                android:id="@+id/tvTranslate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Translate"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tvSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/iconTranslate"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/translate" />
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/iconSave"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/save"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:id="@+id/saveOption"
+            android:layout_width="322dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp">
 
-    <!-- Delete Option -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/pinOption"
-        android:layout_width="320dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/bg_button_outline"
-        android:clickable="true"
-        android:focusable="true"
-        android:paddingHorizontal="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/saveOption">
+            <TextView
+                android:id="@+id/tvSave"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Save"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tvPin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pin"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/iconSave"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/save" />
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/iconPin"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/pin"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Pin Option -->
+        <LinearLayout
+            android:id="@+id/pinOption"
+            android:layout_width="322dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp">
+
+            <TextView
+                android:id="@+id/tvPin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Pin"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/iconPin"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/pin" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/deleteOption"
-        android:layout_width="322dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="337dp"
+        android:layout_height="43dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/bg_button_outline"
         android:clickable="true"
         android:focusable="true"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pinOption"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="1.0">
 
         <TextView
             android:id="@+id/tvDelete"
@@ -165,5 +162,8 @@
         android:background="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
