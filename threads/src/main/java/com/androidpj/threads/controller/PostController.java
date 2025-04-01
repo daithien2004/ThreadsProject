@@ -21,10 +21,11 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
     
-//    @GetMapping
-//    public List<PostResponse> getAllPosts() {
-//        return postService.getAllPosts();
-//    }
+    @GetMapping("/{postId}/isOwner")
+    public ResponseEntity<Boolean> isPostOwner(@PathVariable Long postId, @RequestParam Long userId) {
+        boolean isOwner = postService.isUserOwnerOfPost(postId, userId);
+        return ResponseEntity.ok(isOwner);
+    }
 
 //    // Lấy danh sách bài đăng của một user cụ thể
 //    @GetMapping("/user/{userId}")

@@ -25,6 +25,7 @@ import retrofit2.Response;
 
 public class ConfigPostFragment extends BottomSheetDialogFragment {
     private Long postId;
+    private Long loggedInUserId;
     private OnPostDeletedListener deleteListener; // Interface lắng nghe sự kiện xóa
 
     public interface OnPostDeletedListener {
@@ -47,7 +48,7 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_config_post, container, false);
+        View view = inflater.inflate(R.layout.fragment_config_post_of_user, container, false);
 
         if (getArguments() != null) {
             postId = getArguments().getLong("postId", -1);

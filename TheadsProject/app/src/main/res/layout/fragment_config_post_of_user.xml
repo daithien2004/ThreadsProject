@@ -58,6 +58,14 @@
                 android:src="@drawable/translate" />
         </LinearLayout>
 
+        <View
+            android:id="@+id/divide1"
+            android:layout_width="300dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/gray" />
+
         <LinearLayout
             android:id="@+id/saveOption"
             android:layout_width="322dp"
@@ -84,7 +92,13 @@
                 android:layout_height="24dp"
                 android:src="@drawable/save" />
         </LinearLayout>
-
+        <View
+            android:id="@+id/divide2"
+            android:layout_width="300dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/gray" />
         <!-- Pin Option -->
         <LinearLayout
             android:id="@+id/pinOption"

@@ -21,6 +21,9 @@ public class PostService {
 	@Autowired
 	private UserRepository userRepository;
 
+	public boolean isUserOwnerOfPost(Long postId, Long userId) {
+        return postRepository.existsByPostIdAndUser_UserId(postId, userId);
+    }
 	public List<Post> getAllPublicPosts() {
 		return postRepository.findPublicPosts();
 	}
@@ -30,7 +33,7 @@ public class PostService {
 			throw new RuntimeException("User is required for creating a post");
 		}
 
-		// Tìm User t? userId
+		// Tï¿½m User t? userId
 		User user = userRepository.findById(postRequest.getUserId())
 				.orElseThrow(() -> new RuntimeException("User not found"));
 
