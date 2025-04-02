@@ -49,7 +49,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         PostResponse post = postList.get(position);
 
-        holder.txtUsername.setText(post.getUser().getUsername());
+        holder.txtNickName.setText(post.getUser().getNickName());
         holder.txtTextPost.setText(post.getContent());
         LocalDateTime createdAt = post.getCreatedAt();
         if (createdAt != null) {
@@ -97,13 +97,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtUsername, txtTextPost, txtTime;
+        TextView txtNickName, txtTextPost, txtTime;
         ImageView imgAvatar, imgDots;
         RecyclerView recyclerViewImages;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtUsername = itemView.findViewById(R.id.tvUsername);
+            txtNickName = itemView.findViewById(R.id.tvNickname);
             txtTextPost = itemView.findViewById(R.id.tvTextPost);
             txtTime = itemView.findViewById(R.id.tvTimePost);
             imgAvatar = itemView.findViewById(R.id.ivUserAvatar);

@@ -19,19 +19,19 @@
         android:id="@id/clPost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ivUserAvatar"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tvUsername"
+            android:id="@+id/tvNickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="_thienn10_"
             android:gravity="center_vertical"
+            android:text="_thienn10_"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -40,22 +40,23 @@
             android:id="@+id/tvTimePost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:alpha="0.6"
             android:gravity="center_vertical"
             android:text="5 giờ"
-            app:layout_constraintStart_toEndOf="@+id/tvUsername"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.042"
+            app:layout_constraintStart_toEndOf="@+id/tvNickname"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvTextPost"
             android:layout_width="0dp"
             android:layout_height="34dp"
-            android:text="lấy cup"
             android:gravity="center_vertical"
+            android:text="lấy cup"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
+            app:layout_constraintTop_toBottomOf="@+id/tvNickname" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvImages"
@@ -85,10 +86,10 @@
                 android:id="@+id/ivLove"
                 android:layout_width="14dp"
                 android:layout_height="match_parent"
-                app:srcCompat="@drawable/heart"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:srcCompat="@drawable/heart" />
 
             <TextView
                 android:id="@+id/tvLove"
@@ -97,19 +98,19 @@
                 android:padding="4dp"
                 android:text="1314"
                 android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivLove"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/ivConversation"
                 android:layout_width="14dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="12dp"
-                app:srcCompat="@drawable/chat"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tvLove"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:srcCompat="@drawable/chat" />
 
             <TextView
                 android:id="@+id/tvConversation"
@@ -118,19 +119,19 @@
                 android:padding="4dp"
                 android:text="144"
                 android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivConversation"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/ivRepeat"
                 android:layout_width="14dp"
                 android:layout_height="match_parent"
-                app:srcCompat="@drawable/retweet"
                 android:layout_marginStart="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tvConversation"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:srcCompat="@drawable/retweet" />
 
             <TextView
                 android:id="@+id/tvRepeat"
@@ -139,19 +140,19 @@
                 android:padding="4dp"
                 android:text="0"
                 android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivRepeat"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/ivSend"
                 android:layout_width="14dp"
                 android:layout_height="match_parent"
-                app:srcCompat="@drawable/send"
                 android:layout_marginStart="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tvRepeat"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:srcCompat="@drawable/send" />
 
             <TextView
                 android:id="@+id/tvSend"
@@ -160,10 +161,10 @@
                 android:padding="4dp"
                 android:text="140"
                 android:textSize="10sp"
-                app:layout_constraintStart_toEndOf="@id/ivSend"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ivSend"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
