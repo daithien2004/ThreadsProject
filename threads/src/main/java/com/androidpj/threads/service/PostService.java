@@ -33,7 +33,6 @@ public class PostService {
 			throw new RuntimeException("User is required for creating a post");
 		}
 
-		// T�m User t? userId
 		User user = userRepository.findById(postRequest.getUserId())
 				.orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -58,5 +57,14 @@ public class PostService {
 		List<Post> posts = postRepository.findAllWithImages();
 		return posts.stream().map(PostResponse::new).collect(Collectors.toList());
 	}
+	
+	public List<PostResponse> getPostsByUser(Long userId) {
+	    User user = userRepository.findById(userId)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    List<Post> posts = postRepository.findByUser(user);
+	    return posts.stream().map(PostResponse::new).collect(Collectors.toList());
+	}
+
 
 }

@@ -22,6 +22,11 @@ public interface ApiService {
     @GET("posts")
     Call<List<PostResponse>> getAllPosts();
 
+//    lay bài đăng của user
+    @GET("posts/user/{userId}")
+    Call<List<PostResponse>> getUserPosts(@Path("userId") Long userId);
+
+
     // Upload ảnh
     @Multipart
     @POST("upload")
