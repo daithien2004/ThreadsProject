@@ -33,6 +33,7 @@ public class PostController {
 //        return ResponseEntity.ok(postService.getPostsByUser(userId));
 //    }
 
+    // lấy bài đăng của 1 user nhất định
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<PostResponse>> getPostsByUser(@PathVariable Long userId) {
         List<PostResponse> posts = postService.getPostsByUser(userId);
