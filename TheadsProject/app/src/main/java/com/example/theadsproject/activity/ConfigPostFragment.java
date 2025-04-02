@@ -96,11 +96,16 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
     }
 
     private void showGuestPostOptions() {
-        // Hiển thị giao diện của khách (ẩn tùy chọn xóa)
+        // Thay đổi giao diện sang fragment_config_post_of_guest.xml
         View view = getView();
         if (view != null) {
-            view.findViewById(R.id.deleteOption).setVisibility(View.GONE);
-            Toast.makeText(requireContext(), "Bạn không phải là chủ sở hữu bài viết này", Toast.LENGTH_SHORT).show();
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null) {
+                parent.removeAllViews(); // Xóa giao diện cũ
+                LayoutInflater inflater = LayoutInflater.from(requireContext());
+                View guestView = inflater.inflate(R.layout.fragment_config_post_of_guest, parent, false);
+                parent.addView(guestView); // Thêm layout mới dành cho khách
+            }
         }
     }
 

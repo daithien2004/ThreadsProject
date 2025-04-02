@@ -133,7 +133,7 @@
         android:id="@+id/deleteOption"
         android:layout_width="337dp"
         android:layout_height="43dp"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="42dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_button_outline"
         android:clickable="true"
@@ -162,6 +162,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/delete"
+            android:layout_marginRight="9dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

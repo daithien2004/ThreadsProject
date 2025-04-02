@@ -98,9 +98,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/deleteOption"
-        android:layout_width="337dp"
+        android:layout_width="339dp"
         android:layout_height="43dp"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="41dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_button_outline"
         android:clickable="true"
