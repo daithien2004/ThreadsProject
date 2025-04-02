@@ -36,6 +36,10 @@ public class TabLayoutHomeFragment extends Fragment {
         ViewPagerAdapter adapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
+
+        // Chặn thao tác vuốt
+        viewPager.setUserInputEnabled(false);
+
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if (position == 0) {
                 tab.setText("Home");

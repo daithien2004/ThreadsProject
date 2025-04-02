@@ -1,6 +1,7 @@
 package com.example.theadsproject.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +90,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             ImageAdapter imageAdapter = new ImageAdapter(context, new ArrayList<>(mediaUrls));
             holder.recyclerViewImages.setAdapter(imageAdapter);
         }
+
+
+        ///// xử lí khi văn bản quá dài
+        holder.txtTextPost.setText(post.getContent());
+
+        // Giới hạn số dòng ban đầu
+        holder.txtTextPost.setMaxLines(2);
+        holder.txtTextPost.setEllipsize(TextUtils.TruncateAt.END);
+
+        // Xử lý khi người dùng nhấn vào để mở rộng nội dung
+        holder.txtTextPost.setOnClickListener(v -> {
+            if (holder.txtTextPost.getMaxLines() == 2) {
+                holder.txtTextPost.setMaxLines(Integer.MAX_VALUE); // Mở rộng full văn bản
+                holder.txtTextPost.setEllipsize(null);
+            } else {
+                holder.txtTextPost.setMaxLines(2); // Thu gọn lại
+                holder.txtTextPost.setEllipsize(TextUtils.TruncateAt.END);
+            }
+        });
     }
 
     @Override
