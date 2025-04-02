@@ -131,11 +131,12 @@
             android:id="@+id/iconUnfollow"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginEnd="6dp"
             android:src="@drawable/unfollow"
-            android:backgroundTint=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.473" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View

@@ -25,8 +25,8 @@ import retrofit2.Response;
 
 public class ConfigPostFragment extends BottomSheetDialogFragment {
     private Long postId;
-    private Long loggedInUserId;
-    private OnPostDeletedListener deleteListener; // Interface lắng nghe sự kiện xóa
+    private static final Long loggedInUserId = 1L; // Đặt userId mặc định là 9L
+    private OnPostDeletedListener deleteListener;
 
     public interface OnPostDeletedListener {
         void onPostDeleted(long postId);
@@ -54,58 +54,113 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
             postId = getArguments().getLong("postId", -1);
         }
 
-        view.findViewById(R.id.deleteOption).setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-            LayoutInflater inflater1 = getLayoutInflater();
-            View dialogView = inflater1.inflate(R.layout.dialog_delete_post, null);
-            builder.setView(dialogView);
-
-            AlertDialog alertDialog = builder.create();
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-            // Hiển thị hộp thoại trước khi chỉnh kích thước
-            alertDialog.show();
-
-            // Chỉnh kích thước hộp thoại
-            alertDialog.getWindow().setLayout(700, 600); // Điều chỉnh chiều rộng và chiều cao theo px
-
-            Button btnDelete = dialogView.findViewById(R.id.btnDelete);
-            Button btnCancel = dialogView.findViewById(R.id.btnCancel);
-
-            btnDelete.setOnClickListener(view1 -> {
-                if (postId == -1) {
-                    Toast.makeText(requireContext(), "Invalid post ID", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                ApiService apiService = RetrofitClient.getApiService();
-                apiService.deletePost(postId).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            Log.d("DEBUG", "Xóa bài viết thành công");
-
-                            if (deleteListener != null) {
-                                deleteListener.onPostDeleted(postId); // Gửi thông báo cập nhật danh sách
-                            }
-
-                            alertDialog.dismiss();
-                            dismiss();
-                        } else {
-                            Log.e("ERROR", "Xóa thất bại: " + response.code());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Log.e("ERROR", "Lỗi kết nối API: " + t.getMessage());
-                    }
-                });
-            });
-
-            btnCancel.setOnClickListener(view1 -> alertDialog.dismiss());
-        });
+        // Kiểm tra nếu người dùng là chủ sở hữu bài viết
+        checkIfUserIsOwner(postId);
 
         return view;
     }
+
+    private void checkIfUserIsOwner(Long postId) {
+        if (postId == -1) {
+            return; // Không có postId hợp lệ
+        }
+
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.isPostOwner(postId, loggedInUserId).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && response.body() != null && response.body()) {
+                    // Nếu người dùng là chủ sở hữu, hiển thị giao diện của người dùng
+                    showUserPostOptions();
+                } else {
+                    // Nếu không phải chủ sở hữu, hiển thị giao diện của khách
+                    showGuestPostOptions();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("ERROR", "Lỗi kết nối API: " + t.getMessage());
+                Toast.makeText(requireContext(), "Lỗi kiểm tra quyền sở hữu", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showUserPostOptions() {
+        // Hiển thị giao diện của người dùng (tùy chọn xóa bài viết)
+        View view = getView();
+        if (view != null) {
+            view.findViewById(R.id.deleteOption).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.deleteOption).setOnClickListener(v -> showDeleteDialog());
+        }
+    }
+
+    private void showGuestPostOptions() {
+        // Hiển thị giao diện của khách (ẩn tùy chọn xóa)
+        View view = getView();
+        if (view != null) {
+            view.findViewById(R.id.deleteOption).setVisibility(View.GONE);
+            Toast.makeText(requireContext(), "Bạn không phải là chủ sở hữu bài viết này", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showDeleteDialog() {
+        // Hiển thị hộp thoại xác nhận xóa bài viết
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_delete_post, null);
+        builder.setView(dialogView);
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.show();
+        alertDialog.getWindow().setLayout(700, 600);
+
+        Button btnDelete = dialogView.findViewById(R.id.btnDelete);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+        btnDelete.setOnClickListener(view -> {
+            // Gọi phương thức xóa bài viết khi nhấn "Delete"
+            deletePost();
+            // Đóng hộp thoại sau khi đã xử lý xóa
+            alertDialog.dismiss();
+        });
+
+        btnCancel.setOnClickListener(view -> alertDialog.dismiss()); // Đóng hộp thoại khi nhấn "Cancel"
+    }
+
+
+    private void deletePost() {
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.deletePost(postId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    // Xóa bài viết thành công
+                    if (deleteListener != null) {
+                        deleteListener.onPostDeleted(postId); // Gửi thông báo cập nhật danh sách
+                    }
+
+                    // Đóng BottomSheetDialogFragment sau khi xóa thành công
+                    if (getDialog() != null && getDialog().isShowing()) {
+                        getDialog().dismiss(); // Đảm bảo đóng BottomSheetDialogFragment
+                    }
+
+                    dismiss(); // Đảm bảo đóng Fragment nếu cần thiết
+                } else {
+                    // Xử lý lỗi nếu có
+                    Log.e("ERROR", "Xóa thất bại: " + response.code());
+                    Toast.makeText(requireContext(), "Lỗi xóa bài viết", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // Xử lý lỗi kết nối
+                Log.e("ERROR", "Lỗi kết nối API: " + t.getMessage());
+                Toast.makeText(requireContext(), "Lỗi kết nối khi xóa bài viết", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
