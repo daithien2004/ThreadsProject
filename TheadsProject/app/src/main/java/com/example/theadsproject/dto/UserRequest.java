@@ -21,4 +21,12 @@ public class UserRequest {
     public UserRequest(String email) {
         this.email = email;
     }
+
+    public UserRequest(String nickName, String username, String email, String phone,  String password) {
+        this.email = email;
+        this.phone = phone;
+        this.username = username;
+        this.password = password;
+        this.nickName = nickName;
+    }
 }
