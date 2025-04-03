@@ -59,22 +59,23 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             params.height = Math.min(dpToPx(207), (int) (itemWidth * 1.5)); // Giới hạn chiều cao tối đa là 207dp, giữ tỷ lệ hình chữ nhật
         }
 
-        holder.imageView.setLayoutParams(params);
 
+        holder.imageView.setLayoutParams(params);
+        int cornerRadius = dpToPx(10);
         // Load ảnh từ URL hoặc Uri
         if (image instanceof String) {
             Glide.with(context)
                     .load((String) image)
                     .placeholder(R.drawable.loading)
                     .error(R.drawable.warning)
-                    .transform(new CenterCrop(), new RoundedCorners(10))
+                    .transform(new CenterCrop(), new RoundedCorners((cornerRadius)))
                     .into(holder.imageView);
         } else if (image instanceof Uri) {
             Glide.with(context)
                     .load((Uri) image)
                     .placeholder(R.drawable.loading)
                     .error(R.drawable.warning)
-                    .transform(new FitCenter(), new RoundedCorners(10))
+                    .transform(new FitCenter(), new RoundedCorners((cornerRadius)))
                     .into(holder.imageView);
         }
 
