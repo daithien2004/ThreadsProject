@@ -39,10 +39,7 @@ public class UserService {
         User user = userRepository.findByUsername(userRequest.getUsername());
 
         if (user != null && user.getPassword().equals(userRequest.getPassword())) {
-            UserResponse userResponse = new UserResponse();
-            userResponse.setUserId(user.getUserId());
-            userResponse.setUsername(user.getUsername());
-            return userResponse;
+            return new UserResponse(user);
         }
         return null;
     }
