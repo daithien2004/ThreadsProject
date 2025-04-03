@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api")
 public class UploadController {
 
     private static final String UPLOAD_DIR = "uploads/";

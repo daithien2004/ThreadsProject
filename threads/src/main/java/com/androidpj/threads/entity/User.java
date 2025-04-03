@@ -31,12 +31,17 @@
 		private String bio;
 
 		private String image;
+
+		private String phone;
 	
 		@Column(nullable = false, unique = true)
 		private String username;
 
 		@Column(nullable = false)
 		private String password;
+
+		@Column(name = "is_active", columnDefinition = "boolean default false")
+		private boolean isActive;
 	
 		@JsonIgnore
 		@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
