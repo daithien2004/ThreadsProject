@@ -1,9 +1,14 @@
 package com.example.theadsproject.retrofit;
 
+import com.example.theadsproject.dto.OtpRequest;
 import com.example.theadsproject.dto.PostRequest;
 import com.example.theadsproject.dto.PostResponse;
+import com.example.theadsproject.dto.UserRequest;
+import com.example.theadsproject.dto.UserResponse;
+import com.example.theadsproject.entity.User;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -21,8 +26,7 @@ public interface ApiService {
     Call<Void> deletePost(@Path("id") Long postId);
     @GET("posts")
     Call<List<PostResponse>> getAllPosts();
-
-//    lay bài đăng của user
+    // Lay bài đăng của user
     @GET("posts/user/{userId}")
     Call<List<PostResponse>> getUserPosts(@Path("userId") Long userId);
 
@@ -31,12 +35,19 @@ public interface ApiService {
     @Multipart
     @POST("upload")
     Call<List<String>> uploadImages(@Part List<MultipartBody.Part> images);
-
     // Tạo bài viết mới
     @POST("posts")
     Call<Void> createPost(@Body PostRequest postRequest);
-
     @GET("posts/{postId}/isOwner")
     Call<Boolean> isPostOwner(@Path("postId") Long postId, @Query("userId") Long userId);
-
+    @POST("login")
+    Call<UserResponse> checkLogin(@Body UserRequest userRequest);
+    @POST("register")
+    Call<Boolean> register(@Body UserRequest userRequest);
+    @POST("activate")
+    Call<Boolean> activate(@Body OtpRequest otpRequest);
+    @POST("resetOtp")
+    Call<Boolean> resetOtp(@Body UserRequest userRequest);
+    @POST("resetPassword")
+    Call<Boolean> resetPassword(@Body OtpRequest otpRequest);
 }

@@ -66,7 +66,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.txtTime.setText("Không có dữ liệu");
         }
         holder.imgDots.setOnClickListener(v -> {
-            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(post.getId(), postId -> {
+            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(post.getPostId(), postId -> {
                 removePost(postId); // Xóa bài đăng khỏi RecyclerView ngay lập tức
             });
             bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
@@ -136,7 +136,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void removePost(Long postId) {
         int indexToRemove = -1;
         for (int i = 0; i < postList.size(); i++) {
-            if (postList.get(i).getId().equals(postId)) {
+            if (postList.get(i).getPostId().equals(postId)) {
                 indexToRemove = i;
                 break;
             }

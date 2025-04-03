@@ -1,5 +1,6 @@
 package com.example.theadsproject.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.theadsproject.R;
 import com.example.theadsproject.adapter.ViewPagerAdapter;
@@ -21,12 +23,24 @@ public class TabLayoutHomeFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
 
+    private Button btnLoginHome;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("TabLayoutHomeFragment", "onCreateView được gọi");
 
         View view = inflater.inflate(R.layout.fragment_tab_layout_home, container, false);
+
+        btnLoginHome = view.findViewById(R.id.btnLoginHome);
+
+        btnLoginHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
