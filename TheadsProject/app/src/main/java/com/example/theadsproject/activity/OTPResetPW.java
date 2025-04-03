@@ -18,6 +18,8 @@ import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Objects;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,8 +42,8 @@ public class OTPResetPW extends AppCompatActivity {
 
 
         btnConfirmPassword.setOnClickListener(v -> {
-            otp = etOtpReset.getText().toString().trim();
-            password = etPasswordReset.getText().toString().trim();
+            otp = Objects.requireNonNull(etOtpReset.getText()).toString().trim();
+            password = Objects.requireNonNull(etPasswordReset.getText()).toString().trim();
 
             if (otp.length() < 6) {
                 Toast.makeText(OTPResetPW.this, "Vui lòng nhập đầy đủ OTP!", Toast.LENGTH_SHORT).show();
@@ -59,19 +61,19 @@ public class OTPResetPW extends AppCompatActivity {
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
                     Intent intent = new Intent(OTPResetPW.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                 }
                 else {
-                    Toast.makeText(OTPResetPW.this, "Đã có lỗi!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OTPResetPW.this, "Lỗi đặt lại mật khẩu, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(OTPResetPW.this, "Đã có lỗi!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OTPResetPW.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -19,6 +19,8 @@ import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Objects;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,6 +28,7 @@ import retrofit2.Response;
 public class RegisterActivity extends AppCompatActivity {
     Button btnRegister;
     TextInputEditText etUsernameInputRe, etEmailInput, etPhoneInput, etPasswordInputRe, etCPasswordInput, etNickNameInput;
+    TextView tvLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,18 +37,21 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         initViews();
-//        btnRegister.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent= new Intent(RegisterActivity.this, OTPRegisterActivity.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
+
+        tvLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         btnRegister.setOnClickListener(v ->handleRegister());
     }
 
     public void initViews() {
+        tvLogin = findViewById(R.id.tvLogin);
         etUsernameInputRe = findViewById(R.id.etUsernameInputRe);
         etEmailInput = findViewById(R.id.etEmailInput);
         etPhoneInput = findViewById(R.id.etPhoneInput);
@@ -56,12 +62,12 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void handleRegister() {
-        String nickName = etNickNameInput.getText().toString().trim();
-        String username = etUsernameInputRe.getText().toString().trim();
-        String email = etEmailInput.getText().toString().trim();
-        String phone = etPhoneInput.getText().toString().trim();
-        String password = etPasswordInputRe.getText().toString().trim();
-        String cPassword = etCPasswordInput.getText().toString().trim();
+        String nickName = Objects.requireNonNull(etNickNameInput.getText()).toString().trim();
+        String username = Objects.requireNonNull(etUsernameInputRe.getText()).toString().trim();
+        String email = Objects.requireNonNull(etEmailInput.getText()).toString().trim();
+        String phone = Objects.requireNonNull(etPhoneInput.getText()).toString().trim();
+        String password = Objects.requireNonNull(etPasswordInputRe.getText()).toString().trim();
+        String cPassword = Objects.requireNonNull(etCPasswordInput.getText()).toString().trim();
 
         if (username.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() || cPassword.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
@@ -80,20 +86,20 @@ public class RegisterActivity extends AppCompatActivity {
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
                     Intent intent = new Intent(RegisterActivity.this, OTPRegisterActivity.class);
                     intent.putExtra("email", email);
                     startActivity(intent);
                     finish();
                 }
                 else {
-                    Toast.makeText(RegisterActivity.this, "Đã có lỗi đăng ký!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Lỗi đăng ký, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(RegisterActivity.this, "Đã có lỗi!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

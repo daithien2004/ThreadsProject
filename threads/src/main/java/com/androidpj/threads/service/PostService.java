@@ -21,6 +21,9 @@ public class PostService {
 	@Autowired
 	private UserRepository userRepository;
 
+	public boolean isUserOwnerOfPost(Long postId, Long userId) {
+        return postRepository.existsByPostIdAndUser_UserId(postId, userId);
+    }
 	public List<Post> getAllPublicPosts() {
 		return postRepository.findPublicPosts();
 	}
@@ -30,7 +33,6 @@ public class PostService {
 			throw new RuntimeException("User is required for creating a post");
 		}
 
-		// Tìm User t? userId
 		User user = userRepository.findById(postRequest.getUserId())
 				.orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -55,5 +57,14 @@ public class PostService {
 		List<Post> posts = postRepository.findAllWithImages();
 		return posts.stream().map(PostResponse::new).collect(Collectors.toList());
 	}
+	
+	public List<PostResponse> getPostsByUser(Long userId) {
+	    User user = userRepository.findById(userId)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    List<Post> posts = postRepository.findByUser(user);
+	    return posts.stream().map(PostResponse::new).collect(Collectors.toList());
+	}
+
 
 }

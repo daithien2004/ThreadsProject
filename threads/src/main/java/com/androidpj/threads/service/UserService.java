@@ -34,21 +34,23 @@ public class UserService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+
     public UserResponse checkLogin(UserRequest userRequest) {
         User user = userRepository.findByUsername(userRequest.getUsername());
+
         if (user != null && user.getPassword().equals(userRequest.getPassword())) {
-            UserResponse userRespone = new UserResponse();
-            userRespone.setUserId(user.getUserId());
-            userRespone.setUsername(user.getUsername());
-            userRespone.setUsername(user.getPassword());
-            return userRespone;
+            UserResponse userResponse = new UserResponse();
+            userResponse.setUserId(user.getUserId());
+            userResponse.setUsername(user.getUsername());
+            return userResponse;
         }
         return null;
     }
 
     public boolean register(UserRequest userRequest) {
-        if (userRepository.existsByEmail(userRequest.getEmail()))
+        if (userRepository.existsByEmail(userRequest.getEmail())) {
             return false;
+        }
 
         User user = new User();
         user.setUsername(userRequest.getUsername());
@@ -63,6 +65,7 @@ public class UserService {
         String gOtp = generateOTP();
         Otp otp = new Otp(user.getEmail(), expiresAt, gOtp, now);
         otpRepository.save(otp);
+
         sendOtpEmail(user.getEmail(), gOtp, "Kích hoạt tài khoản của bạn");
         return true;
     }
@@ -95,7 +98,7 @@ public class UserService {
             LocalDateTime now = LocalDateTime.now();
 
             if (now.isAfter(otpEntity.getExpiresAt())) {
-                otpRepository.deleteByEmail(email);
+                otpRepository.deleteById(otpEntity.getId());
                 return false;
             }
 
@@ -130,7 +133,7 @@ public class UserService {
             LocalDateTime now = LocalDateTime.now();
 
             if (now.isAfter(otpEntity.getExpiresAt())) {
-                otpRepository.deleteByEmail(email);
+                otpRepository.deleteById(otpEntity.getId());
                 return false;
             }
 

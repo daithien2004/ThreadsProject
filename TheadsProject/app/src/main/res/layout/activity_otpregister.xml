@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".activity.OTPRegisterActivity">
+    tools:context=".activity.OTPRegisterActivity"
+    android:background="@color/white">
 
 
     <LinearLayout
@@ -38,12 +39,12 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/email_text"
+            android:id="@+id/tvEmailSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="4dp"
-            android:text="lyhung@gmail.com"
+            android:text="test@gmail.com"
             android:textSize="16sp"
             android:textStyle="bold" />
 

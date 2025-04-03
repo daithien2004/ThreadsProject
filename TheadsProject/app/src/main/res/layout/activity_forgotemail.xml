@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".activity.ForgotEmailActivity">
+    tools:context=".activity.ForgotEmailActivity"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,6 +62,7 @@
             android:textColor="#FFFFFF" />
 
         <TextView
+            android:id="@+id/tvBackLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

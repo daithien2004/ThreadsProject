@@ -25,7 +25,7 @@ public class UserController {
         UserResponse userResponse = userService.checkLogin(userRequest);
         if (userResponse != null)
             return ResponseEntity.ok(userResponse);
-        return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.badRequest().body(new UserResponse("Sai tài khoản hoặc mật khẩu"));
     }
 
     @PostMapping("/register")

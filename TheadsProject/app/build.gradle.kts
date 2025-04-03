@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
     implementation(libs.converter.scalars)
+    implementation(libs.lombok)
+    implementation(libs.lombok.processor)
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

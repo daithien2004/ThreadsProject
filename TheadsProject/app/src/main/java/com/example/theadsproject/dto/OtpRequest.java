@@ -1,5 +1,10 @@
 package com.example.theadsproject.dto;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 public class OtpRequest {
     String email;
     String otp;

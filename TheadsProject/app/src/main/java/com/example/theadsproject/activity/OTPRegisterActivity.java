@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -30,6 +31,7 @@ public class OTPRegisterActivity extends AppCompatActivity {
     Button btnConfirmOTP;
     private EditText otp1, otp2, otp3, otp4, otp5, otp6;
     private String email;
+    TextView tvEmailSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,10 @@ public class OTPRegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_otpregister);
 
         email = getIntent().getStringExtra("email");
-        btnConfirmOTP = (Button) findViewById(R.id.btnConfirmOTP);
+        btnConfirmOTP = findViewById(R.id.btnConfirmOTP);
+        tvEmailSend = findViewById(R.id.tvEmailSend);
+
+        tvEmailSend.setText(email);
 
         otp1 = findViewById(R.id.otp1);
         otp2 = findViewById(R.id.otp2);
@@ -49,13 +54,13 @@ public class OTPRegisterActivity extends AppCompatActivity {
 
 
         btnConfirmOTP.setOnClickListener(view -> {
-            Log.d("OTPRegisterActivity", "OTP1: " + otp1.getText().toString());
             String otp = otp1.getText().toString() +
                     otp2.getText().toString() +
                     otp3.getText().toString() +
                     otp4.getText().toString() +
                     otp5.getText().toString() +
                     otp6.getText().toString();
+
             if (otp.length() < 6) {
                 Toast.makeText(OTPRegisterActivity.this, "Vui lòng nhập đầy đủ OTP!", Toast.LENGTH_SHORT).show();
                 return;
@@ -72,19 +77,19 @@ public class OTPRegisterActivity extends AppCompatActivity {
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
                     Intent intent = new Intent(OTPRegisterActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                 }
                 else {
-                    Toast.makeText(OTPRegisterActivity.this, "Đã có lỗi đăng ký!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OTPRegisterActivity.this, "Lỗi đăng ký, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(OTPRegisterActivity.this, "Đã có lỗi đăng ký!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OTPRegisterActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

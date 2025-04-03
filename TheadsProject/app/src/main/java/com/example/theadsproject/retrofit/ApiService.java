@@ -19,12 +19,18 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
     @DELETE("posts/{id}")
     Call<Void> deletePost(@Path("id") Long postId);
     @GET("posts")
     Call<List<PostResponse>> getAllPosts();
+    // Lay bài đăng của user
+    @GET("posts/user/{userId}")
+    Call<List<PostResponse>> getUserPosts(@Path("userId") Long userId);
+
+
     // Upload ảnh
     @Multipart
     @POST("upload")
@@ -32,6 +38,8 @@ public interface ApiService {
     // Tạo bài viết mới
     @POST("posts")
     Call<Void> createPost(@Body PostRequest postRequest);
+    @GET("posts/{postId}/isOwner")
+    Call<Boolean> isPostOwner(@Path("postId") Long postId, @Query("userId") Long userId);
     @POST("login")
     Call<UserResponse> checkLogin(@Body UserRequest userRequest);
     @POST("register")

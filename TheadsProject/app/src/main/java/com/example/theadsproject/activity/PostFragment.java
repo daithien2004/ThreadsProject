@@ -122,7 +122,7 @@ public class PostFragment extends Fragment {
             // Quay lại HomeFragment
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.frame_layout, new HomeFragment())
+                    .replace(R.id.frame_layout, new TabLayoutHomeFragment())
                     .commit();
         });
 
@@ -242,9 +242,21 @@ public class PostFragment extends Fragment {
 
     // Chuyển về HomeFragment sau khi đăng bài thành công
     private void goToHomeFragment() {
+        // Hiển thị lại BottomAppBar và BottomNavigationView
+        if (getActivity() != null) {
+            BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottomAppBar);
+            BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottomNavigationView);
+
+            if (bottomAppBar != null) bottomAppBar.setVisibility(View.VISIBLE);
+            if (bottomNav != null) bottomNav.setVisibility(View.VISIBLE);
+        }
+
+        // Chuyển về HomeFragment sau khi đăng bài thành công
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_layout, new HomeFragment())
+                .replace(R.id.frame_layout, new TabLayoutHomeFragment()) // Thay thế hoàn toàn fragment
                 .commit();
     }
+
+
 }

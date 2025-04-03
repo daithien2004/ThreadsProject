@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="16dp"
-    tools:context=".activity.OTPResetPW">
+    tools:context=".activity.OTPResetPW"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,14 +27,7 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <!-- Mô tả -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="Nhập OTP được gửi tới email."
-            android:textColor="#666666"
-            android:textSize="16sp" />
+
 
         <!-- Trường nhập OTP -->
         <com.google.android.material.textfield.TextInputLayout
@@ -97,14 +91,6 @@
             android:text="Xác Nhận"
             android:textColor="#FFFFFF" />
 
-        <!-- Liên kết Back to Sign In -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:text="Quay lại đăng nhập"
-            android:textColor="#808080" />
     </LinearLayout>
 
 

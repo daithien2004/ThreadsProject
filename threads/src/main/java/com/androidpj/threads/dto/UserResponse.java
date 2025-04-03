@@ -13,11 +13,16 @@ public class UserResponse {
     private String username;
     private String nickName;
     private String image;
+    private String message;
 
     public UserResponse(User user) {
         this.userId = user.getUserId();
         this.username = user.getUsername();
         this.nickName = user.getNickName();
         this.image = user.getImage();
+    }
+
+    public UserResponse(String message) {
+        this.message = message;
     }
 }

@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.theadsproject.R;
+import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.dto.UserRequest;
 import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.retrofit.ApiService;
@@ -22,12 +23,13 @@ import com.example.theadsproject.retrofit.RetrofitClient;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Objects;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
-    private TextInputLayout etUsername, etPassword;
     private TextInputEditText etUsernameInput, etPasswordInput;
     private Button btnLogin;
     private TextView tvForgotPassword, tvRegister;
@@ -62,8 +64,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        etUsername = findViewById(R.id.etUsername);
-        etPassword = findViewById(R.id.etPassword);
+        TextInputLayout etUsername = findViewById(R.id.etUsername);
+        TextInputLayout etPassword = findViewById(R.id.etPassword);
         etUsernameInput = etUsername.findViewById(R.id.etUsernameInput);
         etPasswordInput = etPassword.findViewById(R.id.etPasswordInput);
         btnLogin = findViewById(R.id.btnLogin);
@@ -72,8 +74,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handleLogin() {
-        String username = etUsernameInput.getText().toString().trim();
-        String password = etPasswordInput.getText().toString().trim();
+        String username = Objects.requireNonNull(etUsernameInput.getText()).toString().trim();
+        String password = Objects.requireNonNull(etPasswordInput.getText()).toString().trim();
 
         if (username.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
@@ -87,21 +89,31 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     UserResponse userResponse = response.body();
-                    Log.d("LOGIN", "Username: " + userResponse.getUsername());
-                    Intent intent = new Intent(LoginActivity.this, BarActivity.class);
-                    startActivity(intent);
-                    finish();
+
+                    if (userResponse.getMessage() != null && !userResponse.getMessage().isEmpty()) {
+                        Toast.makeText(LoginActivity.this, userResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        // Lưu thông tin user vào SharedPreferences
+                        UserSessionManager sessionManager = new UserSessionManager(LoginActivity.this);
+                        sessionManager.saveUser(userResponse);
+
+                        Intent intent = new Intent(LoginActivity.this, BarActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
                 else {
-                    Toast.makeText(LoginActivity.this, "Tài khoản hoặc mật khẩu không chính xác!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Lỗi đăng nhập, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Đã có lỗi đăng nhập!", Toast.LENGTH_SHORT).show();
+                Log.e("LoginError", "Lỗi khi gọi API đăng nhập: " + t.getMessage());
+                Toast.makeText(LoginActivity.this, "Lỗi kết nối, vui lòng kiểm tra mạng!", Toast.LENGTH_SHORT).show();
             }
         });
 

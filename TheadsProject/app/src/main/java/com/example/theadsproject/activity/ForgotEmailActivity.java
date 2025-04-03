@@ -19,6 +19,8 @@ import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Objects;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,18 +29,28 @@ public class ForgotEmailActivity extends AppCompatActivity {
     Button btnSendOTP;
     TextInputEditText etEmailInput;
     String email;
+    TextView tvBackLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_forgotemail);
 
+        tvBackLogin = findViewById(R.id.tvBackLogin);
         etEmailInput = findViewById(R.id.etEmailInput);
         btnSendOTP = findViewById(R.id.btnSendOTP);
 
+        tvBackLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ForgotEmailActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         btnSendOTP.setOnClickListener(v -> {
-            email = etEmailInput.getText().toString();
+            email = Objects.requireNonNull(etEmailInput.getText()).toString();
             sendOtpReset(email);
         });
     }
@@ -50,20 +62,20 @@ public class ForgotEmailActivity extends AppCompatActivity {
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
                     Intent intent= new Intent(ForgotEmailActivity.this, OTPResetPW.class);
                     intent.putExtra("email", email);
                     startActivity(intent);
                     finish();
                 }
                 else {
-                    Toast.makeText(ForgotEmailActivity.this, "Đã có lỗi!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ForgotEmailActivity.this, "Lỗi gửi email, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(ForgotEmailActivity.this, "Đã có lỗi!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ForgotEmailActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
