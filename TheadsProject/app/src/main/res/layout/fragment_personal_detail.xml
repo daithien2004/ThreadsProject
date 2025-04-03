@@ -18,42 +18,42 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
-            android:id="@+id/ivWorld"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/world"
-            android:layout_marginStart="32dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-        </ImageView>
-        <ImageView
-            android:id="@+id/ivStats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/stats"
-            app:layout_constraintEnd_toStartOf="@+id/ivInstagram"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintTop_toTopOf="parent">
-        </ImageView>
-        <ImageView
-            android:id="@+id/ivInstagram"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/instagram"
-            app:layout_constraintEnd_toStartOf="@+id/ivMenu"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintTop_toTopOf="parent">
-        </ImageView>
-        <ImageView
-            android:id="@+id/ivMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/menu"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginEnd="32dp">
-        </ImageView>
+<!--        <ImageView-->
+<!--            android:id="@+id/ivWorld"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/world"-->
+<!--            android:layout_marginStart="32dp"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent">-->
+<!--        </ImageView>-->
+<!--        <ImageView-->
+<!--            android:id="@+id/ivStats"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/stats"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/ivInstagram"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+<!--        </ImageView>-->
+<!--        <ImageView-->
+<!--            android:id="@+id/ivInstagram"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/instagram"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/ivMenu"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+<!--        </ImageView>-->
+<!--        <ImageView-->
+<!--            android:id="@+id/ivMenu"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/menu"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            android:layout_marginEnd="32dp">-->
+<!--        </ImageView>-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- =================== INFO =================== -->
@@ -90,7 +90,7 @@
         </TextView>
 
         <TextView
-            android:id="@+id/tvContent"
+            android:id="@+id/tvBio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -110,7 +110,7 @@
             android:textSize="16sp"
             android:alpha="0.6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvContent">
+            app:layout_constraintTop_toBottomOf="@+id/tvBio">
         </TextView>
 
         <ImageView
@@ -241,41 +241,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
-            android:id="@+id/ivPostAvatar"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/circle_bg"
-            android:src="@drawable/me"
-            android:scaleType="centerCrop"
-            android:clipToOutline="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        <ImageView-->
+<!--            android:id="@+id/ivPostAvatar"-->
+<!--            android:layout_width="60dp"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:background="@drawable/circle_bg"-->
+<!--            android:src="@drawable/me"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            android:clipToOutline="true"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-        <TextView
-            android:id="@+id/tvPostName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="_thienn10_"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/ivPostAvatar"
-            app:layout_constraintTop_toTopOf="@id/ivPostAvatar"
-            android:layout_marginStart="16dp" />
+<!--        <TextView-->
+<!--            android:id="@+id/tvPostName"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="_thienn10_"-->
+<!--            android:textSize="16sp"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintStart_toEndOf="@id/ivPostAvatar"-->
+<!--            app:layout_constraintTop_toTopOf="@id/ivPostAvatar"-->
+<!--            android:layout_marginStart="16dp" />-->
 
-        <EditText
-            android:id="@+id/edtPostContent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="16dp"
-            android:hint="Có gì mới?"
-            android:padding="8dp"
-            android:textSize="16sp"
-            android:background="@android:color/transparent"
-            app:layout_constraintStart_toEndOf="@id/ivPostAvatar"
-            app:layout_constraintTop_toBottomOf="@id/tvPostName"
-            app:layout_constraintEnd_toEndOf="parent" />
+<!--        <EditText-->
+<!--            android:id="@+id/edtPostContent"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:layout_marginStart="16dp"-->
+<!--            android:hint="Có gì mới?"-->
+<!--            android:padding="8dp"-->
+<!--            android:textSize="16sp"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            app:layout_constraintStart_toEndOf="@id/ivPostAvatar"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tvPostName"-->
+<!--            app:layout_constraintEnd_toEndOf="parent" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- =================== RECYCLERVIEW =================== -->

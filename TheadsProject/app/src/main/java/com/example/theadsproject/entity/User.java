@@ -9,37 +9,36 @@ import java.util.Set;
 public class User {
     @SerializedName("user_id")
     private Long userId;
-
-    @SerializedName("email")
     private String email;
-
     @SerializedName("nick_name")
     private String nickName;
-
-    @SerializedName("image")
     private String image;
-
-    @SerializedName("username")
     private String username;
-
-    @SerializedName("password")
     private String password;
+    private String bio;
+    private String phone;
 
-    public User(Long user_id, String email, String nickName, String image, String username, String password) {
-        this.userId = user_id;
+    public User(Long userId, String email, String nickName, String image, String username, String bio, String phone) {
+        this.userId = userId;
         this.email = email;
         this.nickName = nickName;
         this.image = image;
         this.username = username;
-        this.password = password;
+        this.bio = bio;
+        this.phone = phone;
     }
 
-    public Long getUser_id() {
+    public User(Long userId, String email) {
+        this.userId = userId;
+        this.email = email;
+    }
+
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUser_id(Long user_id) {
-        this.userId = user_id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getEmail() {
@@ -80,5 +79,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

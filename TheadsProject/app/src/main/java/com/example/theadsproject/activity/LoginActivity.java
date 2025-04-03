@@ -97,8 +97,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     else {
                         // Lưu thông tin user vào SharedPreferences
-//                        UserSessionManager sessionManager = new UserSessionManager(LoginActivity.this);
-//                        sessionManager.saveUser(userResponse);
+                        UserSessionManager sessionManager = new UserSessionManager(LoginActivity.this);
+                        sessionManager.saveUser(userResponse);
 
                         Intent intent = new Intent(LoginActivity.this, BarActivity.class);
                         startActivity(intent);

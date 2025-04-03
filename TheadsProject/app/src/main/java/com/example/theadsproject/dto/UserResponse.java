@@ -1,5 +1,6 @@
 package com.example.theadsproject.dto;
 
+import com.example.theadsproject.entity.User;
 import com.google.gson.annotations.SerializedName;
 
 import lombok.AllArgsConstructor;
@@ -10,12 +11,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
-    @SerializedName("user_id")
     private Long userId;
-    private String username;
-    private String nickName;
+    private String bio;
+    private String email;
     private String image;
+    private String nickName;
+    private String username;
+    private String phone;
     private String message;
+
+    public UserResponse(User user) {
+        this.userId = user.getUserId();
+        this.username = user.getUsername();
+        this.nickName = user.getNickName();
+        this.image = user.getImage();
+        this.bio = user.getBio();
+        this.phone = user.getPhone();
+        this.email = user.getEmail();
+    }
 
     public UserResponse(Long userId) {
         this.userId = userId;
@@ -41,12 +54,28 @@ public class UserResponse {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getBio() {
+        return bio;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getNickName() {
@@ -57,12 +86,20 @@ public class UserResponse {
         this.nickName = nickName;
     }
 
-    public String getImage() {
-        return image;
+    public String getUsername() {
+        return username;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getMessage() {
