@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CenterInside;
 import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.theadsproject.R;
@@ -49,7 +50,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         if (imageCount == 1) {
             // Nếu chỉ có 1 ảnh, hiển thị lớn
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = dpToPx(300); // Ví dụ: 300dp
+            params.height = dpToPx(210);
         } else {
             // Nếu có nhiều ảnh, giảm kích thước sao cho phù hợp
             int itemWidth = screenWidth / Math.min(imageCount, 3); // Chia đều tối đa 3 ảnh
@@ -66,16 +67,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         if (image instanceof String) {
             Glide.with(context)
                     .load((String) image)
-                    .placeholder(R.drawable.loading)
-                    .error(R.drawable.warning)
                     .transform(new CenterCrop(), new RoundedCorners((cornerRadius)))
                     .into(holder.imageView);
         } else if (image instanceof Uri) {
             Glide.with(context)
                     .load((Uri) image)
-                    .placeholder(R.drawable.loading)
-                    .error(R.drawable.warning)
-                    .transform(new FitCenter(), new RoundedCorners((cornerRadius)))
+                    .transform(new CenterCrop(), new RoundedCorners((cornerRadius)))
                     .into(holder.imageView);
         }
 

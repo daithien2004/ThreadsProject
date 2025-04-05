@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/ivUserAvatar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="20dp"
         android:src="@drawable/me"
@@ -62,7 +62,9 @@
             android:id="@+id/rvImages"
             android:layout_width="342dp"
             android:layout_height="207dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.555"
             app:layout_constraintStart_toStartOf="parent"

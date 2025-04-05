@@ -8,11 +8,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.R;
+import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.adapter.PostAdapter;
 import com.example.theadsproject.dto.PostResponse;
+import com.example.theadsproject.entity.User;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
 
@@ -35,11 +41,29 @@ public class ThreadsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_threads, container, false);
 
         // Setup RecyclerView
-        rvPosts = view.findViewById(R.id.rvPosts);
+        rvPosts = view.findViewById(R.id.rvPostsPersonal);
         rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
 
         postAdapter = new PostAdapter(getContext(), posts);
         rvPosts.setAdapter(postAdapter);
+
+        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        User user = sessionManager.getUser();
+
+        ImageView ivPostAvatar = view.findViewById(R.id.ivPostAvatar);
+        TextView tvPostName = view.findViewById(R.id.tvPostName);
+
+
+        if (user != null) {
+            tvPostName.setText(user.getNickName());
+
+            // Load ảnh đại diện (Sử dụng Glide hoặc Picasso)
+            if (user.getImage() != null && !user.getImage().isEmpty()) {
+                Glide.with(this).load(user.getImage()).apply(RequestOptions.circleCropTransform()).into(ivPostAvatar);
+            }
+        } else {
+            Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
+        }
 
         // Gọi hàm loadUserPosts để tải dữ liệu
         loadUserPosts();
