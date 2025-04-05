@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.R;
 
 import com.example.theadsproject.activityAccount.TabPersonalDetailFragment;
@@ -58,12 +59,6 @@ public class PersonalDetailFragment extends Fragment {
         tvBio = view.findViewById(R.id.tvBio);
         ivAvatar = view.findViewById(R.id.ivAvatar);
 
-        rvPosts = view.findViewById(R.id.rvPosts);
-        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        postAdapter = new PostAdapter(getContext(), posts);
-        rvPosts.setAdapter(postAdapter);
-
         // Lấy thông tin user từ UserSessionManager
         UserSessionManager sessionManager = new UserSessionManager(requireContext());
         User user = sessionManager.getUser();
@@ -73,9 +68,9 @@ public class PersonalDetailFragment extends Fragment {
             tvDescription.setText(user.getNickName());
             tvBio.setText(user.getBio());
 
-            // 📌 Load ảnh đại diện (Sử dụng Glide hoặc Picasso)
+            // Load ảnh đại diện (Sử dụng Glide hoặc Picasso)
             if (user.getImage() != null && !user.getImage().isEmpty()) {
-                Glide.with(this).load(user.getImage()).into(ivAvatar);
+                Glide.with(this).load(user.getImage()).apply(RequestOptions.circleCropTransform()).into(ivAvatar);
             }
         } else {
             Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();

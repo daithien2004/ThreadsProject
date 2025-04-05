@@ -18,42 +18,42 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
-            android:id="@+id/ivWorld"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/world"
-            android:layout_marginStart="32dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-        </ImageView>
-        <ImageView
-            android:id="@+id/ivStats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/stats"
-            app:layout_constraintEnd_toStartOf="@+id/ivInstagram"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintTop_toTopOf="parent">
-        </ImageView>
-        <ImageView
-            android:id="@+id/ivInstagram"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/instagram"
-            app:layout_constraintEnd_toStartOf="@+id/ivMenu"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintTop_toTopOf="parent">
-        </ImageView>
-        <ImageView
-            android:id="@+id/ivMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/menu"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginEnd="32dp">
-        </ImageView>
+<!--        <ImageView-->
+<!--            android:id="@+id/ivWorld"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/world"-->
+<!--            android:layout_marginStart="32dp"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent">-->
+<!--        </ImageView>-->
+<!--        <ImageView-->
+<!--            android:id="@+id/ivStats"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/stats"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/ivInstagram"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+<!--        </ImageView>-->
+<!--        <ImageView-->
+<!--            android:id="@+id/ivInstagram"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/instagram"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/ivMenu"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+<!--        </ImageView>-->
+<!--        <ImageView-->
+<!--            android:id="@+id/ivMenu"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/menu"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            android:layout_marginEnd="32dp">-->
+<!--        </ImageView>-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- =================== INFO =================== -->
@@ -62,8 +62,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:paddingStart="32dp"
-        android:paddingEnd="32dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/clMenu"
         app:layout_constraintEnd_toEndOf="parent">
@@ -117,12 +117,11 @@
             android:id="@+id/ivAvatar"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_marginEnd="16dp"
             android:src="@drawable/me"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/circle_bg"
             android:scaleType="centerCrop"
             android:clipToOutline="true"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
         </ImageView>
@@ -133,9 +132,10 @@
         android:id="@+id/clButtons"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+
         android:paddingStart="32dp"
         android:paddingEnd="32dp"
+        android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/clInfo">
@@ -143,49 +143,31 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnEditProfile"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="30dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/bg_button_outline"
             android:gravity="center"
-            android:text="Chỉnh sửa trang cá nhân"
+            android:padding="8dp"
+            android:text="Edit Profile"
             android:textColor="@android:color/black"
-            android:textSize="12sp"
-            android:padding="16dp"
-            app:layout_constraintEnd_toStartOf="@id/btnShare"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:ellipsize="end"
-            android:maxLines="1">
-        </androidx.appcompat.widget.AppCompatButton>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnShare"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:background="@drawable/bg_button_outline"
-            android:gravity="center"
-            android:text="Chia sẻ"
-            android:padding="16dp"
-            android:textColor="@android:color/black"
-            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnEditProfile"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:ellipsize="end"
-            android:maxLines="1">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
         </androidx.appcompat.widget.AppCompatButton>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <FrameLayout
         android:id="@+id/frame_layout"
-        android:layout_width="409dp"
-        android:layout_height="494dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clButtons"></FrameLayout>
+        app:layout_constraintTop_toBottomOf="@+id/clButtons">
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
