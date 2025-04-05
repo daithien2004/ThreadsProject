@@ -53,33 +53,33 @@ public class PersonalDetailFragment extends Fragment {
                     .commit();
         }
 
-//        tvName = view.findViewById(R.id.tvName);
-//        tvDescription = view.findViewById(R.id.tvDescription);
-//        tvBio = view.findViewById(R.id.tvBio);
-//        ivAvatar = view.findViewById(R.id.ivAvatar);
-//
-//        rvPosts = view.findViewById(R.id.rvPosts);
-//        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
-//
-//        postAdapter = new PostAdapter(getContext(), posts);
-//        rvPosts.setAdapter(postAdapter);
-//
-//        // Lấy thông tin user từ UserSessionManager
-//        UserSessionManager sessionManager = new UserSessionManager(requireContext());
-//        User user = sessionManager.getUser();
-//
-//        if (user != null) {
-//            tvName.setText(user.getUsername());
-//            tvDescription.setText(user.getNickName());
-//            tvBio.setText(user.getBio());
-//
-//            // 📌 Load ảnh đại diện (Sử dụng Glide hoặc Picasso)
-//            if (user.getImage() != null && !user.getImage().isEmpty()) {
-//                Glide.with(this).load(user.getImage()).into(ivAvatar);
-//            }
-//        } else {
-//            Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
-//        }
+        tvName = view.findViewById(R.id.tvName);
+        tvDescription = view.findViewById(R.id.tvDescription);
+        tvBio = view.findViewById(R.id.tvBio);
+        ivAvatar = view.findViewById(R.id.ivAvatar);
+
+        rvPosts = view.findViewById(R.id.rvPosts);
+        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        postAdapter = new PostAdapter(getContext(), posts);
+        rvPosts.setAdapter(postAdapter);
+
+        // Lấy thông tin user từ UserSessionManager
+        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        User user = sessionManager.getUser();
+
+        if (user != null) {
+            tvName.setText(user.getUsername());
+            tvDescription.setText(user.getNickName());
+            tvBio.setText(user.getBio());
+
+            // 📌 Load ảnh đại diện (Sử dụng Glide hoặc Picasso)
+            if (user.getImage() != null && !user.getImage().isEmpty()) {
+                Glide.with(this).load(user.getImage()).into(ivAvatar);
+            }
+        } else {
+            Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
+        }
 
     }
 }
