@@ -50,7 +50,7 @@ public class PersonalDetailFragment extends Fragment {
                     .commit();
         }
 
-        tvName = view.findViewById(R.id.tvName);
+        tvName = view.findViewById(R.id.tvPostName);
         tvDescription = view.findViewById(R.id.tvDescription);
         tvBio = view.findViewById(R.id.tvBio);
         ivAvatar = view.findViewById(R.id.ivAvatar);

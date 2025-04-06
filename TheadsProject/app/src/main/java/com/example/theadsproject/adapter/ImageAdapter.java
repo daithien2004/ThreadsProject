@@ -49,8 +49,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         if (imageCount == 1) {
             // Nếu chỉ có 1 ảnh, hiển thị lớn
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = dpToPx(210);
+            params.width = dpToPx(300);
+            params.height = dpToPx(400);
         } else {
             // Nếu có nhiều ảnh, giảm kích thước sao cho phù hợp
             int itemWidth = screenWidth / Math.min(imageCount, 3); // Chia đều tối đa 3 ảnh
@@ -59,7 +59,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             // Tính chiều cao sao cho giữ tỷ lệ, chiều cao tối đa là 207dp
             params.height = Math.min(dpToPx(207), (int) (itemWidth * 1.5)); // Giới hạn chiều cao tối đa là 207dp, giữ tỷ lệ hình chữ nhật
         }
-
 
         holder.imageView.setLayoutParams(params);
         int cornerRadius = dpToPx(10);

@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/ivPostAvatar"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:background="@drawable/circle_bg"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
@@ -59,10 +59,9 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvImages"
-                    android:layout_width="0dp"
-                    android:layout_height="300dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:layout_constraintWidth_percent="0.9"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/edtPostContent" />
 
@@ -102,8 +101,8 @@
 
             <ImageView
                 android:id="@+id/ivClose"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_weight="1"
                 android:src="@drawable/close" />
 
@@ -112,14 +111,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:textSize="12sp"
-                android:text="Thread mới"
+                android:text="New Thread"
                 android:textStyle="bold" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPost"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
             android:background="@drawable/bg_button_outline"
             android:backgroundTint="#B0B0B0"
             android:layout_marginEnd="12dp"
@@ -128,7 +127,7 @@
             android:textStyle="bold"
             android:text="Đăng"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
         </androidx.appcompat.widget.AppCompatButton>
