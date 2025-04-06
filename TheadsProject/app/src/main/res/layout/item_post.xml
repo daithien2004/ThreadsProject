@@ -54,17 +54,19 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="lấy cup"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNickname" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvImages"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.555"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTextPost" />
 

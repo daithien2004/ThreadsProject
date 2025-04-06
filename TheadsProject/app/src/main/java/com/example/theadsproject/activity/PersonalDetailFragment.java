@@ -32,6 +32,10 @@ import java.util.List;
 
 
 public class PersonalDetailFragment extends Fragment {
+
+    private RecyclerView rvPosts;
+    private PostAdapter postAdapter;
+    private List<PostResponse> posts = new ArrayList<>();
     private TextView tvName, tvDescription, tvBio;
     private ImageView ivAvatar;
 

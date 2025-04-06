@@ -94,7 +94,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         ///// xử lí khi văn bản quá dài
         holder.txtTextPost.setText(post.getContent());
-
         // Giới hạn số dòng ban đầu
         holder.txtTextPost.setMaxLines(2);
         holder.txtTextPost.setEllipsize(TextUtils.TruncateAt.END);
@@ -109,6 +108,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 holder.txtTextPost.setEllipsize(TextUtils.TruncateAt.END);
             }
         });
+
+        //// Kiểm tra xem post.getContent() có rỗng không
+        if (TextUtils.isEmpty(post.getContent())) {
+            holder.txtTextPost.setVisibility(View.GONE); // Ẩn TextView nếu không có nội dung
+        } else {
+            holder.txtTextPost.setVisibility(View.VISIBLE); // Hiển thị TextView nếu có nội dung
+        }
     }
 
     @Override
