@@ -59,8 +59,8 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvImages"
-                    android:layout_width="0dp"
-                    android:layout_height="300dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:visibility="gone"
                     app:layout_constraintWidth_percent="0.9"
                     app:layout_constraintStart_toStartOf="parent"

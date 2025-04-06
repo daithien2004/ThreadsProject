@@ -143,14 +143,14 @@ public class PostFragment extends Fragment {
         // Lắng nghe thay đổi trong danh sách ảnh
         imageAdapter.setOnDataChangedListener(this::updatePostButtonState);
 
-        // Ẩn BottomAppBar & BottomNavigationView
-        if (getActivity() != null) {
-            BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottomAppBar);
-            BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottomNavigationView);
-
-            if (bottomAppBar != null) bottomAppBar.setVisibility(View.GONE);
-            if (bottomNav != null) bottomNav.setVisibility(View.GONE);
-        }
+//        // Ẩn BottomAppBar & BottomNavigationView
+//        if (getActivity() != null) {
+//            BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottomAppBar);
+//            BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottomNavigationView);
+//
+//            if (bottomAppBar != null) bottomAppBar.setVisibility(View.GONE);
+//            if (bottomNav != null) bottomNav.setVisibility(View.GONE);
+//        }
 
         return view;
     }
