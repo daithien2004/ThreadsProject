@@ -12,8 +12,7 @@
     <FrameLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="60dp">
+        android:layout_height="match_parent">
     </FrameLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -21,7 +20,8 @@
         android:layout_height="60dp"
         android:id="@+id/bottomAppBar"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/white">
+        android:backgroundTint="@color/white"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior">
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
             android:layout_width="wrap_content"
