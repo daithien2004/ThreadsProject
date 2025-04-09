@@ -16,6 +16,7 @@ public class PostResponse {
     private String visibility;
     private LocalDateTime createdAt;
     private UserResponse user;
+    private boolean isLoved = false;
 
     public PostResponse(String content, ArrayList<String> mediaUrls, String visibility, UserResponse user) {
         this.content = content;
@@ -78,5 +79,13 @@ public class PostResponse {
 
     public void setUser(UserResponse user) {
         this.user = user;
+    }
+
+    public boolean isLoved() {
+        return isLoved;
+    }
+
+    public void setLoved(boolean loved) {
+        isLoved = loved;
     }
 }
