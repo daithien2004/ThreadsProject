@@ -1,4 +1,4 @@
-package com.example.theadsproject.activity;
+package com.example.theadsproject.activityHome;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.theadsproject.R;
+import com.example.theadsproject.activityCommon.LoginActivity;
 import com.example.theadsproject.adapter.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;

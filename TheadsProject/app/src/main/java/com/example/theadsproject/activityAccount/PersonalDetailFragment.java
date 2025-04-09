@@ -1,4 +1,4 @@
-package com.example.theadsproject.activity;
+package com.example.theadsproject.activityAccount;
 import android.os.Bundle;
 import android.view.View;
 
@@ -11,21 +11,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.R;
 
-import com.example.theadsproject.activityAccount.TabPersonalDetailFragment;
-
 import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.adapter.PostAdapter;
 import com.example.theadsproject.dto.PostResponse;
 import com.example.theadsproject.entity.User;
-import com.example.theadsproject.retrofit.ApiService;
-import com.example.theadsproject.retrofit.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;

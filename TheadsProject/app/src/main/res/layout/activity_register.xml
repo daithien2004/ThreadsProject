@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="16dp"
     android:background="@color/white"
-    tools:context=".activity.RegisterActivity">
+    tools:context=".activityCommon.RegisterActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

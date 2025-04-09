@@ -19,28 +19,28 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activity.PostDetailActivity"
+            android:name=".activityPost.PostDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".adapter.FullScreenImageActivity"
+            android:name=".commonClass.FullScreenImageActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activity.OTPRegisterActivity"
+            android:name=".activityCommon.OTPRegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.OTPResetPW"
+            android:name=".activityCommon.OTPResetPW"
             android:exported="false" />
         <activity
-            android:name=".activity.ForgotEmailActivity"
+            android:name=".activityCommon.ForgotEmailActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.RegisterActivity"
+            android:name=".activityCommon.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.BarActivity"
+            android:name=".activityHome.BarActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".activityCommon.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>

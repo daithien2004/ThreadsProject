@@ -1,4 +1,4 @@
-package com.example.theadsproject.activity;
+package com.example.theadsproject.activityHome;
 
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +11,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.theadsproject.R;
+import com.example.theadsproject.activityAccount.PersonalDetailFragment;
+import com.example.theadsproject.activityLove.LoveFragment;
+import com.example.theadsproject.activityPost.PostFragment;
+import com.example.theadsproject.activitySearch.SearchFragment;
 import com.example.theadsproject.databinding.ActivityBarBinding;
 
 

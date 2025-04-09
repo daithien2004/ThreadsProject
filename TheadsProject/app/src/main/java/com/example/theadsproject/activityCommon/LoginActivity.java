@@ -1,4 +1,4 @@
-package com.example.theadsproject.activity;
+package com.example.theadsproject.activityCommon;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,12 +10,10 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.theadsproject.R;
 import com.example.theadsproject.UserSessionManager;
+import com.example.theadsproject.activityHome.BarActivity;
 import com.example.theadsproject.dto.UserRequest;
 import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.retrofit.ApiService;

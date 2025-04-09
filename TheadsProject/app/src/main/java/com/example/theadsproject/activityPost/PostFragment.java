@@ -1,4 +1,4 @@
-package com.example.theadsproject.activity;
+package com.example.theadsproject.activityPost;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -32,9 +32,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.UserSessionManager;
+import com.example.theadsproject.activityHome.TabLayoutHomeFragment;
 import com.example.theadsproject.dto.PostRequest;
-import com.example.theadsproject.dto.PostResponse;
-import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.R;
 import com.example.theadsproject.adapter.ImageAdapter;
 import com.example.theadsproject.entity.User;

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="16dp"
-    tools:context=".activity.OTPResetPW"
+    tools:context=".activityCommon.OTPResetPW"
     android:background="@color/white">
 
     <LinearLayout

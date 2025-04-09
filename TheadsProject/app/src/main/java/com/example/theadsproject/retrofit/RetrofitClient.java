@@ -22,7 +22,7 @@ public class RetrofitClient extends BaseClient {
 
 
 
-    private static final String BASE_URL = "http://196.169.4.67:8080/api/";
+    private static final String BASE_URL = "http://196.169.3.236:8080/api/";
 
     private static Retrofit retrofit;
 

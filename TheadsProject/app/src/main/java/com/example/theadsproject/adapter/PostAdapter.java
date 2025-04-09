@@ -15,20 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.theadsproject.commonClass.TimeUtils;
 import com.example.theadsproject.dto.PostResponse;
 import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.R;
-import com.example.theadsproject.activity.ConfigPostFragment;
+import com.example.theadsproject.activityPost.ConfigPostFragment;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private final Context context;

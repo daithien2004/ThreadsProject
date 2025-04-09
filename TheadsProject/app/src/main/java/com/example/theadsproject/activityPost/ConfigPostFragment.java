@@ -1,4 +1,4 @@
-package com.example.theadsproject.activity;
+package com.example.theadsproject.activityPost;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;

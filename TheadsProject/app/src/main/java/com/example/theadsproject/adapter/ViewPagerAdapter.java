@@ -3,8 +3,8 @@ package com.example.theadsproject.adapter;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import com.example.theadsproject.activity.HomeFragment;
-import com.example.theadsproject.activity.FollowingFragment;
+import com.example.theadsproject.activityHome.HomeFragment;
+import com.example.theadsproject.activityHome.FollowingFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
     public ViewPagerAdapter(@NonNull Fragment fragment) {
