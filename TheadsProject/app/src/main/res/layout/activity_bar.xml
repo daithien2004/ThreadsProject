@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
+    app:layout_behavior="com.example.theadsproject.behavior.ScrollAwareFABBehavior"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,19 +10,23 @@
     android:background="@color/white"
     android:id="@+id/barBottom">
 
+    <!-- FrameLayout chứa RecyclerView -->
     <FrameLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp">
+        android:clickable="true"
+        android:focusable="true">
     </FrameLayout>
 
+    <!-- BottomAppBar với BottomNavigationView -->
     <com.google.android.material.bottomappbar.BottomAppBar
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:id="@+id/bottomAppBar"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/white">
+        android:backgroundTint="@color/white"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior">
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
             android:layout_width="wrap_content"
@@ -33,4 +38,18 @@
             app:menu="@menu/bottom_menu">
         </com.google.android.material.bottomnavigation.BottomNavigationView>
     </com.google.android.material.bottomappbar.BottomAppBar>
+
+    <!-- FloatingActionButton dấu cộng -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:src="@android:drawable/ic_input_add"
+        android:visibility="gone"
+        app:layout_behavior="com.example.theadsproject.commonClass.ReverseScrollFABBehavior" />
+<!--        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"/>-->
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

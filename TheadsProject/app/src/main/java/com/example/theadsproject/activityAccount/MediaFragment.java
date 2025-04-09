@@ -12,7 +12,6 @@ import com.example.theadsproject.R;
 
 
 public class MediaFragment extends Fragment {
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

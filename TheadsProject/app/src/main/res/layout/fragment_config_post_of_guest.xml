@@ -9,26 +9,31 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp">
 
-    <!-- Translate Option -->
+    <!-- Divider trên cùng -->
+    <View
+        android:id="@+id/divider"
+        android:layout_width="31dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="188dp"
+        android:background="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Save Option -->
-
-
+    <!-- LinearLayout chứa Save và Copy Link -->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="42dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/bg_button_outline"
         android:orientation="vertical"
         android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider"
-        app:layout_constraintVertical_bias="0.259">
+        app:layout_constraintTop_toBottomOf="@id/divider">
 
+        <!-- Save Option -->
         <LinearLayout
             android:id="@+id/saveOption"
             android:layout_width="322dp"
@@ -46,10 +51,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Save"
-                android:textStyle="bold"
-
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/iconSave"
@@ -57,6 +61,7 @@
                 android:layout_height="24dp"
                 android:src="@drawable/save" />
         </LinearLayout>
+
         <View
             android:id="@+id/divide2"
             android:layout_width="300dp"
@@ -64,7 +69,8 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="2dp"
             android:background="@color/gray" />
-        <!-- Pin Option -->
+
+        <!-- Copy Link Option -->
         <LinearLayout
             android:id="@+id/pinOption"
             android:layout_width="322dp"
@@ -82,10 +88,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="CopyLink"
-                android:textStyle="bold"
-
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/iconCopyLink"
@@ -93,25 +98,21 @@
                 android:layout_height="24dp"
                 android:src="@drawable/copylink" />
         </LinearLayout>
-
     </LinearLayout>
 
+    <!-- Delete Option -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/deleteOption"
         android:layout_width="339dp"
         android:layout_height="43dp"
-        android:layout_marginLeft="41dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_button_outline"
         android:clickable="true"
         android:focusable="true"
         android:paddingHorizontal="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toBottomOf="@id/linearLayout">
 
         <TextView
             android:id="@+id/tvUnFollow"
@@ -124,8 +125,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.571" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/iconUnfollow"
@@ -135,21 +135,7 @@
             android:src="@drawable/unfollow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.473" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="31dp"
-        android:layout_height="3dp"
-        android:layout_marginStart="188dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

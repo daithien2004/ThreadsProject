@@ -44,7 +44,7 @@
             android:gravity="center_vertical"
             android:text="5 giờ"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.042"
+            android:layout_marginStart="-235dp"
             app:layout_constraintStart_toEndOf="@+id/tvNickname"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -182,7 +182,6 @@
         android:background="#D3D3D3"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/clAll" />
 

@@ -2,7 +2,6 @@ package com.example.theadsproject.activity;
 
 import android.os.Bundle;
 import android.view.View;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -13,9 +12,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.theadsproject.R;
 import com.example.theadsproject.databinding.ActivityBarBinding;
+
+
 public class BarActivity extends AppCompatActivity {
     ActivityBarBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

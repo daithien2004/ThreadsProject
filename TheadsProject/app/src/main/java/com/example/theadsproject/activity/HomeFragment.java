@@ -3,7 +3,9 @@ package com.example.theadsproject.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,6 +19,8 @@ import com.example.theadsproject.R;
 import com.example.theadsproject.adapter.PostAdapter;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
@@ -34,7 +38,6 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView = view.findViewById(R.id.rvPosts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         fetchPosts();
         return view;
     }
