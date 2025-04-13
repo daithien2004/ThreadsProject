@@ -53,4 +53,10 @@ public class PostController {
         return ResponseEntity.ok("Post deleted successfully");
     }
 
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponse> getPostById(@PathVariable Long postId) {
+        PostResponse postResponse = postService.getPostById(postId);
+        return ResponseEntity.ok(postResponse);
+    }
+
 }

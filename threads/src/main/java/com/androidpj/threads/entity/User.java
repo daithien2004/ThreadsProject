@@ -46,6 +46,10 @@
 		@JsonIgnore
 		@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 		private Set<Post> posts;
+
+		@JsonIgnore
+		@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+		private Set<Comment> comments;
 	
 		public User(String nickName) {
 			this.nickName = nickName;
