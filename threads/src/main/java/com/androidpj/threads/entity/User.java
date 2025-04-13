@@ -63,5 +63,11 @@ public class User {
 	@JsonIgnore
 	@OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
 	private Set<Follow> followers;
+	
+	
+	
+	public int getFollowersCount() {
+        return followers.size();
+    }
 
 }

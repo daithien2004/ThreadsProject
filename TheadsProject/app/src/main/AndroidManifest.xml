@@ -38,7 +38,8 @@
             android:exported="false" />
         <activity
             android:name=".activityHome.BarActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="adjustPan"
+        android:exported="false" />
         <activity
             android:name=".activityCommon.LoginActivity"
             android:exported="true"

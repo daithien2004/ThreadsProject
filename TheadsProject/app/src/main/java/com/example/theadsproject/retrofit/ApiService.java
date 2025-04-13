@@ -36,7 +36,18 @@ public interface ApiService {
     Call<List<PostResponse>> getUserPosts(@Path("userId") Long userId);
     @GET("posts/following/{userId}")
     Call<List<PostResponse>> getPostsByFollowing(@Path("userId") Long userId);
+    @GET("users/search")
+    Call<List<UserResponse>> searchUsers(@Query("keyword") String keyword);
+    @POST("follow")
+    Call<String> followUser(@Query("followerId") Long followerId, @Query("followingId") Long followingId);
 
+    @DELETE("unfollow")
+    Call<String> unfollowUser(@Query("followerId") Long followerId, @Query("followingId") Long followingId);
+    @GET("follows/users/{userId}/following")
+    Call<List<UserResponse>> getFollowingUsers(@Path("userId") Long userId);
+
+    @GET("users")
+    Call<List<UserResponse>> getAllUsers();
 
     @GET("comments/{postId}")
     Call<List<CommentResponse>> getPostComments(@Path("postId") Long postId);

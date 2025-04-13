@@ -67,4 +67,15 @@ public class UserController {
             return ResponseEntity.badRequest().body(false);
         }
     }
+    
+    @GetMapping("/users")
+    public ResponseEntity<List<UserResponse>> getAllUsersSortedByFollowers() {
+        List<UserResponse> users = userService.getAllUsersSortedByFollowers();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/users/search")
+    public List<UserResponse> searchUsers(@RequestParam("keyword") String keyword) {
+        return userService.searchUsersByKeyword(keyword);
+    }
 }

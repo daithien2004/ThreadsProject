@@ -17,8 +17,11 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -143,5 +146,26 @@ public class UserService {
             }
         }
         return false;
+    }
+    public List<UserResponse> getAllUsersSortedByFollowers() {
+        List<User> users = userRepository.findAll();
+
+        // Sắp xếp theo số người theo dõi giảm dần
+        users.sort((u1, u2) -> Integer.compare(u2.getFollowers().size(), u1.getFollowers().size()));
+
+        List<UserResponse> result = new ArrayList<>();
+        for (User user : users) {
+            result.add(new UserResponse(user));
+        }
+        return result;
+    }
+
+    public List<UserResponse> searchUsersByKeyword(String keyword) {
+        List<User> users = userRepository.findByUsernameContainingIgnoreCaseOrNickNameContainingIgnoreCase(keyword, keyword);
+        List<UserResponse> result = new ArrayList<>();
+        for (User user : users) {
+            result.add(new UserResponse(user));
+        }
+        return result;
     }
 }

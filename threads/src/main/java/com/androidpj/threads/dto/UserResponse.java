@@ -17,6 +17,7 @@ public class UserResponse {
     private String username;
     private String phone;
     private String message;
+    private int followerCount;
 
     public UserResponse(User user) {
         this.userId = user.getUserId();
@@ -26,6 +27,7 @@ public class UserResponse {
         this.bio = user.getBio();
         this.phone = user.getPhone();
         this.email = user.getEmail();
+        this.followerCount = user.getFollowersCount();
     }
 
     public UserResponse(String message) {
