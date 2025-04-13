@@ -71,4 +71,14 @@ public class PostService {
 	    List<Post> posts = postRepository.findByUser(user);
 	    return posts.stream().map(PostResponse::new).collect(Collectors.toList());
 	}
+	
+	public List<PostResponse> getPostsFromFollowing(Long userId) {
+        List<Post> posts = postRepository.findPostsByFollowing(userId);
+
+        List<PostResponse> postResponses = posts.stream()
+            .map(post -> new PostResponse(post)) // Tạo đối tượng PostResponse từ mỗi Post
+            .collect(Collectors.toList());
+
+        return postResponses;
+    }
 }

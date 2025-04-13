@@ -34,6 +34,9 @@ public interface ApiService {
     // Lay bài đăng của user
     @GET("posts/user/{userId}")
     Call<List<PostResponse>> getUserPosts(@Path("userId") Long userId);
+    @GET("posts/following/{userId}")
+    Call<List<PostResponse>> getPostsByFollowing(@Path("userId") Long userId);
+
 
     @GET("comments/{postId}")
     Call<List<CommentResponse>> getPostComments(@Path("postId") Long postId);
@@ -58,4 +61,5 @@ public interface ApiService {
     Call<Boolean> resetOtp(@Body UserRequest userRequest);
     @POST("resetPassword")
     Call<Boolean> resetPassword(@Body OtpRequest otpRequest);
+
 }
