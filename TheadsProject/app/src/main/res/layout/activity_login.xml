@@ -8,16 +8,6 @@
     android:background="@color/white"
     tools:context=".activityCommon.LoginActivity">
 
-
-    <ImageView
-        android:id="@+id/ivThreads"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/threads_logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
@@ -25,10 +15,10 @@
         android:text="Đăng Nhập"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="210dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivThreads" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/etUsername"
