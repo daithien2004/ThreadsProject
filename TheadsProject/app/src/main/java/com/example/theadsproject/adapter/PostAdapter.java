@@ -114,14 +114,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         } else {
             holder.txtTextPost.setVisibility(View.VISIBLE); // Hiển thị TextView nếu có nội dung
         }
+		/////// Xử lí phần tương tác
+        // thả tim
+        holder.ivLove.setOnClickListener(v -> {
+            boolean isLoved = post.isLoved(); // giả sử mỗi bài post có trường này
 
-        // Truyền post
+            if (isLoved) {
+                holder.ivLove.setImageResource(R.drawable.heart); // Icon trắng
+                int count = Integer.parseInt(holder.tvLove.getText().toString());
+                holder.tvLove.setText(String.valueOf(count - 1));
+                post.setLoved(false); // cập nhật trạng thái
+            } else {
+                holder.ivLove.setImageResource(R.drawable.heart_red); // Icon đỏ
+                int count = Integer.parseInt(holder.tvLove.getText().toString());
+                holder.tvLove.setText(String.valueOf(count + 1));
+                post.setLoved(true);
+            }
+        });
+		// Truyền post
         holder.clItemPost.setOnClickListener(v -> {
             Intent intent = new Intent(context, PostDetailActivity.class);
             intent.putExtra("postId", post.getPostId());
             context.startActivity(intent);
-        });
-    }
+        });    }
 
     @Override
     public int getItemCount() {
@@ -129,8 +144,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNickName, txtTextPost, txtTime;
-        ImageView imgAvatar, imgDots;
+        TextView txtNickName, txtTextPost, txtTime, tvLove, tvConversation, tvRepeat, tvSend;
+        ImageView imgAvatar, imgDots, ivLove;
         RecyclerView recyclerViewImages;
         ConstraintLayout clItemPost;
 
@@ -142,8 +157,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             imgAvatar = itemView.findViewById(R.id.ivUserAvatar);
             imgDots = itemView.findViewById(R.id.ivDots);
             recyclerViewImages = itemView.findViewById(R.id.rvImages);
-            clItemPost = itemView.findViewById(R.id.clItemPost);
-
+			clItemPost = itemView.findViewById(R.id.clItemPost);
+            ivLove = itemView.findViewById(R.id.ivLove);
+            tvLove = itemView.findViewById(R.id.tvLove);
             recyclerViewImages.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
     }

@@ -214,7 +214,9 @@ public class PostFragment extends Fragment {
         }
 
         // Chuẩn bị request
-        PostRequest postRequest = new PostRequest(content, mediaUrls, "public", 1L);
+        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        User user = sessionManager.getUser();
+        PostRequest postRequest = new PostRequest(content, mediaUrls, "public", user.getUserId());
 
         // Log dữ liệu JSON trước khi gửi request
         Gson gson = new Gson();

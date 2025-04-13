@@ -72,8 +72,10 @@ public class ThreadsFragment extends Fragment {
     }
 
     private void loadUserPosts() {
+        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        User user = sessionManager.getUser();
         ApiService apiService = RetrofitClient.getApiService();
-        Call<List<PostResponse>> call = apiService.getUserPosts(1L); // Giả sử API trả về List<PostResponse>
+        Call<List<PostResponse>> call = apiService.getUserPosts(user.getUserId()); // Giả sử API trả về List<PostResponse>
 
         call.enqueue(new Callback<List<PostResponse>>() {
             @Override
