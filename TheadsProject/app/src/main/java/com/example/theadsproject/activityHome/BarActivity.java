@@ -1,9 +1,8 @@
-package com.example.theadsproject.activity;
+package com.example.theadsproject.activityHome;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -13,11 +12,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.theadsproject.R;
+import com.example.theadsproject.activityAccount.PersonalDetailFragment;
+import com.example.theadsproject.activityLove.LoveFragment;
+import com.example.theadsproject.activityPost.PostFragment;
+import com.example.theadsproject.activitySearch.SearchFragment;
 import com.example.theadsproject.databinding.ActivityBarBinding;
 
+<<<<<<< HEAD:TheadsProject/app/src/main/java/com/example/theadsproject/activity/BarActivity.java
+=======
+
+>>>>>>> main:TheadsProject/app/src/main/java/com/example/theadsproject/activityHome/BarActivity.java
 public class BarActivity extends AppCompatActivity {
     ActivityBarBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

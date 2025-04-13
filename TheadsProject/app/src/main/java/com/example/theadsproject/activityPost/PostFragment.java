@@ -1,4 +1,4 @@
-package com.example.theadsproject.activity;
+package com.example.theadsproject.activityPost;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -28,11 +29,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.example.theadsproject.UserSessionManager;
+import com.example.theadsproject.activityHome.TabLayoutHomeFragment;
 import com.example.theadsproject.dto.PostRequest;
-import com.example.theadsproject.dto.PostResponse;
-import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.R;
 import com.example.theadsproject.adapter.ImageAdapter;
+import com.example.theadsproject.entity.User;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -85,6 +89,25 @@ public class PostFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post, container, false);
+
+        TextView tvPostName = view.findViewById(R.id.tvPostName);
+        ImageView ivPostAvatar = view.findViewById(R.id.ivPostAvatar);
+
+        // Lấy thông tin user từ UserSessionManager
+        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        User user = sessionManager.getUser();
+
+        if (user != null) {
+            tvPostName.setText(user.getUsername());
+
+            // Load ảnh đại diện (Sử dụng Glide hoặc Picasso)
+            if (user.getImage() != null && !user.getImage().isEmpty()) {
+                Glide.with(this).load(user.getImage()).apply(RequestOptions.circleCropTransform()).into(ivPostAvatar);
+            }
+        } else {
+            Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
+        }
+
 
         rvImages = view.findViewById(R.id.rvImages);
         rvImages.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -143,15 +166,6 @@ public class PostFragment extends Fragment {
         // Lắng nghe thay đổi trong danh sách ảnh
         imageAdapter.setOnDataChangedListener(this::updatePostButtonState);
 
-        // Ẩn BottomAppBar & BottomNavigationView
-        if (getActivity() != null) {
-            BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottomAppBar);
-            BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottomNavigationView);
-
-            if (bottomAppBar != null) bottomAppBar.setVisibility(View.GONE);
-            if (bottomNav != null) bottomNav.setVisibility(View.GONE);
-        }
-
         return view;
     }
     private void updatePostButtonState() {
@@ -200,7 +214,9 @@ public class PostFragment extends Fragment {
         }
 
         // Chuẩn bị request
-        PostRequest postRequest = new PostRequest(content, mediaUrls, "public", 1L);
+        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        User user = sessionManager.getUser();
+        PostRequest postRequest = new PostRequest(content, mediaUrls, "public", user.getUserId());
 
         // Log dữ liệu JSON trước khi gửi request
         Gson gson = new Gson();
@@ -242,10 +258,21 @@ public class PostFragment extends Fragment {
 
     // Chuyển về HomeFragment sau khi đăng bài thành công
     private void goToHomeFragment() {
+        // Hiển thị lại BottomAppBar và BottomNavigationView
+        if (getActivity() != null) {
+            BottomAppBar bottomAppBar = getActivity().findViewById(R.id.bottomAppBar);
+            BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottomNavigationView);
+
+            if (bottomAppBar != null) bottomAppBar.setVisibility(View.VISIBLE);
+            if (bottomNav != null) bottomNav.setVisibility(View.VISIBLE);
+        }
+
+        // Chuyển về HomeFragment sau khi đăng bài thành công
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_layout, new TabLayoutHomeFragment()) 
                 .commit();
     }
+
 
 }

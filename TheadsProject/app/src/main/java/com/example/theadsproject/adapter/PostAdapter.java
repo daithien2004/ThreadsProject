@@ -1,6 +1,8 @@
 package com.example.theadsproject.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,25 +11,23 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.theadsproject.activityPost.PostDetailActivity;
+import com.example.theadsproject.commonClass.TimeUtils;
 import com.example.theadsproject.dto.PostResponse;
 import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.R;
-import com.example.theadsproject.activity.ConfigPostFragment;
+import com.example.theadsproject.activityPost.ConfigPostFragment;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private final Context context;
@@ -49,7 +49,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         PostResponse post = postList.get(position);
 
-        holder.txtUsername.setText(post.getUser().getUsername());
+        holder.txtNickName.setText(post.getUser().getNickName());
         holder.txtTextPost.setText(post.getContent());
         LocalDateTime createdAt = post.getCreatedAt();
         if (createdAt != null) {
@@ -65,7 +65,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.txtTime.setText("Không có dữ liệu");
         }
         holder.imgDots.setOnClickListener(v -> {
-            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(post.getId(), postId -> {
+            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(post.getPostId(), postId -> {
                 removePost(postId); // Xóa bài đăng khỏi RecyclerView ngay lập tức
             });
             bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
@@ -89,7 +89,54 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             ImageAdapter imageAdapter = new ImageAdapter(context, new ArrayList<>(mediaUrls));
             holder.recyclerViewImages.setAdapter(imageAdapter);
         }
-    }
+
+
+        ///// xử lí khi văn bản quá dài
+        holder.txtTextPost.setText(post.getContent());
+        // Giới hạn số dòng ban đầu
+        holder.txtTextPost.setMaxLines(2);
+        holder.txtTextPost.setEllipsize(TextUtils.TruncateAt.END);
+
+        // Xử lý khi người dùng nhấn vào để mở rộng nội dung
+        holder.txtTextPost.setOnClickListener(v -> {
+            if (holder.txtTextPost.getMaxLines() == 2) {
+                holder.txtTextPost.setMaxLines(Integer.MAX_VALUE); // Mở rộng full văn bản
+                holder.txtTextPost.setEllipsize(null);
+            } else {
+                holder.txtTextPost.setMaxLines(2); // Thu gọn lại
+                holder.txtTextPost.setEllipsize(TextUtils.TruncateAt.END);
+            }
+        });
+
+        //// Kiểm tra xem post.getContent() có rỗng không
+        if (TextUtils.isEmpty(post.getContent())) {
+            holder.txtTextPost.setVisibility(View.GONE); // Ẩn TextView nếu không có nội dung
+        } else {
+            holder.txtTextPost.setVisibility(View.VISIBLE); // Hiển thị TextView nếu có nội dung
+        }
+		/////// Xử lí phần tương tác
+        // thả tim
+        holder.ivLove.setOnClickListener(v -> {
+            boolean isLoved = post.isLoved(); // giả sử mỗi bài post có trường này
+
+            if (isLoved) {
+                holder.ivLove.setImageResource(R.drawable.heart); // Icon trắng
+                int count = Integer.parseInt(holder.tvLove.getText().toString());
+                holder.tvLove.setText(String.valueOf(count - 1));
+                post.setLoved(false); // cập nhật trạng thái
+            } else {
+                holder.ivLove.setImageResource(R.drawable.heart_red); // Icon đỏ
+                int count = Integer.parseInt(holder.tvLove.getText().toString());
+                holder.tvLove.setText(String.valueOf(count + 1));
+                post.setLoved(true);
+            }
+        });
+		// Truyền post
+        holder.clItemPost.setOnClickListener(v -> {
+            Intent intent = new Intent(context, PostDetailActivity.class);
+            intent.putExtra("postId", post.getPostId());
+            context.startActivity(intent);
+        });    }
 
     @Override
     public int getItemCount() {
@@ -97,26 +144,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtUsername, txtTextPost, txtTime;
-        ImageView imgAvatar, imgDots;
+        TextView txtNickName, txtTextPost, txtTime, tvLove, tvConversation, tvRepeat, tvSend;
+        ImageView imgAvatar, imgDots, ivLove;
         RecyclerView recyclerViewImages;
+        ConstraintLayout clItemPost;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtUsername = itemView.findViewById(R.id.tvUsername);
+            txtNickName = itemView.findViewById(R.id.tvNickname);
             txtTextPost = itemView.findViewById(R.id.tvTextPost);
             txtTime = itemView.findViewById(R.id.tvTimePost);
             imgAvatar = itemView.findViewById(R.id.ivUserAvatar);
             imgDots = itemView.findViewById(R.id.ivDots);
             recyclerViewImages = itemView.findViewById(R.id.rvImages);
-
+			clItemPost = itemView.findViewById(R.id.clItemPost);
+            ivLove = itemView.findViewById(R.id.ivLove);
+            tvLove = itemView.findViewById(R.id.tvLove);
             recyclerViewImages.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
     }
     public void removePost(Long postId) {
         int indexToRemove = -1;
         for (int i = 0; i < postList.size(); i++) {
-            if (postList.get(i).getId().equals(postId)) {
+            if (postList.get(i).getPostId().equals(postId)) {
                 indexToRemove = i;
                 break;
             }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.PostFragment">
+    tools:context=".activityPost.PostFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/ivPostAvatar"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:background="@drawable/circle_bg"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
@@ -50,8 +50,8 @@
 
                 <ImageView
                     android:id="@+id/imGallery"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginTop="4dp"
                     android:src="@drawable/image"
                     app:layout_constraintStart_toStartOf="parent"
@@ -59,10 +59,9 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvImages"
-                    android:layout_width="0dp"
-                    android:layout_height="300dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:layout_constraintWidth_percent="0.9"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/edtPostContent" />
 
@@ -73,6 +72,7 @@
                     android:background="@android:color/transparent"
                     android:hint="Có gì mới?"
                     android:textSize="16sp"
+                    android:layout_marginBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvPostName" />
@@ -102,8 +102,8 @@
 
             <ImageView
                 android:id="@+id/ivClose"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_weight="1"
                 android:src="@drawable/close" />
 
@@ -112,25 +112,26 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:textSize="12sp"
-                android:text="Thread mới"
+                android:text="New Thread"
                 android:textStyle="bold" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPost"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_button_outline"
-            android:backgroundTint="#B0B0B0"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="12sp"
+            android:background="@drawable/bg_button_outline"
+            android:backgroundTint="#B0B0B0"
             android:gravity="center"
-            android:textStyle="bold"
             android:text="Đăng"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clPost">
+
         </androidx.appcompat.widget.AppCompatButton>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

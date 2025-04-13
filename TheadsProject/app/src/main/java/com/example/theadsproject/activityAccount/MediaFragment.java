@@ -1,4 +1,4 @@
-package com.example.theadsproject.activity;
+    package com.example.theadsproject.activityAccount;
 
 import android.os.Bundle;
 
@@ -11,12 +11,11 @@ import android.view.ViewGroup;
 import com.example.theadsproject.R;
 
 
-public class FollowingFragment extends Fragment {
-
+public class MediaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_following, container, false);
+        return inflater.inflate(R.layout.fragment_media, container, false);
     }
 }

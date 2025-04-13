@@ -21,6 +21,9 @@ public class PostService {
 	@Autowired
 	private UserRepository userRepository;
 
+	public boolean isUserOwnerOfPost(Long postId, Long userId) {
+        return postRepository.existsByPostIdAndUser_UserId(postId, userId);
+    }
 	public List<Post> getAllPublicPosts() {
 		return postRepository.findPublicPosts();
 	}
@@ -30,7 +33,6 @@ public class PostService {
 			throw new RuntimeException("User is required for creating a post");
 		}
 
-		// T�m User t? userId
 		User user = userRepository.findById(postRequest.getUserId())
 				.orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -45,15 +47,38 @@ public class PostService {
 	}
 
 	 public void deletePost(Long postId) {
-	        if (!postRepository.existsById(postId)) {
-	            throw new RuntimeException("Post not found");
-	        }
-	        postRepository.deleteById(postId);
-	    }
+		if (!postRepository.existsById(postId)) {
+			throw new RuntimeException("Post not found");
+		}
+		postRepository.deleteById(postId);
+	}
+
+	public PostResponse getPostById(Long postId) {
+		Post post = postRepository.findById(postId)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+		return new PostResponse(post);
+	}
 
 	public List<PostResponse> getAllPosts() {
 		List<Post> posts = postRepository.findAllWithImages();
 		return posts.stream().map(PostResponse::new).collect(Collectors.toList());
 	}
+	
+	public List<PostResponse> getPostsByUser(Long userId) {
+	    User user = userRepository.findById(userId)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
 
+	    List<Post> posts = postRepository.findByUser(user);
+	    return posts.stream().map(PostResponse::new).collect(Collectors.toList());
+	}
+	
+	public List<PostResponse> getPostsFromFollowing(Long userId) {
+        List<Post> posts = postRepository.findPostsByFollowing(userId);
+
+        List<PostResponse> postResponses = posts.stream()
+            .map(post -> new PostResponse(post)) // Tạo đối tượng PostResponse từ mỗi Post
+            .collect(Collectors.toList());
+
+        return postResponses;
+    }
 }

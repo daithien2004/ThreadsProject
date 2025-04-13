@@ -1,4 +1,4 @@
-package com.example.theadsproject.adapter;
+package com.example.theadsproject.commonClass;
 
 import android.util.Log;
 
