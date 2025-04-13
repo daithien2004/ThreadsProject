@@ -1,5 +1,7 @@
 package com.example.theadsproject.retrofit;
 
+import com.example.theadsproject.dto.CommentRequest;
+import com.example.theadsproject.dto.CommentResponse;
 import com.example.theadsproject.dto.OtpRequest;
 import com.example.theadsproject.dto.PostRequest;
 import com.example.theadsproject.dto.PostResponse;
@@ -24,13 +26,19 @@ import retrofit2.http.Query;
 public interface ApiService {
     @DELETE("posts/{id}")
     Call<Void> deletePost(@Path("id") Long postId);
+
+    @GET("posts/{id}")
+    Call<PostResponse> getPostById(@Path("id") Long postId);
     @GET("posts")
     Call<List<PostResponse>> getAllPosts();
     // Lay bài đăng của user
     @GET("posts/user/{userId}")
     Call<List<PostResponse>> getUserPosts(@Path("userId") Long userId);
 
-
+    @GET("comments/{postId}")
+    Call<List<CommentResponse>> getPostComments(@Path("postId") Long postId);
+    @POST("comments")
+    Call<Void> createComment(@Body CommentRequest commentRequest);
     // Upload ảnh
     @Multipart
     @POST("upload")

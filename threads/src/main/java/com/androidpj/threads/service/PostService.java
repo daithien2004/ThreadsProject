@@ -47,11 +47,17 @@ public class PostService {
 	}
 
 	 public void deletePost(Long postId) {
-	        if (!postRepository.existsById(postId)) {
-	            throw new RuntimeException("Post not found");
-	        }
-	        postRepository.deleteById(postId);
-	    }
+		if (!postRepository.existsById(postId)) {
+			throw new RuntimeException("Post not found");
+		}
+		postRepository.deleteById(postId);
+	}
+
+	public PostResponse getPostById(Long postId) {
+		Post post = postRepository.findById(postId)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+		return new PostResponse(post);
+	}
 
 	public List<PostResponse> getAllPosts() {
 		List<Post> posts = postRepository.findAllWithImages();
@@ -65,6 +71,4 @@ public class PostService {
 	    List<Post> posts = postRepository.findByUser(user);
 	    return posts.stream().map(PostResponse::new).collect(Collectors.toList());
 	}
-
-
 }

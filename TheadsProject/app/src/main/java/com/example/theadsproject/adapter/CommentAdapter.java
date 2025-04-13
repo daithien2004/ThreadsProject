@@ -17,41 +17,42 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.theadsproject.activityPost.PostDetailActivity;
-import com.example.theadsproject.commonClass.TimeUtils;
-import com.example.theadsproject.dto.PostResponse;
-import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.R;
 import com.example.theadsproject.activityPost.ConfigPostFragment;
+import com.example.theadsproject.activityPost.PostDetailActivity;
+import com.example.theadsproject.commonClass.TimeUtils;
+import com.example.theadsproject.dto.CommentResponse;
+import com.example.theadsproject.dto.PostResponse;
+import com.example.theadsproject.dto.UserResponse;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
     private final Context context;
-    private final List<PostResponse> postList;
+    private final List<CommentResponse> commentList;
 
-    public PostAdapter(Context context, List<PostResponse> postList) {
+    public CommentAdapter(Context context, List<CommentResponse> commentList) {
         this.context = context;
-        this.postList = postList;
+        this.commentList = commentList;
     }
 
     @NonNull
     @Override
-    public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false);
-        return new PostViewHolder(view);
+        return new CommentAdapter.CommentViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        PostResponse post = postList.get(position);
+    public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
+        CommentResponse comment = commentList.get(position);
 
-        holder.txtNickName.setText(post.getUser().getNickName());
-        holder.txtTextPost.setText(post.getContent());
-        LocalDateTime createdAt = post.getCreatedAt();
+        holder.txtNickName.setText(comment.getUser().getNickName());
+        holder.txtTextPost.setText(comment.getContent());
+        LocalDateTime createdAt = comment.getCreateAt();
         if (createdAt != null) {
             try {
                 // Chuyển LocalDateTime thành timestamp (milliseconds)
@@ -64,16 +65,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         } else {
             holder.txtTime.setText("Không có dữ liệu");
         }
-        holder.imgDots.setOnClickListener(v -> {
-            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(post.getPostId(), postId -> {
-                removePost(postId); // Xóa bài đăng khỏi RecyclerView ngay lập tức
-            });
-            bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
-        });
 
 
-
-        UserResponse userResponse = post.getUser(); // Lấy đối tượng user từ post
+        UserResponse userResponse = comment.getUser(); // Lấy đối tượng user từ post
         Glide.with(context)
                 .load(userResponse.getImage())
                 .placeholder(R.drawable.user)
@@ -81,7 +75,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 .apply(RequestOptions.circleCropTransform())
                 .into(holder.imgAvatar);
 
-        List<String> mediaUrls = post.getMediaUrls();
+        List<String> mediaUrls = comment.getMediaUrls();
         if (mediaUrls == null || mediaUrls.isEmpty()) {
             holder.recyclerViewImages.setVisibility(View.GONE);
         } else {
@@ -92,7 +86,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
 
         ///// xử lí khi văn bản quá dài
-        holder.txtTextPost.setText(post.getContent());
+        holder.txtTextPost.setText(comment.getContent());
         // Giới hạn số dòng ban đầu
         holder.txtTextPost.setMaxLines(2);
         holder.txtTextPost.setEllipsize(TextUtils.TruncateAt.END);
@@ -109,47 +103,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
 
         //// Kiểm tra xem post.getContent() có rỗng không
-        if (TextUtils.isEmpty(post.getContent())) {
+        if (TextUtils.isEmpty(comment.getContent())) {
             holder.txtTextPost.setVisibility(View.GONE); // Ẩn TextView nếu không có nội dung
         } else {
             holder.txtTextPost.setVisibility(View.VISIBLE); // Hiển thị TextView nếu có nội dung
         }
-		/////// Xử lí phần tương tác
-        // thả tim
-        holder.ivLove.setOnClickListener(v -> {
-            boolean isLoved = post.isLoved(); // giả sử mỗi bài post có trường này
-
-            if (isLoved) {
-                holder.ivLove.setImageResource(R.drawable.heart); // Icon trắng
-                int count = Integer.parseInt(holder.tvLove.getText().toString());
-                holder.tvLove.setText(String.valueOf(count - 1));
-                post.setLoved(false); // cập nhật trạng thái
-            } else {
-                holder.ivLove.setImageResource(R.drawable.heart_red); // Icon đỏ
-                int count = Integer.parseInt(holder.tvLove.getText().toString());
-                holder.tvLove.setText(String.valueOf(count + 1));
-                post.setLoved(true);
-            }
-        });
-		// Truyền post
-        holder.clItemPost.setOnClickListener(v -> {
-            Intent intent = new Intent(context, PostDetailActivity.class);
-            intent.putExtra("postId", post.getPostId());
-            context.startActivity(intent);
-        });    }
+    }
 
     @Override
     public int getItemCount() {
-        return (postList != null) ? postList.size() : 0;
+        return (commentList != null) ? commentList.size() : 0;
     }
 
-    public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNickName, txtTextPost, txtTime, tvLove, tvConversation, tvRepeat, tvSend;
-        ImageView imgAvatar, imgDots, ivLove;
+    public static class CommentViewHolder extends RecyclerView.ViewHolder {
+        TextView txtNickName, txtTextPost, txtTime;
+        ImageView imgAvatar, imgDots;
         RecyclerView recyclerViewImages;
         ConstraintLayout clItemPost;
 
-        public PostViewHolder(@NonNull View itemView) {
+        public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
             txtNickName = itemView.findViewById(R.id.tvNickname);
             txtTextPost = itemView.findViewById(R.id.tvTextPost);
@@ -157,24 +129,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             imgAvatar = itemView.findViewById(R.id.ivUserAvatar);
             imgDots = itemView.findViewById(R.id.ivDots);
             recyclerViewImages = itemView.findViewById(R.id.rvImages);
-			clItemPost = itemView.findViewById(R.id.clItemPost);
-            ivLove = itemView.findViewById(R.id.ivLove);
-            tvLove = itemView.findViewById(R.id.tvLove);
+            clItemPost = itemView.findViewById(R.id.clItemPost);
+
             recyclerViewImages.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
-    }
-    public void removePost(Long postId) {
-        int indexToRemove = -1;
-        for (int i = 0; i < postList.size(); i++) {
-            if (postList.get(i).getPostId().equals(postId)) {
-                indexToRemove = i;
-                break;
-            }
-        }
-        if (indexToRemove != -1) {
-            postList.remove(indexToRemove);
-            notifyItemRemoved(indexToRemove);
-        }
-    }
 
+    }
 }
