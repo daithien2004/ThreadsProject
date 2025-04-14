@@ -36,7 +36,8 @@ public class SearchFragment extends Fragment {
     private RecyclerView recyclerView;
     private SearchAdapter adapter;
     private List<UserResponse> userList = new ArrayList<>();
-    Long userId ;
+    Long userId;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
@@ -60,9 +61,9 @@ public class SearchFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().trim().isEmpty()) {
-                    loadAllUsers();
+                    loadAllUsers();  // Nếu không tìm kiếm thì load tất cả người dùng
                 } else {
-                    searchUsers(s.toString().trim());
+                    searchUsers(s.toString().trim()); // Tìm kiếm theo từ khóa
                 }
             }
 
@@ -72,6 +73,7 @@ public class SearchFragment extends Fragment {
 
         return view;
     }
+
     private void loadAllUsers() {
         ApiService apiService = RetrofitClient.getApiService();
 
@@ -82,6 +84,7 @@ public class SearchFragment extends Fragment {
                     List<UserResponse> allUsers = response.body();
                     Log.d("ALL_USERS", "Tổng số user: " + allUsers.size());
 
+                    // Lấy danh sách những người dùng mà người dùng hiện tại đang theo dõi
                     apiService.getFollowingUsers(userId).enqueue(new Callback<List<UserResponse>>() {
                         @Override
                         public void onResponse(Call<List<UserResponse>> call, Response<List<UserResponse>> followResponse) {
@@ -128,8 +131,6 @@ public class SearchFragment extends Fragment {
         });
     }
 
-
-
     private void searchUsers(String keyword) {
         ApiService apiService = RetrofitClient.getApiService();
         apiService.searchUsers(keyword).enqueue(new Callback<List<UserResponse>>() {
@@ -151,3 +152,4 @@ public class SearchFragment extends Fragment {
         });
     }
 }
+

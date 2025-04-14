@@ -28,12 +28,12 @@ import retrofit2.Response;
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> {
     private Context context;
     private List<UserResponse> userList;
-    private Long currentUserId; // ID của người dùng hiện tại (follower)
+    private Long currentUserId;
 
     public SearchAdapter(Context context, List<UserResponse> userList, Long currentUserId) {
         this.context = context;
         this.userList = userList;
-        this.currentUserId = currentUserId;  // Cần truyền thêm ID của người dùng hiện tại (follower)
+        this.currentUserId = currentUserId;
     }
 
     @NonNull
@@ -51,29 +51,73 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         holder.txtCountFollowers.setText(String.valueOf(user.getFollowerCount()));
         Glide.with(context).load(user.getImage()).into(holder.ivUserAvatar);
 
-        // Thiết lập nút Follow/Unfollow
-        holder.btnFollow.setText(user.isFollowing() ? "Bỏ theo dõi" : "Theo dõi");
-        holder.btnFollow.setBackgroundTintList(ContextCompat.getColorStateList(context,
-                user.isFollowing() ? R.color.unfollow_background : R.color.follow_background));
-        holder.btnFollow.setTextColor(ContextCompat.getColor(context,
-                user.isFollowing() ? R.color.unfollow_text : R.color.follow_text));
+        if (user.getUserId().equals(currentUserId)) {
+            holder.btnFollow.setVisibility(View.GONE);
+        } else {
+            holder.btnFollow.setVisibility(View.VISIBLE);
+            updateFollowButtonUI(holder, user.isFollowing());
 
-        holder.btnFollow.setOnClickListener(v -> {
-            boolean currentlyFollowing = user.isFollowing();
-            user.setFollowing(!currentlyFollowing);
-
-            // Gọi API để thực hiện theo dõi hoặc bỏ theo dõi
-            if (user.isFollowing()) {
-                followUser(currentUserId, user.getUserId(), holder); // Call follow
-            } else {
-                unfollowUser(currentUserId, user.getUserId(), holder); // Call unfollow
-            }
-        });
+            holder.btnFollow.setOnClickListener(v -> {
+                if (user.isFollowing()) {
+                    unfollowUser(currentUserId, user.getUserId(), holder.getAdapterPosition());
+                } else {
+                    followUser(currentUserId, user.getUserId(), holder.getAdapterPosition());
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
         return userList.size();
+    }
+
+    private void updateFollowButtonUI(SearchViewHolder holder, boolean isFollowing) {
+        holder.btnFollow.setText(isFollowing ? "Bỏ theo dõi" : "Theo dõi");
+        holder.btnFollow.setBackgroundTintList(ContextCompat.getColorStateList(context,
+                isFollowing ? R.color.unfollow_background : R.color.follow_background));
+        holder.btnFollow.setTextColor(ContextCompat.getColor(context,
+                isFollowing ? R.color.unfollow_text : R.color.follow_text));
+    }
+
+    private void followUser(Long followerId, Long followingId, int position) {
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.followUser(followerId, followingId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    userList.get(position).setFollowing(true);
+                    notifyItemChanged(position);
+                } else {
+                    Toast.makeText(context, "Theo dõi thất bại", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(context, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void unfollowUser(Long followerId, Long followingId, int position) {
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.unfollowUser(followerId, followingId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    userList.get(position).setFollowing(false);
+                    notifyItemChanged(position);
+                } else {
+                    Toast.makeText(context, "Bỏ theo dõi thất bại", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(context, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public class SearchViewHolder extends RecyclerView.ViewHolder {
@@ -89,55 +133,5 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             ivUserAvatar = itemView.findViewById(R.id.ivUserAvatar);
             btnFollow = itemView.findViewById(R.id.btnFollow);
         }
-    }
-
-    // Gọi API để theo dõi
-    private void followUser(Long followerId, Long followingId, SearchViewHolder holder) {
-        ApiService apiService = RetrofitClient.getApiService();
-        apiService.followUser(followerId, followingId).enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    // Cập nhật UI, thay đổi văn bản nút từ "Follow" thành "Unfollow"
-                    holder.btnFollow.setText("Bỏ theo dõi");
-                    holder.btnFollow.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.unfollow_background));
-                    holder.btnFollow.setTextColor(ContextCompat.getColor(context, R.color.unfollow_text));
-                } else {
-                    // Xử lý lỗi nếu có
-                    Toast.makeText(context, "Follow failed", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                // Xử lý lỗi kết nối
-                Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    // Gọi API để bỏ theo dõi
-    private void unfollowUser(Long followerId, Long followingId, SearchViewHolder holder) {
-        ApiService apiService = RetrofitClient.getApiService();
-        apiService.unfollowUser(followerId, followingId).enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    // Cập nhật UI, thay đổi văn bản nút từ "Unfollow" thành "Follow"
-                    holder.btnFollow.setText("Theo dõi");
-                    holder.btnFollow.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.follow_background));
-                    holder.btnFollow.setTextColor(ContextCompat.getColor(context, R.color.follow_text));
-                } else {
-                    // Xử lý lỗi nếu có
-                    Toast.makeText(context, "Unfollow failed", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                // Xử lý lỗi kết nối
-                Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }

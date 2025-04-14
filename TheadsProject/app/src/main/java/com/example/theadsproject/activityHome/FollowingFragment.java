@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.theadsproject.R;
+import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.dto.PostResponse;
+import com.example.theadsproject.entity.User;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
 
@@ -50,9 +52,10 @@ public class FollowingFragment extends Fragment {
 
     private void fetchPosts() {
         ApiService apiService = RetrofitClient.getApiService();
-        Long userId = 2L;
+        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        User user = sessionManager.getUser();
 
-        apiService.getPostsByFollowing(userId).enqueue(new Callback<List<PostResponse>>() {
+        apiService.getPostsByFollowing(user.getUserId()).enqueue(new Callback<List<PostResponse>>() {
             @Override
             public void onResponse(retrofit2.Call<List<PostResponse>> call, Response<List<PostResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {

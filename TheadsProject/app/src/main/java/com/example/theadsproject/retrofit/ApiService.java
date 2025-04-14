@@ -38,11 +38,11 @@ public interface ApiService {
     Call<List<PostResponse>> getPostsByFollowing(@Path("userId") Long userId);
     @GET("users/search")
     Call<List<UserResponse>> searchUsers(@Query("keyword") String keyword);
-    @POST("follow")
-    Call<String> followUser(@Query("followerId") Long followerId, @Query("followingId") Long followingId);
+    @POST("follows")
+    Call<Void> followUser(@Query("followerId") Long followerId, @Query("followingId") Long followingId);
 
-    @DELETE("unfollow")
-    Call<String> unfollowUser(@Query("followerId") Long followerId, @Query("followingId") Long followingId);
+    @DELETE("follows")
+    Call<Void> unfollowUser(@Query("followerId") Long followerId, @Query("followingId") Long followingId);
     @GET("follows/users/{userId}/following")
     Call<List<UserResponse>> getFollowingUsers(@Path("userId") Long userId);
 
