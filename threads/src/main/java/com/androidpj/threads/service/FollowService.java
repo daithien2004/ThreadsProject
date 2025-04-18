@@ -12,6 +12,8 @@ import com.androidpj.threads.entity.User;
 import com.androidpj.threads.repository.FollowRepository;
 import com.androidpj.threads.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class FollowService {
 
@@ -38,7 +40,8 @@ public class FollowService {
             followRepository.save(follow);
         }
     }
-
+    
+    @Transactional
     public void unfollowUser(Long followerId, Long followingId) {
         followRepository.deleteByFollower_UserIdAndFollowing_UserId(followerId, followingId);
     }

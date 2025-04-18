@@ -49,6 +49,19 @@ public interface ApiService {
     @GET("users")
     Call<List<UserResponse>> getAllUsers();
 
+    @POST("likes/like")
+    Call<Void> likePost(@Query("userId") Long userId, @Query("postId") Long postId);
+
+    @DELETE("likes/unlike")
+    Call<Void> unlikePost(@Query("userId") Long userId, @Query("postId") Long postId);
+
+    @GET("likes/count")
+    Call<Long> countLikes(@Query("postId") Long postId);
+
+    @GET("likes/is-liked")
+    Call<Boolean> isPostLiked(@Query("userId") Long userId, @Query("postId") Long postId);
+
+
     @GET("comments/{postId}")
     Call<List<CommentResponse>> getPostComments(@Path("postId") Long postId);
     @POST("comments")
