@@ -19,6 +19,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activityAccount.SettingActivity"
+            android:exported="false" />
+        <activity
             android:name=".activityPost.PostDetailActivity"
             android:exported="false" />
         <activity
@@ -38,8 +41,8 @@
             android:exported="false" />
         <activity
             android:name=".activityHome.BarActivity"
-            android:windowSoftInputMode="adjustPan"
-        android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activityCommon.LoginActivity"
             android:exported="true"
