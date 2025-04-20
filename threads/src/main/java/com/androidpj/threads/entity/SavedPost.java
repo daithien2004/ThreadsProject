@@ -1,5 +1,4 @@
 package com.androidpj.threads.entity;
-
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -15,16 +14,15 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
-
 @Entity
 @Getter
 @Setter
-@Table(name = "post_likes", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"}))
-public class PostLike {
+@Table(name = "saved_posts", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"}))
+public class SavedPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -34,5 +32,4 @@ public class PostLike {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
-
 }

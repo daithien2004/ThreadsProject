@@ -60,8 +60,18 @@ public interface ApiService {
 
     @GET("likes/is-liked")
     Call<Boolean> isPostLiked(@Query("userId") Long userId, @Query("postId") Long postId);
+    @GET("likes/user/{userId}")
+    Call<List<PostResponse>> getLikedPostsByUser(@Path("userId") Long userId);
 
 
+    @POST("saved/save")
+    Call<Void> savePost(@Query("userId") Long userId, @Query("postId") Long postId);
+
+    @DELETE("saved/unsave")
+    Call<Void> unsavePost(@Query("userId") Long userId, @Query("postId") Long postId);
+
+    @GET("saved/user/{userId}")
+    Call<List<PostResponse>> getSavedPostsByUser(@Path("userId") Long userId);
     @GET("comments/{postId}")
     Call<List<CommentResponse>> getPostComments(@Path("postId") Long postId);
     @POST("comments")

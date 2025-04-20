@@ -9,5 +9,6 @@
     <color name="follow_text">#FFFFFF</color>
     <color name="unfollow_background">#EEEEEE</color>
     <color name="unfollow_text">#000000</color>
+    <color name="yellow">#FFD700</color>
 
 </resources>

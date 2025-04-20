@@ -1,8 +1,13 @@
 package com.androidpj.threads.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.androidpj.threads.dto.PostResponse;
 import com.androidpj.threads.entity.Post;
 import com.androidpj.threads.entity.PostLike;
 import com.androidpj.threads.entity.User;
@@ -20,6 +25,19 @@ public class PostLikeService {
 
     @Autowired
     private PostRepository postRepository;
+    
+ // Lấy tất cả bài viết mà người dùng đã thích
+    public List<PostResponse> getPostsLikedByUser(Long userId) {
+        List<Post> likedPosts = postLikeRepository.findLikedPostsByUserId(userId);
+        return likedPosts.stream()
+                .map(PostResponse::new)
+                .collect(Collectors.toList());
+    }
+
+//    // Kiểm tra người dùng đã thích bài viết chưa
+//    public boolean userLikedPost(Long userId, Long postId) {
+//        return postLikeRepository.existsByUserIdAndPostId(userId, postId);
+//    }
 
     public void likePost(Long userId, Long postId) {
         User user = userRepository.findById(userId).orElseThrow();

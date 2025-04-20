@@ -1,6 +1,7 @@
 package com.example.theadsproject.activityPost;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,11 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import com.example.theadsproject.R;
 import com.example.theadsproject.retrofit.ApiService;
@@ -25,8 +30,13 @@ import retrofit2.Response;
 
 public class ConfigPostFragment extends BottomSheetDialogFragment {
     private Long postId;
-    private static final Long loggedInUserId = 1L; // Đặt userId mặc định là 9L
+    private static final Long loggedInUserId = 1L; // Giả định đã đăng nhập
     private OnPostDeletedListener deleteListener;
+    private boolean isSaved = false;
+
+    private LinearLayout saveOption;
+    private TextView tvSave;
+    private ImageView iconSave;
 
     public interface OnPostDeletedListener {
         void onPostDeleted(long postId);
@@ -54,26 +64,36 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
             postId = getArguments().getLong("postId", -1);
         }
 
-        // Kiểm tra nếu người dùng là chủ sở hữu bài viết
+        saveOption = view.findViewById(R.id.saveOption);
+        tvSave = view.findViewById(R.id.tvSave);
+        iconSave = view.findViewById(R.id.iconSave);
+
+        // Kiểm tra quyền sở hữu bài viết
         checkIfUserIsOwner(postId);
+
+
+        // Gán sự kiện click
+        saveOption.setOnClickListener(v -> {
+            if (isSaved) {
+                unsavePost();
+            } else {
+                savePost();
+            }
+        });
 
         return view;
     }
 
     private void checkIfUserIsOwner(Long postId) {
-        if (postId == -1) {
-            return; // Không có postId hợp lệ
-        }
+        if (postId == -1) return;
 
         ApiService apiService = RetrofitClient.getApiService();
         apiService.isPostOwner(postId, loggedInUserId).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful() && response.body() != null && response.body()) {
-                    // Nếu người dùng là chủ sở hữu, hiển thị giao diện của người dùng
+                if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
                     showUserPostOptions();
                 } else {
-                    // Nếu không phải chủ sở hữu, hiển thị giao diện của khách
                     showGuestPostOptions();
                 }
             }
@@ -87,7 +107,6 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
     }
 
     private void showUserPostOptions() {
-        // Hiển thị giao diện của người dùng (tùy chọn xóa bài viết)
         View view = getView();
         if (view != null) {
             view.findViewById(R.id.deleteOption).setVisibility(View.VISIBLE);
@@ -96,44 +115,35 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
     }
 
     private void showGuestPostOptions() {
-        // Thay đổi giao diện sang fragment_config_post_of_guest.xml
         View view = getView();
         if (view != null) {
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null) {
-                parent.removeAllViews(); // Xóa giao diện cũ
+                parent.removeAllViews();
                 LayoutInflater inflater = LayoutInflater.from(requireContext());
                 View guestView = inflater.inflate(R.layout.fragment_config_post_of_guest, parent, false);
-                parent.addView(guestView); // Thêm layout mới dành cho khách
+                parent.addView(guestView);
             }
         }
     }
 
     private void showDeleteDialog() {
-        // Hiển thị hộp thoại xác nhận xóa bài viết
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_delete_post, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_post, null);
         builder.setView(dialogView);
 
-        final AlertDialog alertDialog = builder.create();
+        AlertDialog alertDialog = builder.create();
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertDialog.show();
         alertDialog.getWindow().setLayout(700, 600);
 
-        Button btnDelete = dialogView.findViewById(R.id.btnDelete);
-        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
-
-        btnDelete.setOnClickListener(view -> {
-            // Gọi phương thức xóa bài viết khi nhấn "Delete"
+        dialogView.findViewById(R.id.btnDelete).setOnClickListener(view -> {
             deletePost();
-            // Đóng hộp thoại sau khi đã xử lý xóa
             alertDialog.dismiss();
         });
 
-        btnCancel.setOnClickListener(view -> alertDialog.dismiss()); // Đóng hộp thoại khi nhấn "Cancel"
+        dialogView.findViewById(R.id.btnCancel).setOnClickListener(view -> alertDialog.dismiss());
     }
-
 
     private void deletePost() {
         ApiService apiService = RetrofitClient.getApiService();
@@ -141,19 +151,10 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    // Xóa bài viết thành công
-                    if (deleteListener != null) {
-                        deleteListener.onPostDeleted(postId); // Gửi thông báo cập nhật danh sách
-                    }
-
-                    // Đóng BottomSheetDialogFragment sau khi xóa thành công
-                    if (getDialog() != null && getDialog().isShowing()) {
-                        getDialog().dismiss(); // Đảm bảo đóng BottomSheetDialogFragment
-                    }
-
-                    dismiss(); // Đảm bảo đóng Fragment nếu cần thiết
+                    if (deleteListener != null) deleteListener.onPostDeleted(postId);
+                    if (getDialog() != null && getDialog().isShowing()) getDialog().dismiss();
+                    dismiss();
                 } else {
-                    // Xử lý lỗi nếu có
                     Log.e("ERROR", "Xóa thất bại: " + response.code());
                     Toast.makeText(requireContext(), "Lỗi xóa bài viết", Toast.LENGTH_SHORT).show();
                 }
@@ -161,11 +162,75 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                // Xử lý lỗi kết nối
                 Log.e("ERROR", "Lỗi kết nối API: " + t.getMessage());
                 Toast.makeText(requireContext(), "Lỗi kết nối khi xóa bài viết", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+//    private void checkIfPostIsSaved() {
+//        ApiService apiService = RetrofitClient.getApiService();
+//        apiService.isPostSaved(loggedInUserId, postId).enqueue(new Callback<Boolean>() {
+//            @Override
+//            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//                    isSaved = response.body();
+//                    updateSaveUI();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Boolean> call, Throwable t) {
+//                Log.e("ERROR", "Lỗi khi kiểm tra trạng thái lưu: " + t.getMessage());
+//            }
+//        });
+//    }
+
+    private void savePost() {
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.savePost(loggedInUserId, postId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    isSaved = true;
+                    updateSaveUI();
+                    Toast.makeText(getContext(), "Đã lưu bài viết", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("ERROR", "Lỗi khi lưu bài viết: " + t.getMessage());
+            }
+        });
+    }
+
+    private void unsavePost() {
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.unsavePost(loggedInUserId, postId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    isSaved = false;
+                    updateSaveUI();
+                    Toast.makeText(getContext(), "Đã bỏ lưu bài viết", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("ERROR", "Lỗi khi bỏ lưu bài viết: " + t.getMessage());
+            }
+        });
+    }
+
+    private void updateSaveUI() {
+        if (isSaved) {
+            iconSave.setColorFilter(ContextCompat.getColor(getContext(), R.color.yellow), PorterDuff.Mode.SRC_IN);
+            tvSave.setText("Bỏ lưu bài viết");
+        } else {
+            iconSave.setColorFilter(null);
+            tvSave.setText("Lưu bài viết");
+        }
+    }
 }

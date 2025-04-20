@@ -3,6 +3,7 @@ package com.example.theadsproject.activityAccount;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -28,6 +29,22 @@ public class SettingActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Xử lý chuyển sang AllLikedActivity
+        LinearLayout likedLayout = findViewById(R.id.lnLiked);
+        likedLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(SettingActivity.this, AllLikedActivity.class);
+            startActivity(intent);
+        });
+
+        // Xử lý chuyển sang AllSaveActivity
+        LinearLayout savedLayout = findViewById(R.id.lnSaved);
+        savedLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(SettingActivity.this, AllSavedActivity.class);
+            startActivity(intent);
+        });
+
+        //logout
         TextView tvLogout = findViewById(R.id.tvLogout);
         tvLogout.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
@@ -47,6 +64,7 @@ public class SettingActivity extends AppCompatActivity {
                     .setNegativeButton("Hủy", null)
                     .show();
         });
+
         ImageView turnBack = findViewById(R.id.turnBack);
         turnBack.setOnClickListener(v -> {
             finish();  // kết thúc activity này để quay về màn hình trước đó

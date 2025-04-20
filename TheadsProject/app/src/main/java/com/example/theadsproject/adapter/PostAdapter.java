@@ -87,7 +87,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Long currentUserId = currentUser.getUserId();
 
         Glide.with(context)
-                .load(currentUser.getImage())
+                .load(post.getUser().getImage())
                 .placeholder(R.drawable.user)
                 .error(R.drawable.user)
                 .apply(RequestOptions.circleCropTransform())

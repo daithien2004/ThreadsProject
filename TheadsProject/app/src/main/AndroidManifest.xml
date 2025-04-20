@@ -19,6 +19,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activityAccount.AllSavedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activityAccount.AllLikedActivity"
+            android:exported="false" />
+        <activity
             android:name=".activityAccount.SettingActivity"
             android:exported="false" />
         <activity
