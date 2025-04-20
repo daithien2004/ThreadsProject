@@ -226,11 +226,12 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
 
     private void updateSaveUI() {
         if (isSaved) {
-            iconSave.setColorFilter(ContextCompat.getColor(getContext(), R.color.yellow), PorterDuff.Mode.SRC_IN);
+            iconSave.setImageResource(R.drawable.bookmark); // Thay bằng icon bookmark đã lưu
             tvSave.setText("Bỏ lưu bài viết");
         } else {
-            iconSave.setColorFilter(null);
+            iconSave.setImageResource(R.drawable.save); // Icon bookmark chưa lưu
             tvSave.setText("Lưu bài viết");
         }
+
     }
 }
