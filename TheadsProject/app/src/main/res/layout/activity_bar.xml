@@ -40,16 +40,16 @@
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <!-- FloatingActionButton dấu cộng -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_post"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:src="@android:drawable/ic_input_add"
-        android:visibility="gone"
-        app:layout_behavior="com.example.theadsproject.commonClass.ReverseScrollFABBehavior" />
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/fab_add_post"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:src="@android:drawable/ic_input_add"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_behavior="com.example.theadsproject.commonClass.ReverseScrollFABBehavior" />-->
 <!--        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"/>-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

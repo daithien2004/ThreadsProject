@@ -1,4 +1,5 @@
 package com.example.theadsproject.activityAccount;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -71,6 +72,11 @@ public class PersonalDetailFragment extends Fragment {
             Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
         }
 
+        ImageView imgMenu = view.findViewById(R.id.imSetting);
+        imgMenu.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), SettingActivity.class);
+            startActivity(intent);
+        });
     }
 }
 

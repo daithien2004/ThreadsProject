@@ -75,25 +75,32 @@ public class PostService {
 	    List<Post> posts = postRepository.findByUser(user);
 	    return posts.stream().map(PostResponse::new).collect(Collectors.toList());
 	}
-
 	public void likePost(Long postId, Long userId) {
 		Post post = postRepository.findById(postId)
 				.orElseThrow(() -> new RuntimeException("Post not found"));
 
 		boolean isLiked = likeRepository.existsByPostPostIdAndUserUserId(postId, userId);
 
-		// Kiểm tra nếu user đã like thì không làm gì
+		// Ki?m tra n?u user d� like th� kh�ng l�m g�
 		if (!isLiked) {
-			// Lưu like
+			// Luu like
 			Like like = new Like();
 			like.setPost(post);
 			like.setUser(userRepository.findById(userId).orElseThrow());
 			likeRepository.save(like);
 
-			// Tăng lượt like
+			// Tang lu?t like
 			post.setLikeCount(post.getLikeCount() + 1);
 			postRepository.save(post);
 		}
 	}
 
-}
+	public List<PostResponse> getPostsFromFollowing(Long userId) {
+        List<Post> posts = postRepository.findPostsByFollowing(userId);
+
+        List<PostResponse> postResponses = posts.stream()
+            .map(post -> new PostResponse(post)) 
+            .collect(Collectors.toList());
+
+        return postResponses;
+    }}

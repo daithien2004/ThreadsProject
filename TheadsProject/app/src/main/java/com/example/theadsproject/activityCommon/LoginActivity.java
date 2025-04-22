@@ -35,6 +35,16 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UserSessionManager sessionManager = new UserSessionManager(this);
+        if (sessionManager.isLoggedIn()) {
+            // Nếu đã login -> chuyển sang BarActivity luôn
+            Intent intent = new Intent(this, BarActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        // Nếu chưa login thì hiển thị màn hình đăng nhập
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 

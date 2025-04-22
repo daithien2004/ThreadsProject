@@ -43,12 +43,11 @@ public class PostController {
         boolean isOwner = postService.isUserOwnerOfPost(postId, userId);
         return ResponseEntity.ok(isOwner);
     }
-
-//    // Lấy danh sách bài đăng của một user cụ thể
-//    @GetMapping("/user/{userId}")
-//    public ResponseEntity<List<Post>> getPostsByUser(@PathVariable Long userId) {
-//        return ResponseEntity.ok(postService.getPostsByUser(userId));
-//    }
+    @GetMapping("/following/{userId}")
+    public ResponseEntity<List<PostResponse>> getPostsFromFollowing(@PathVariable Long userId) {
+        List<PostResponse> postResponses = postService.getPostsFromFollowing(userId);
+        return ResponseEntity.ok(postResponses);
+    }
 
     // lấy bài đăng của 1 user nhất định
     @GetMapping("/user/{userId}")

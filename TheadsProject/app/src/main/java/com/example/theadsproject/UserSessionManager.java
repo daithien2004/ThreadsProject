@@ -23,7 +23,7 @@ public class UserSessionManager {
         editor = sharedPreferences.edit();
     }
 
-    // 📌 Lưu thông tin user
+    //  Lưu thông tin user
     public void saveUser(UserResponse user) {
         editor.putLong(KEY_USER_ID, user.getUserId());
         editor.putString(KEY_BIO, user.getBio());
@@ -35,7 +35,7 @@ public class UserSessionManager {
         editor.apply(); // Lưu thay đổi
     }
 
-    // 📌 Lấy thông tin user
+    //  Lấy thông tin user
     public User getUser() {
         long userId = sharedPreferences.getLong(KEY_USER_ID, -1);
         String bio = sharedPreferences.getString(KEY_BIO, null);
@@ -52,14 +52,16 @@ public class UserSessionManager {
         return new User(userId, email, nickName, image, username, bio, phone);
     }
 
-    // 📌 Kiểm tra user đã đăng nhập chưa
+    //  Kiểm tra user đã đăng nhập chưa
     public boolean isLoggedIn() {
         return sharedPreferences.contains(KEY_USER_ID);
     }
 
-    // 📌 Xóa thông tin user khi đăng xuất
+    //  Xóa thông tin user khi đăng xuất
     public void logout() {
-        editor.clear();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear(); // hoặc remove("user") nếu chỉ lưu một key
         editor.apply();
     }
+
 }

@@ -19,6 +19,25 @@ public class UserResponse {
     private String username;
     private String phone;
     private String message;
+    private int followerCount;
+
+    public boolean isFollowing() {
+        return isFollowing;
+    }
+
+    public void setFollowing(boolean following) {
+        isFollowing = following;
+    }
+
+    private boolean isFollowing;
+
+    public int getFollowerCount() {
+        return followerCount;
+    }
+
+    public void setFollowerCount(int followerCount) {
+        this.followerCount = followerCount;
+    }
 
     public UserResponse(User user) {
         this.userId = user.getUserId();
