@@ -3,7 +3,7 @@ services:
     name: threads-spring
     env: java
     plan: free
-    buildCommand: cd threads && ./mvnw clean package
+    buildCommand: cd threads && mvn clean package
     startCommand: cd threads && java -Dserver.port=$PORT -jar target/threads-0.0.1-SNAPSHOT.jar
     region: oregon
     branch: main
