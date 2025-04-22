@@ -2,6 +2,7 @@ package com.example.theadsproject.activityCommon;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -83,11 +84,18 @@ public class RegisterActivity extends AppCompatActivity {
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
-                    Intent intent = new Intent(RegisterActivity.this, OTPRegisterActivity.class);
-                    intent.putExtra("email", email);
-                    startActivity(intent);
-                    finish();
+                if (response.isSuccessful()) {
+                    // Server trả về 200 OK
+                    if (Boolean.TRUE.equals(response.body())) {
+                        // Chuyển sang màn hình OTP
+                        Intent intent = new Intent(RegisterActivity.this, OTPRegisterActivity.class);
+                        intent.putExtra("email", email);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        // Server trả về false (lỗi logic nghiệp vụ)
+                        Toast.makeText(RegisterActivity.this, "Đăng ký thất bại", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else {
                     Toast.makeText(RegisterActivity.this, "Lỗi đăng ký, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
@@ -96,7 +104,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(RegisterActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

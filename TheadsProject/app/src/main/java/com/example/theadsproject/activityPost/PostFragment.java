@@ -273,6 +273,4 @@ public class PostFragment extends Fragment {
                 .replace(R.id.frame_layout, new TabLayoutHomeFragment()) // Thay thế hoàn toàn fragment
                 .commit();
     }
-
-
 }

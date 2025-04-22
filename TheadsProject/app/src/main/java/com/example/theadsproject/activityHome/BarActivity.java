@@ -2,6 +2,8 @@ package com.example.theadsproject.activityHome;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -10,12 +12,19 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.R;
+import com.example.theadsproject.SocketManager;
+import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.activityAccount.PersonalDetailFragment;
 import com.example.theadsproject.activityLove.LoveFragment;
 import com.example.theadsproject.activityPost.PostFragment;
 import com.example.theadsproject.activitySearch.SearchFragment;
 import com.example.theadsproject.databinding.ActivityBarBinding;
+import com.example.theadsproject.entity.User;
+
+import io.socket.client.IO;
 
 
 public class BarActivity extends AppCompatActivity {
@@ -53,6 +62,15 @@ public class BarActivity extends AppCompatActivity {
             }
             return true;
         });
+
+        UserSessionManager sessionManager = new UserSessionManager(BarActivity.this);
+        User user = sessionManager.getUser();
+
+        if (user != null) {
+            SocketManager.connect(BarActivity.this, user.getUserId());
+        } else {
+            Toast.makeText(BarActivity.this, "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void replaceFragment(Fragment fragment) {

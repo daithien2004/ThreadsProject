@@ -1,18 +1,12 @@
 package com.androidpj.threads.dto;
 
-import com.androidpj.threads.UserResponse;
 import com.androidpj.threads.entity.Comment;
-import com.androidpj.threads.entity.Post;
-import com.androidpj.threads.entity.User;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor

@@ -19,8 +19,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 @Service
+@Transactional
 public class UserService {
     @Autowired
     UserRepository userRepository;
@@ -35,6 +37,10 @@ public class UserService {
     private String fromEmail;
 
 
+    public User getUserById(Long userId) {
+        return userRepository.findByUserId(userId);
+    }
+
     public UserResponse checkLogin(UserRequest userRequest) {
         User user = userRepository.findByUsername(userRequest.getUsername());
 
@@ -46,7 +52,7 @@ public class UserService {
 
     public boolean register(UserRequest userRequest) {
         if (userRepository.existsByEmail(userRequest.getEmail())) {
-            return false;
+            throw new IllegalArgumentException("Email đã tồn tại");
         }
 
         User user = new User();
@@ -63,7 +69,19 @@ public class UserService {
         Otp otp = new Otp(user.getEmail(), expiresAt, gOtp, now);
         otpRepository.save(otp);
 
-        sendOtpEmail(user.getEmail(), gOtp, "Kích hoạt tài khoản của bạn");
+//        sendOtpEmail(user.getEmail(), gOtp, "Kích hoạt tài khoản của bạn");
+
+        // 3. Gửi mail OTP ở background (không chặn luồng)
+        CompletableFuture.runAsync(() -> {
+            try {
+                sendOtpEmail(user.getEmail(), gOtp, "Kích hoạt tài khoản của bạn");
+            } catch (Exception e) {
+                // Log lỗi nếu gửi mail thất bại
+                System.err.println("Lỗi khi gửi mail: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
         return true;
     }
 
@@ -79,7 +97,9 @@ public class UserService {
             helper.setFrom(fromEmail);
             helper.setTo(email);
             helper.setSubject(subject);
-            helper.setText("OTP của bạn là: ", otp);
+            helper.setText("OTP của bạn là: " + otp);
+
+            javaMailSender.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -116,7 +136,19 @@ public class UserService {
         LocalDateTime expiresAt = now.plusMinutes(5);
         Otp otp = new Otp(userRequest.getEmail(), expiresAt, gOtp, now);
         otpRepository.save(otp);
-        sendOtpEmail(userRequest.getEmail(), gOtp, "OTP đổi mật khẩu");
+
+        // 3. Gửi mail OTP ở background (không chặn luồng)
+        CompletableFuture.runAsync(() -> {
+            try {
+                sendOtpEmail(userRequest.getEmail(), gOtp, "OTP đổi mật khẩu");
+            } catch (Exception e) {
+                // Log lỗi nếu gửi mail thất bại
+                System.err.println("Lỗi khi gửi mail: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
+//        sendOtpEmail(userRequest.getEmail(), gOtp, "OTP đổi mật khẩu");
         return true;
     }
 

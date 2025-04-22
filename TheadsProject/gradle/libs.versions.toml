@@ -15,6 +15,7 @@ glideCompiler = "4.16.0"
 okhttp= "4.11.0"
 converterScalars = "2.9.0"
 lombok = "1.18.30"
+socketio-client = "2.0.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -33,6 +34,7 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "converterScalars" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 lombok-processor = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+socketio-client = { module = "io.socket:socket.io-client", version.ref = "socketio-client" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
