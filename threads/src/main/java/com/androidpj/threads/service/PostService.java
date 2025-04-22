@@ -81,15 +81,12 @@ public class PostService {
 
 		boolean isLiked = likeRepository.existsByPostPostIdAndUserUserId(postId, userId);
 
-		// Ki?m tra n?u user dã like thì không làm gì
 		if (!isLiked) {
-			// Luu like
 			Like like = new Like();
 			like.setPost(post);
 			like.setUser(userRepository.findById(userId).orElseThrow());
 			likeRepository.save(like);
 
-			// Tang lu?t like
 			post.setLikeCount(post.getLikeCount() + 1);
 			postRepository.save(post);
 		}
