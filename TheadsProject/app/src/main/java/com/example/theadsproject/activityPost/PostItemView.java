@@ -46,7 +46,7 @@ public class PostItemView {
         long timestamp = post.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         tvTimePost.setText(TimeUtils.getTimeAgo(timestamp));
 
-        Glide.with(context)
+        Glide.with(imgAvatar) //  dùng View thay vì context
                 .load(post.getUser().getImage())
                 .placeholder(R.drawable.user)
                 .error(R.drawable.user)
