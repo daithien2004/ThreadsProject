@@ -23,7 +23,7 @@ public class TimeUtils {
             return "now";
         }
 
-        long diff = now - pastTimeMillis;
+        long diff = now - pastTimeMillis - TimeUnit.HOURS.toMillis(7);
 
         if (diff < TimeUnit.MINUTES.toMillis(1)) {
             return TimeUnit.MILLISECONDS.toSeconds(diff) + "s";

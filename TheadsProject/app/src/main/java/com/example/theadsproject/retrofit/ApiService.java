@@ -3,6 +3,7 @@ package com.example.theadsproject.retrofit;
 import com.example.theadsproject.dto.CommentRequest;
 import com.example.theadsproject.dto.CommentResponse;
 //import com.example.theadsproject.dto.NotificationResponse;
+import com.example.theadsproject.dto.NotificationResponse;
 import com.example.theadsproject.dto.OtpRequest;
 import com.example.theadsproject.dto.PostRequest;
 import com.example.theadsproject.dto.PostResponse;

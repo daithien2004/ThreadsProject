@@ -17,6 +17,7 @@ import com.example.theadsproject.dto.PostResponse;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class PostItemView {
     private View rootView;
@@ -43,7 +44,18 @@ public class PostItemView {
             tvTextPost.setVisibility(View.GONE);
         }
 
-        long timestamp = post.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        //long timestamp = post.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long timestamp = post.getCreatedAt()
+                .atZone(ZoneId.of("UTC")) // Dữ liệu từ server là UTC
+                .toInstant()
+                .toEpochMilli() ; // Cộng thêm 7 tiếng
+
+        tvTimePost.setText(TimeUtils.getTimeAgo(timestamp));
+        // Ép nó là UTC
+
+
+
+        // Truyền vào để tính thời gian
         tvTimePost.setText(TimeUtils.getTimeAgo(timestamp));
 
         Glide.with(context)
