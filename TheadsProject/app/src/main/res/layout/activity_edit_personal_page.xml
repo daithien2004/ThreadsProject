@@ -45,7 +45,7 @@
             android:id="@+id/tvDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="115dp"
+            android:layout_marginLeft="100dp"
             android:text="Xong"
             android:textColor="@color/gray"
             android:textSize="18dp"
@@ -196,7 +196,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Thêm liền kết"
+                android:text="Thêm liên kết"
                 android:textSize="16sp"
                 android:layout_marginLeft="10dp"
 
