@@ -165,10 +165,13 @@ public class PostDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    PostResponse post = response.body();
-                    View includeView = findViewById(R.id.icPost); // view include
-                    PostItemView postItemView = new PostItemView(includeView);
-                    postItemView.bind(post, PostDetailActivity.this);
+                    if (!PostDetailActivity.this.isFinishing() && !PostDetailActivity.this.isDestroyed()) {
+                        PostResponse post = response.body();
+                        View includeView = findViewById(R.id.icPost); // view include
+                        PostItemView postItemView = new PostItemView(includeView);
+                        postItemView.bind(post, PostDetailActivity.this);
+                    }
+
                 } else {
                     Log.e("API_ERROR", "Không load được chi tiết post");
                 }
