@@ -72,6 +72,9 @@ public interface ApiService {
 
     @GET("saved/user/{userId}")
     Call<List<PostResponse>> getSavedPostsByUser(@Path("userId") Long userId);
+    @GET("posts/{postId}/saved-by/{userId}")
+    Call<Boolean> isPostSaved(@Path("userId") Long userId, @Path("postId") Long postId);
+
     @GET("comments/{postId}")
     Call<List<CommentResponse>> getPostComments(@Path("postId") Long postId);
     @POST("comments")

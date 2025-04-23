@@ -3,6 +3,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 import android.widget.ImageView;
@@ -75,6 +76,12 @@ public class PersonalDetailFragment extends Fragment {
         ImageView imgMenu = view.findViewById(R.id.imSetting);
         imgMenu.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), SettingActivity.class);
+            startActivity(intent);
+        });
+
+        Button btEdit = view.findViewById(R.id.btnEditProfile);
+        btEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), EditPersonalPageActivity.class);
             startActivity(intent);
         });
     }

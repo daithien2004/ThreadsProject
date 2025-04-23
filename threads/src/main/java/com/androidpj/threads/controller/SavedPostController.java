@@ -45,5 +45,12 @@ public class SavedPostController {
         List<PostResponse> savedPosts = savedPostService.getSavedPostResponsesByUserId(userId);
         return ResponseEntity.ok(savedPosts);
     }
+    
+    @GetMapping("/posts/{postId}/saved-by/{userId}")
+    public ResponseEntity<Boolean> isPostSaved(@PathVariable Long userId, @PathVariable Long postId) {
+        boolean isSaved = savedPostService.isPostSavedByUser(userId, postId);
+        return ResponseEntity.ok(isSaved);
+    }
+
 
 }

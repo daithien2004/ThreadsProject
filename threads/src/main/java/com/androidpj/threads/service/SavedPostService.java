@@ -55,5 +55,9 @@ public class SavedPostService {
 	            .collect(Collectors.toList());
 	}
 
+	public boolean isPostSavedByUser(Long userId, Long postId) {
+	    return savedPostRepository.existsByUser_UserIdAndPost_PostId(userId, postId);
+	}
+
 
 }
