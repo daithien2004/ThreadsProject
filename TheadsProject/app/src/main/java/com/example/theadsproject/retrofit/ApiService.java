@@ -2,6 +2,7 @@ package com.example.theadsproject.retrofit;
 
 import com.example.theadsproject.dto.CommentRequest;
 import com.example.theadsproject.dto.CommentResponse;
+import com.example.theadsproject.dto.NotificationResponse;
 import com.example.theadsproject.dto.OtpRequest;
 import com.example.theadsproject.dto.PostRequest;
 import com.example.theadsproject.dto.PostResponse;
@@ -98,5 +99,5 @@ public interface ApiService {
     Call<Boolean> resetOtp(@Body UserRequest userRequest);
     @POST("resetPassword")
     Call<Boolean> resetPassword(@Body OtpRequest otpRequest);
-
-}
+	@GET("notifications/{userId}")
+    Call<List<NotificationResponse>> getUserNotifications(@Path("userId") Long userId);}

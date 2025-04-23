@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.androidpj.threads.dto.PostRequest;
+import com.androidpj.threads.entity.Like;
+import com.androidpj.threads.repository.LikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ public class PostService {
 	private PostRepository postRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private LikeRepository likeRepository;
 
 	public boolean isUserOwnerOfPost(Long postId, Long userId) {
         return postRepository.existsByPostIdAndUser_UserId(postId, userId);
@@ -71,7 +75,23 @@ public class PostService {
 	    List<Post> posts = postRepository.findByUser(user);
 	    return posts.stream().map(PostResponse::new).collect(Collectors.toList());
 	}
-	
+	public void likePost(Long postId, Long userId) {
+		Post post = postRepository.findById(postId)
+				.orElseThrow(() -> new RuntimeException("Post not found"));
+
+		boolean isLiked = likeRepository.existsByPostPostIdAndUserUserId(postId, userId);
+
+		if (!isLiked) {
+			Like like = new Like();
+			like.setPost(post);
+			like.setUser(userRepository.findById(userId).orElseThrow());
+			likeRepository.save(like);
+
+			post.setLikeCount(post.getLikeCount() + 1);
+			postRepository.save(post);
+		}
+	}
+
 	public List<PostResponse> getPostsFromFollowing(Long userId) {
         List<Post> posts = postRepository.findPostsByFollowing(userId);
 
@@ -80,5 +100,4 @@ public class PostService {
             .collect(Collectors.toList());
 
         return postResponses;
-    }
-}
+    }}

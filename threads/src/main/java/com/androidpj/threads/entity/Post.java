@@ -47,6 +47,15 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
+
+    @Column(name = "like_count")
+    private Integer likeCount = 0;
+
+    @Column(name = "comment_count")
+    private Integer commentCount = 0;
+
+    @Column(name = "repost_count")
+    private Integer repostCount = 0;
 }
 
 

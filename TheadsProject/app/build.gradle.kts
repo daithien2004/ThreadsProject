@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.converter.scalars)
     implementation(libs.lombok)
     implementation(libs.lombok.processor)
+    implementation(libs.socketio.client)
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
