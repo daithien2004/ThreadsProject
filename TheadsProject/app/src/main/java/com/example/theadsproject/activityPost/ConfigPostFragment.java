@@ -71,7 +71,7 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
         // Kiểm tra quyền sở hữu bài viết
         checkIfUserIsOwner(postId);
 
-
+        checkIfPostIsSaved();
         // Gán sự kiện click
         saveOption.setOnClickListener(v -> {
             if (isSaved) {
@@ -167,6 +167,24 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
             }
         });
     }
+    private void checkIfPostIsSaved() {
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.isPostSaved(loggedInUserId, postId).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    isSaved = response.body();
+                    updateSaveUI();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("ERROR", "Lỗi khi kiểm tra trạng thái lưu: " + t.getMessage());
+            }
+        });
+    }
+
 
 //    private void checkIfPostIsSaved() {
 //        ApiService apiService = RetrofitClient.getApiService();
