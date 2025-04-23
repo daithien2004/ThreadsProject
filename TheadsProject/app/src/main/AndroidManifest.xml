@@ -19,6 +19,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31" >
         <activity
+            android:name=".activityAccount.EditBioActivity"
+            android:exported="false" />
+        <activity
             android:name=".activityAccount.EditPersonalPageActivity"
             android:exported="false" />
         <activity

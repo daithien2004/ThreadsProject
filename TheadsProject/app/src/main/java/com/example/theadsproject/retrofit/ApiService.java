@@ -21,6 +21,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -44,7 +45,8 @@ public interface ApiService {
 
     @GET("users/search")
     Call<List<UserResponse>> searchUsers(@Query("keyword") String keyword);
-
+    @PUT("{id}/bio")
+    Call<Void> updateBio(@Path("id") Long userId, @Body Map<String, String> body);
     @POST("follows")
     Call<Void> followUser(@Query("followerId") Long followerId, @Query("followingId") Long followingId);
 

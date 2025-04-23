@@ -19,6 +19,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -202,5 +203,13 @@ public class UserService {
             result.add(new UserResponse(user));
         }
         return result;
+    }
+    
+    public void updateUserBio(Long userId, String newBio) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy người dùng"));
+
+        user.setBio(newBio);
+        userRepository.save(user);
     }
 }
