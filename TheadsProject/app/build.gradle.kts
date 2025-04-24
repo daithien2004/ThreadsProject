@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.appcompat)
     implementation(libs.okhttp.logging)
+    implementation(libs.okhttp)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
@@ -55,6 +56,8 @@ dependencies {
     implementation(libs.lombok)
     implementation(libs.lombok.processor)
     implementation(libs.socketio.client)
+    implementation(libs.stompProtocolAndroid)
+    implementation(libs.rxJava)
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

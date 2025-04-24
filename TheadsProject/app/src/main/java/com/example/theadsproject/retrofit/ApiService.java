@@ -53,7 +53,7 @@ public interface ApiService {
     @POST("likes/like")
     Call<Void> likePost(@Query("userId") Long userId, @Query("postId") Long postId);
 
-    @DELETE("likes/unlike")
+    @POST("likes/unlike")
     Call<Void> unlikePost(@Query("userId") Long userId, @Query("postId") Long postId);
 
     @GET("likes/count")
@@ -100,4 +100,11 @@ public interface ApiService {
     @POST("resetPassword")
     Call<Boolean> resetPassword(@Body OtpRequest otpRequest);
 	@GET("notifications/{userId}")
-    Call<List<NotificationResponse>> getUserNotifications(@Path("userId") Long userId);}
+    Call<List<NotificationResponse>> getUserNotifications(@Path("userId") Long userId);
+
+    @POST("posts/like/{postId}")
+    Call<?> likeNotificationPost(@Path("postId") Long postId, @Query("userId") Long userId);
+
+    @POST("posts/unlike/{postId}")
+    Call<?> unLikeNotificationPost(@Path("postId") Long postId, @Query("userId") Long userId);
+}

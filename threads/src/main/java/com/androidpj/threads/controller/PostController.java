@@ -1,14 +1,10 @@
 package com.androidpj.threads.controller;
 
-import com.androidpj.threads.dto.NotificationRequest;
-import com.androidpj.threads.dto.NotificationResponse;
-import com.androidpj.threads.dto.PostRequest;
-import com.androidpj.threads.dto.PostResponse;
+import com.androidpj.threads.dto.*;
+import com.androidpj.threads.entity.Comment;
 import com.androidpj.threads.entity.Post;
 import com.androidpj.threads.entity.User;
-import com.androidpj.threads.service.NotificationService;
-import com.androidpj.threads.service.PostService;
-import com.androidpj.threads.service.UserService;
+import com.androidpj.threads.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +27,16 @@ public class PostController {
     private UserService userService;
 
     @Autowired
+    private WebSocketService webSocketService;
+
+    @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private LikeService likeService;
 
     @GetMapping
     public ResponseEntity<List<PostResponse>> getAllPosts() {
@@ -73,36 +79,5 @@ public class PostController {
     public ResponseEntity<PostResponse> getPostById(@PathVariable Long postId) {
         PostResponse postResponse = postService.getPostById(postId);
         return ResponseEntity.ok(postResponse);
-    }
-
-    @PostMapping("/like/{postId}")
-    public ResponseEntity<?> likePost(@PathVariable Long postId, @RequestParam Long userId) {
-        postService.likePost(postId, userId);
-
-        PostResponse post = postService.getPostById(postId);
-        Long receiverId = post.getUser().getUserId();
-
-        User sender = userService.getUserById(userId);
-        NotificationRequest request = new NotificationRequest(receiverId, userId, "like", postId);
-        NotificationResponse notification = notificationService.createNotification(request);
-
-        Map<String, Object> notificationData = new HashMap<>();
-        notificationData.put("receiverId", receiverId);
-        notificationData.put("senderId", userId);
-        notificationData.put("type", "like");
-        notificationData.put("postId", postId);
-        notificationData.put("senderName", sender.getUsername());
-        notificationData.put("senderAvatar", sender.getImage());
-        notificationData.put("createdAt", notification.getCreatedAt());
-
-        RestTemplate restTemplate = new RestTemplate();
-        try {
-            restTemplate.postForEntity("http://localhost:3000/emit-notification", notificationData, String.class);
-        } catch (RestClientException e) {
-            // Logging error or handling failure
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not send notification");
-        }
-
-        return ResponseEntity.ok(notificationData);
     }
 }

@@ -27,15 +27,15 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
+
     @Autowired
     private final NotificationRepository notificationRepository;
 
     @Autowired
     private final UserRepository userRepository;
 
-    private final RestTemplate restTemplate = new RestTemplate();
-
-    private static final String SOCKET_SERVER_URL = "http://localhost:3000/emit-notification";
+    @Autowired
+    private final WebSocketService webSocketService;
 
     public List<NotificationResponse> getNotificationsForUser(Long userId) {
         User receiver = userRepository.findById(userId)
@@ -50,17 +50,27 @@ public class NotificationService {
 
     @Transactional
     public NotificationResponse createNotification(NotificationRequest request) {
-        // Validate users
-        User sender = userRepository.findById(request.getSenderId())
-                .orElseThrow(() -> new RuntimeException("Sender not found"));
-        User receiver = userRepository.findById(request.getReceiverId())
-                .orElseThrow(() -> new RuntimeException("Receiver not found"));
+        User sender = findUserOrThrow(request.getSenderId(), "Sender");
+        User receiver = findUserOrThrow(request.getReceiverId(), "Receiver");
 
-        Notification notification = new Notification(sender, receiver, request.getType(), request.getPostId(), false);
+        Notification notification = new Notification(
+                sender,
+                receiver,
+                request.getType(),
+                request.getPostId(),
+                false
+        );
 
         Notification savedNotification = notificationRepository.save(notification);
 
-        return new NotificationResponse(savedNotification);
+        NotificationResponse response = new NotificationResponse(savedNotification);
+        webSocketService.sendNotification(receiver.getUserId(), response);
+
+        return response;
     }
 
+    private User findUserOrThrow(Long userId, String role) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException(role + " not found with id: " + userId));
+    }
 }
