@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 
 import com.example.theadsproject.R;
 import com.example.theadsproject.retrofit.ApiService;
@@ -64,33 +62,46 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
             postId = getArguments().getLong("postId", -1);
         }
 
-        saveOption = view.findViewById(R.id.saveOption);
-        tvSave = view.findViewById(R.id.tvSave);
-        iconSave = view.findViewById(R.id.iconSave);
+        // Thiết lập sự kiện saveOption ban đầu (cho user layout)
+        setupSaveOption(view);
 
         // Kiểm tra quyền sở hữu bài viết
         checkIfUserIsOwner(postId);
 
+        // Kiểm tra trạng thái lưu
         checkIfPostIsSaved();
-        // Gán sự kiện click
-        saveOption.setOnClickListener(v -> {
-            if (isSaved) {
-                unsavePost();
-            } else {
-                savePost();
-            }
-        });
 
         return view;
     }
 
+    // Thiết lập sự kiện saveOption (dùng chung cho cả user và guest)
+    private void setupSaveOption(View currentView) {
+        if (!isAdded() || getContext() == null) return;
+
+        saveOption = currentView.findViewById(R.id.saveOption);
+        tvSave = currentView.findViewById(R.id.tvSave);
+        iconSave = currentView.findViewById(R.id.iconSave);
+
+        if (saveOption != null) {
+            saveOption.setOnClickListener(v -> {
+                if (isSaved) {
+                    unsavePost();
+                } else {
+                    savePost();
+                }
+            });
+        }
+    }
+
     private void checkIfUserIsOwner(Long postId) {
-        if (postId == -1) return;
+        if (postId == -1 || !isAdded()) return;
 
         ApiService apiService = RetrofitClient.getApiService();
         apiService.isPostOwner(postId, loggedInUserId).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (!isAdded()) return;
+
                 if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
                     showUserPostOptions();
                 } else {
@@ -115,6 +126,8 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
     }
 
     private void showGuestPostOptions() {
+        if (!isAdded()) return;
+
         View view = getView();
         if (view != null) {
             ViewGroup parent = (ViewGroup) view.getParent();
@@ -123,8 +136,17 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
                 LayoutInflater inflater = LayoutInflater.from(requireContext());
                 View guestView = inflater.inflate(R.layout.fragment_config_post_of_guest, parent, false);
                 parent.addView(guestView);
+
+                // Gán lại sự kiện saveOption cho guest layout
+                setupSaveOption(guestView);
+                checkIfPostIsSaved();
             }
         }
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Hủy các API request tại đây (nếu dùng Retrofit Call)
     }
 
     private void showDeleteDialog() {
@@ -150,9 +172,10 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
         apiService.deletePost(postId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!isAdded()) return;
+
                 if (response.isSuccessful()) {
                     if (deleteListener != null) deleteListener.onPostDeleted(postId);
-                    if (getDialog() != null && getDialog().isShowing()) getDialog().dismiss();
                     dismiss();
                 } else {
                     Log.e("ERROR", "Xóa thất bại: " + response.code());
@@ -167,6 +190,7 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
             }
         });
     }
+
     private void checkIfPostIsSaved() {
         ApiService apiService = RetrofitClient.getApiService();
         apiService.isPostSaved(loggedInUserId, postId).enqueue(new Callback<Boolean>() {
@@ -185,34 +209,20 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
         });
     }
 
-
-//    private void checkIfPostIsSaved() {
-//        ApiService apiService = RetrofitClient.getApiService();
-//        apiService.isPostSaved(loggedInUserId, postId).enqueue(new Callback<Boolean>() {
-//            @Override
-//            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    isSaved = response.body();
-//                    updateSaveUI();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Boolean> call, Throwable t) {
-//                Log.e("ERROR", "Lỗi khi kiểm tra trạng thái lưu: " + t.getMessage());
-//            }
-//        });
-//    }
-
     private void savePost() {
         ApiService apiService = RetrofitClient.getApiService();
         apiService.savePost(loggedInUserId, postId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!isAdded()) return;
+
                 if (response.isSuccessful()) {
                     isSaved = true;
                     updateSaveUI();
-                    Toast.makeText(getContext(), "Đã lưu bài viết", Toast.LENGTH_SHORT).show();
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Đã lưu bài viết", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
 
@@ -228,10 +238,14 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
         apiService.unsavePost(loggedInUserId, postId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!isAdded()) return;
+
                 if (response.isSuccessful()) {
                     isSaved = false;
                     updateSaveUI();
-                    Toast.makeText(getContext(), "Đã bỏ lưu bài viết", Toast.LENGTH_SHORT).show();
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Đã bỏ lưu bài viết", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -244,12 +258,11 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
 
     private void updateSaveUI() {
         if (isSaved) {
-            iconSave.setImageResource(R.drawable.bookmark); // Thay bằng icon bookmark đã lưu
-            tvSave.setText("Bỏ lưu bài viết");
+            iconSave.setImageResource(R.drawable.bookmark); // Icon đã lưu
+            tvSave.setText("Unsaved");
         } else {
-            iconSave.setImageResource(R.drawable.save); // Icon bookmark chưa lưu
-            tvSave.setText("Lưu bài viết");
+            iconSave.setImageResource(R.drawable.save); // Icon chưa lưu
+            tvSave.setText("Save");
         }
-
     }
 }

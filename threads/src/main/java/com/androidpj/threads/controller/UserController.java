@@ -1,6 +1,7 @@
 package com.androidpj.threads.controller;
 
 import com.androidpj.threads.dto.OtpRequest;
+import com.androidpj.threads.dto.UpdateBioRequest;
 import com.androidpj.threads.dto.UserRequest;
 import com.androidpj.threads.dto.UserResponse;
 import com.androidpj.threads.entity.User;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -78,5 +80,15 @@ public class UserController {
     @GetMapping("/users/search")
     public List<UserResponse> searchUsers(@RequestParam("keyword") String keyword) {
         return userService.searchUsersByKeyword(keyword);
+    }
+    // cap nhat bio
+    @PutMapping("/{id}/bio")
+    public ResponseEntity<?> updateBio(@PathVariable Long id, @RequestBody UpdateBioRequest request) {
+        try {
+            userService.updateUserBio(id, request.getBio());
+            return ResponseEntity.ok("Cập nhật bio thành công");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Người dùng không tồn tại");
+        }
     }
 }

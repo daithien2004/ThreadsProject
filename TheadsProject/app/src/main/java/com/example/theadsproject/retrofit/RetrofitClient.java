@@ -21,7 +21,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class RetrofitClient extends BaseClient {
 
 
-//	private static final String BASE_URL = "https://threadsproject.onrender.com/api/";
 	private static final String BASE_URL = "https://threadsproject.onrender.com/api/";
 
     private static Retrofit retrofit;

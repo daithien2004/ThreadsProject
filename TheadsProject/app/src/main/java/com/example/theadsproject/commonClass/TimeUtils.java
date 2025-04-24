@@ -5,18 +5,25 @@ import android.util.Log;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import android.util.Log;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.concurrent.TimeUnit;
+
 public class TimeUtils {
     public static String getTimeAgo(long pastTimeMillis) {
-        pastTimeMillis = convertUtcToLocalTime(pastTimeMillis); // Chuyển về giờ địa phương
-        long now = System.currentTimeMillis();
+        // Chuyển UTC thành giờ địa phương
+        long now = Instant.now().toEpochMilli(); // Thời gian hiện tại
+        Log.d("TimeUtils", "pastTimeMillis = " + pastTimeMillis + ", now = " + now);
 
-        // Kiểm tra nếu thời gian quá khứ lớn hơn hiện tại, tránh lỗi hiển thị âm
         if (pastTimeMillis > now) {
             Log.e("TimeError", "pastTimeMillis lớn hơn thời gian hiện tại! pastTimeMillis = " + pastTimeMillis + ", now = " + now);
             return "now";
         }
 
-        long diff = now - pastTimeMillis;
+        long diff = now - pastTimeMillis - TimeUnit.HOURS.toMillis(7);
 
         if (diff < TimeUnit.MINUTES.toMillis(1)) {
             return TimeUnit.MILLISECONDS.toSeconds(diff) + "s";
@@ -34,9 +41,7 @@ public class TimeUtils {
             return (TimeUnit.MILLISECONDS.toDays(diff) / 365) + "y";
         }
     }
-    // Chuyển từ UTC về giờ địa phương
-    public static long convertUtcToLocalTime(long utcTimeMillis) {
-        return utcTimeMillis - TimeZone.getDefault().getRawOffset();
-    }
-
 }
+
+
+
