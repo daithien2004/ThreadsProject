@@ -62,7 +62,7 @@ public interface ApiService {
     @POST("likes/like")
     Call<Void> likePost(@Query("userId") Long userId, @Query("postId") Long postId);
 
-    @DELETE("likes/unlike")
+    @POST("likes/unlike")
     Call<Void> unlikePost(@Query("userId") Long userId, @Query("postId") Long postId);
 
     @GET("likes/count")
@@ -73,7 +73,6 @@ public interface ApiService {
 
     @GET("likes/user/{userId}")
     Call<List<PostResponse>> getLikedPostsByUser(@Path("userId") Long userId);
-
 
     @POST("saved/save")
     Call<Void> savePost(@Query("userId") Long userId, @Query("postId") Long postId);

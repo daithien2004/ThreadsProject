@@ -2,8 +2,6 @@ package com.androidpj.threads.service;
 
 import com.androidpj.threads.dto.CommentRequest;
 import com.androidpj.threads.dto.CommentResponse;
-import com.androidpj.threads.dto.PostRequest;
-import com.androidpj.threads.dto.PostResponse;
 import com.androidpj.threads.entity.Comment;
 import com.androidpj.threads.entity.Post;
 import com.androidpj.threads.entity.User;
@@ -39,7 +37,7 @@ public class CommentService {
         return null;
     }
 
-    public CommentResponse createPost(CommentRequest commentRequest) {
+    public CommentResponse createComment(CommentRequest commentRequest) {
         if (commentRequest.getUserId() == null) {
             throw new RuntimeException("User is required for creating a comment");
         }

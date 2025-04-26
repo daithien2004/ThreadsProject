@@ -63,8 +63,9 @@ public class User {
 	@JsonIgnore
 	@OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
 	private Set<Follow> followers;
-	
-	
+
+	@Column(name = "session_id") // Thêm cột để lưu sessionId
+	private String sessionId;
 	
 	public int getFollowersCount() {
         return followers.size();

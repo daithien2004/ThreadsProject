@@ -13,5 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
     boolean existsByEmail(String email);
     User findByEmail(String email);
 	User findByUserId(Long userId);
+    User findBySessionId(String sessionId);
 	// tìm kiếm user theo username hoặc nickname
     List<User> findByUsernameContainingIgnoreCaseOrNickNameContainingIgnoreCase(String username, String nickname);}

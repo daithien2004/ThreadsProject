@@ -40,7 +40,6 @@ public class LoveFragment extends Fragment implements NotificationListener {
     private List<NotificationResponse> fullList = new ArrayList<>();
     private Button btnAll, btnFollow, btnReply;
     private Long currentUserId; // Lấy từ login thực tế hoặc SharedPreferences
-    private boolean isListenerSet = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,9 +48,7 @@ public class LoveFragment extends Fragment implements NotificationListener {
 
         UserSessionManager sessionManager = new UserSessionManager(getContext());
         User user = sessionManager.getUser();
-
         if (user != null) {
-            SocketManager.connect(getContext(), user.getUserId());
             currentUserId = user.getUserId();
         } else {
             Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
@@ -68,6 +65,9 @@ public class LoveFragment extends Fragment implements NotificationListener {
         rcvNotification.setLayoutManager(new LinearLayoutManager(getContext()));
         rcvNotification.setAdapter(adapter);
 
+        // Khởi tạo kết nối WebSocket
+        SocketManager.connect(requireContext().getApplicationContext(), currentUserId);
+
         return view;
     }
 
@@ -75,10 +75,7 @@ public class LoveFragment extends Fragment implements NotificationListener {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Xóa listener cũ trước khi thêm mới
-        SocketManager.removeListener(this);
         SocketManager.setListener(this);
-        isListenerSet = true;
 
         // Lấy dữ liệu ban đầu
         fetchNotifications();
@@ -123,10 +120,24 @@ public class LoveFragment extends Fragment implements NotificationListener {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        SocketManager.removeListener(this); // Hủy listener khi fragment không hoạt động
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SocketManager.setListener(this); // Đăng ký lại listener khi fragment quay lại
+    }
+
+    @Override
     public void onNotificationReceived(NotificationResponse notification) {
+        if (notification == null) return;
         requireActivity().runOnUiThread(() -> {
             fullList.add(0, notification);
-            showFiltered("all"); // Hoặc giữ filter đang chọn nếu bạn muốn
+            adapter.notifyItemInserted(0); // Chỉ cập nhật item mới
+            rcvNotification.scrollToPosition(0); // Cuộn lên đầu
         });
     }
 
@@ -135,6 +146,5 @@ public class LoveFragment extends Fragment implements NotificationListener {
     public void onDestroyView() {
         super.onDestroyView();
         SocketManager.removeListener(this); // Thêm method này trong SocketManager
-        isListenerSet = false;
     }
 }
