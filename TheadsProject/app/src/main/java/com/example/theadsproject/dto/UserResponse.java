@@ -48,6 +48,13 @@ public class UserResponse {
         this.phone = user.getPhone();
         this.email = user.getEmail();
     }
+    public UserResponse(Long userId, String username, String nickName, String bio, String image) {
+        this.userId = userId;
+        this.username = username;
+        this.nickName = nickName;
+        this.bio = bio;
+        this.image = image;
+    }
 
     public UserResponse(Long userId) {
         this.userId = userId;

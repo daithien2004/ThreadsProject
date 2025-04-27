@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -112,20 +111,13 @@ public class EditPersonalPageActivity extends AppCompatActivity {
             }
 
             // Convert User -> UserResponse
-            UserResponse userResponse = new UserResponse();
-            userResponse.setUserId(user.getUserId());
-            userResponse.setUsername(user.getUsername());
-            userResponse.setNickName(user.getNickName());
-            userResponse.setBio(user.getBio());
-            userResponse.setImage(user.getImage());
-
+            UserResponse userResponse = new UserResponse(user.getUserId(), user.getUsername(), user.getNickName(), user.getBio(), user.getImage());
             sessionManager.saveUser(userResponse); // lưu đúng kiểu UserResponse
 
             Toast.makeText(this, "Đã cập nhật thành công!", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
