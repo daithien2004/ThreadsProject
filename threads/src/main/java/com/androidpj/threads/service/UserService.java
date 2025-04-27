@@ -1,6 +1,7 @@
 package com.androidpj.threads.service;
 
 import com.androidpj.threads.dto.OtpRequest;
+import com.androidpj.threads.dto.UpdateProfileRequest;
 import com.androidpj.threads.dto.UserResponse;
 import com.androidpj.threads.dto.UserRequest;
 import com.androidpj.threads.entity.Otp;
@@ -212,4 +213,38 @@ public class UserService {
         user.setBio(newBio);
         userRepository.save(user);
     }
+    
+ // Cập nhật thông tin người dùng
+    public UserResponse updateUser(Long userId, UpdateProfileRequest userUpdateRequest) {
+        Optional<User> existingUserOpt = userRepository.findById(userId);
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+
+            // Cập nhật các thông tin
+            existingUser.setUsername(userUpdateRequest.getUsername());
+            existingUser.setNickName(userUpdateRequest.getNickName());
+            existingUser.setBio(userUpdateRequest.getBio());
+            
+            // Nếu có ảnh đại diện mới
+            if (userUpdateRequest.getImage() != null) {
+                existingUser.setImage(userUpdateRequest.getImage());
+            }
+
+            // Lưu lại thông tin đã cập nhật
+            userRepository.save(existingUser);
+
+            // Trả về UserResponse bằng cách trực tiếp tạo đối tượng từ User
+            UserResponse userResponse = new UserResponse();
+            userResponse.setUserId(existingUser.getUserId());
+            userResponse.setUsername(existingUser.getUsername());
+            userResponse.setNickName(existingUser.getNickName());
+            userResponse.setBio(existingUser.getBio());
+            userResponse.setImage(existingUser.getImage());
+
+            return userResponse;
+        } else {
+            return null; // Người dùng không tồn tại
+        }
+    }
+
 }

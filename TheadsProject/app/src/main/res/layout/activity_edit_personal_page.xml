@@ -84,17 +84,21 @@
                     android:textColor="@color/black"
                     android:textSize="12sp" />
 
-                <TextView
+                <EditText
+                    android:id="@+id/edtName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="(lyhung_03)"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/black"/>
+
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/imgAvatar"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="20dp"
@@ -127,6 +131,7 @@
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/tvBio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -150,22 +155,24 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Liên kết"
+                android:text="Nickname"
                 android:textStyle="bold"
                 android:layout_marginLeft="10dp"
 
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 
-            <TextView
+            <EditText
+                android:id="@+id/edtNickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Thêm liền kết"
+                android:text="nickname"
                 android:textSize="16sp"
-                android:layout_marginLeft="10dp"
+                android:background="@android:color/transparent"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
 
-                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout

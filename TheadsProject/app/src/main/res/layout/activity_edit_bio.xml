@@ -71,7 +71,7 @@
             android:text="Tiểu sử" />
 
         <EditText
-            android:id="@+id/edtPostContent"
+            android:id="@+id/edtBio"
             android:layout_width="match_parent"
             android:layout_height="223dp"
             android:background="@android:color/transparent"

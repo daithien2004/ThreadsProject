@@ -85,5 +85,25 @@ public class PersonalDetailFragment extends Fragment {
             startActivity(intent);
         });
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Lấy thông tin user mới nhất từ SessionManager
+        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        User user = sessionManager.getUser();
+
+        if (user != null) {
+            tvName.setText(user.getUsername());
+            tvDescription.setText(user.getNickName());
+            tvBio.setText(user.getBio());
+
+            if (user.getImage() != null && !user.getImage().isEmpty()) {
+                Glide.with(this).load(user.getImage()).apply(RequestOptions.circleCropTransform()).into(ivAvatar);
+            }
+        }
+    }
+
+
+
 }
 

@@ -179,7 +179,7 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
                     dismiss();
                 } else {
                     Log.e("ERROR", "Xóa thất bại: " + response.code());
-                    Toast.makeText(requireContext(), "Lỗi xóa bài viết", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Lỗi xóa bài viết, có thể bạn đang lưu bài viết này", Toast.LENGTH_SHORT).show();
                 }
             }
 

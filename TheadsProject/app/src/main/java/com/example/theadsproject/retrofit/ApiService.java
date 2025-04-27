@@ -58,6 +58,9 @@ public interface ApiService {
 
     @GET("users")
     Call<List<UserResponse>> getAllUsers();
+    @PUT("users/{id}")
+    Call<Void> updateUser(@Path("id") Long userId, @Body UserRequest userRequest);
+
 
     @POST("likes/like")
     Call<Void> likePost(@Query("userId") Long userId, @Query("postId") Long postId);

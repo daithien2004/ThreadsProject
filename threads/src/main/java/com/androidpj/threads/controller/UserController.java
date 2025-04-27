@@ -2,6 +2,7 @@ package com.androidpj.threads.controller;
 
 import com.androidpj.threads.dto.OtpRequest;
 import com.androidpj.threads.dto.UpdateBioRequest;
+import com.androidpj.threads.dto.UpdateProfileRequest;
 import com.androidpj.threads.dto.UserRequest;
 import com.androidpj.threads.dto.UserResponse;
 import com.androidpj.threads.entity.User;
@@ -89,6 +90,16 @@ public class UserController {
             return ResponseEntity.ok("Cập nhật bio thành công");
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Người dùng không tồn tại");
+        }
+    }
+    
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long userId, @RequestBody UpdateProfileRequest userUpdateRequest) {
+        UserResponse updatedUser = userService.updateUser(userId, userUpdateRequest);
+        if (updatedUser != null) {
+            return ResponseEntity.ok(updatedUser);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 }

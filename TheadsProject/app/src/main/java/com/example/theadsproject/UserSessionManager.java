@@ -64,4 +64,21 @@ public class UserSessionManager {
         editor.apply();
     }
 
+    public void updateBio(String newBio) {
+        User user = getUser();
+        if (user != null) {
+            user.setBio(newBio);
+            saveUser(user);
+        }
+    }
+
+    private void saveUser(User user) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(KEY_USER_ID, user.getUserId());
+        editor.putString(KEY_USERNAME, user.getUsername());
+        editor.putString(KEY_IMAGE, user.getImage());
+        editor.putString(KEY_BIO, user.getBio());
+        editor.apply();
+    }
+
 }
