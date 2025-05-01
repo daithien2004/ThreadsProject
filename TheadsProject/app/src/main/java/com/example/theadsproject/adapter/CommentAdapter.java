@@ -80,7 +80,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             holder.recyclerViewImages.setVisibility(View.GONE);
         } else {
             holder.recyclerViewImages.setVisibility(View.VISIBLE);
-            ImageAdapter imageAdapter = new ImageAdapter(context, new ArrayList<>(mediaUrls));
+
+            // Chuyển các URL Cloudinary thành đối tượng để ImageAdapter có thể xử lý
+            // ImageAdapter sẽ xử lý String URL
+            List<Object> imageObjects = new ArrayList<>(mediaUrls);
+
+            ImageAdapter imageAdapter = new ImageAdapter(context, imageObjects);
             holder.recyclerViewImages.setAdapter(imageAdapter);
         }
 

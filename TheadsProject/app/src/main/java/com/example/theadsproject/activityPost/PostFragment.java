@@ -1,6 +1,7 @@
 package com.example.theadsproject.activityPost;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -39,12 +40,14 @@ import com.example.theadsproject.adapter.ImageAdapter;
 import com.example.theadsproject.entity.User;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
+import com.example.theadsproject.service.ImageUploadService;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -203,57 +206,98 @@ public class PostFragment extends Fragment {
             return;
         }
 
-        // Chuyển Uri thành String
+        // Hiển thị loading dialog
+        ProgressDialog progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setMessage("Đang tải lên...");
+        progressDialog.show();
+
+        // Tạo list để lưu URL ảnh từ Cloudinary
         ArrayList<String> mediaUrls = new ArrayList<>();
+        CountDownLatch latch = new CountDownLatch(imageList.size());
+
+        // Upload từng ảnh lên Cloudinary
         for (Object obj : imageList) {
             if (obj instanceof Uri) {
-                mediaUrls.add(obj.toString());  // Sử dụng Uri.toString()
-            } else if (obj instanceof String) {
-                mediaUrls.add((String) obj);
+                Uri imageUri = (Uri) obj;
+                ImageUploadService.uploadImage(requireContext(), imageUri, new ImageUploadService.UploadCallback() {
+                    @Override
+                    public void onSuccess(String imageUrl) {
+                        mediaUrls.add(imageUrl);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        latch.countDown();
+                        requireActivity().runOnUiThread(() -> {
+                            Toast.makeText(requireContext(),
+                                    "Lỗi upload ảnh: " + error, Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                });
             }
         }
 
-        // Chuẩn bị request
-        UserSessionManager sessionManager = new UserSessionManager(requireContext());
-        User user = sessionManager.getUser();
-        PostRequest postRequest = new PostRequest(content, mediaUrls, "public", user.getUserId());
+        // Chờ tất cả ảnh upload xong rồi mới tạo post
+        new Thread(() -> {
+            try {
+                latch.await();
+                requireActivity().runOnUiThread(() -> {
+                    // Lấy user từ session
+                    UserSessionManager sessionManager = new UserSessionManager(requireContext());
+                    User user = sessionManager.getUser();
 
-        // Log dữ liệu JSON trước khi gửi request
-        Gson gson = new Gson();
-        String json = gson.toJson(postRequest);
-        Log.d("UPLOAD_POST", "Request JSON: " + json);
+                    // Tạo request với URL ảnh từ Cloudinary
+                    PostRequest postRequest = new PostRequest(content, mediaUrls, "public", user.getUserId());
 
-        // Thêm log kiểm tra JSON request
-        gson = new Gson();
-        Log.d("UPLOAD_POST", "Request JSON: " + gson.toJson(postRequest));
+                    // Log request JSON
+                    Gson gson = new Gson();
+                    Log.d("UPLOAD_POST", "Request JSON: " + gson.toJson(postRequest));
 
-        // Gửi request lên server
-        ApiService apiService = RetrofitClient.getApiService();
-        Call<Void> call = apiService.createPost(postRequest);
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                Log.d("UPLOAD_POST", "Response Code: " + response.code());
-                if (response.isSuccessful()) {
-                    Toast.makeText(requireContext(), "Đăng bài thành công!", Toast.LENGTH_SHORT).show();
-                    goToHomeFragment();
-                } else {
-                    try {
-                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "Không có lỗi cụ thể";
-                        Log.e("UPLOAD_POST", "Lỗi khi đăng bài: " + errorBody);
-                    } catch (Exception e) {
-                        Log.e("UPLOAD_POST", "Lỗi khi đọc errorBody", e);
-                    }
-                    Toast.makeText(requireContext(), "Lỗi khi đăng bài!", Toast.LENGTH_SHORT).show();
-                }
+                    // Gửi request lên server
+                    ApiService apiService = RetrofitClient.getApiService();
+                    Call<Void> call = apiService.createPost(postRequest);
+                    call.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            progressDialog.dismiss();
+                            Log.d("UPLOAD_POST", "Response Code: " + response.code());
+
+                            if (response.isSuccessful()) {
+                                Toast.makeText(requireContext(),
+                                        "Đăng bài thành công!", Toast.LENGTH_SHORT).show();
+                                goToHomeFragment();
+                            } else {
+                                try {
+                                    String errorBody = response.errorBody() != null ?
+                                            response.errorBody().string() : "Không có lỗi cụ thể";
+                                    Log.e("UPLOAD_POST", "Lỗi khi đăng bài: " + errorBody);
+                                    Toast.makeText(requireContext(),
+                                            "Lỗi khi đăng bài!", Toast.LENGTH_SHORT).show();
+                                } catch (Exception e) {
+                                    Log.e("UPLOAD_POST", "Lỗi khi đọc errorBody", e);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            progressDialog.dismiss();
+                            Log.e("UPLOAD_POST", "Lỗi kết nối: " + t.getMessage());
+                            Toast.makeText(requireContext(),
+                                    "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                requireActivity().runOnUiThread(() -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(requireContext(),
+                            "Lỗi xử lý ảnh", Toast.LENGTH_SHORT).show();
+                });
             }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.e("UPLOAD_POST", "Lỗi kết nối: " + t.getMessage());
-                Toast.makeText(requireContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        }).start();
     }
 
     // Chuyển về HomeFragment sau khi đăng bài thành công

@@ -1,5 +1,6 @@
 package com.example.theadsproject.activityPost;
 
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
@@ -30,7 +31,9 @@ import com.example.theadsproject.activityHome.BarActivity;
 import com.example.theadsproject.adapter.CommentAdapter;
 import com.example.theadsproject.adapter.ImageAdapter;
 import com.example.theadsproject.adapter.PostAdapter;
+import com.example.theadsproject.commonClass.FileUtil;
 import com.example.theadsproject.commonClass.TimeUtils;
+import com.example.theadsproject.config.CloudinaryConfig;
 import com.example.theadsproject.dto.CommentRequest;
 import com.example.theadsproject.dto.CommentResponse;
 import com.example.theadsproject.dto.PostRequest;
@@ -39,12 +42,17 @@ import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.entity.User;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
+import com.example.theadsproject.service.ImageUploadService;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -191,65 +199,99 @@ public class PostDetailActivity extends AppCompatActivity {
             return;
         }
 
-        // Chuyển Uri thành String
+        // Hiển thị loading dialog
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Đang tải lên...");
+        progressDialog.show();
+
+        // Tạo list để lưu URL ảnh từ Cloudinary
         ArrayList<String> mediaUrls = new ArrayList<>();
+        CountDownLatch latch = new CountDownLatch(selectedImages.size());
+
+        // Upload từng ảnh lên Cloudinary
         for (Object obj : selectedImages) {
             if (obj instanceof Uri) {
-                mediaUrls.add(obj.toString());  // Bạn sẽ cần xử lý upload thực tế sau
-            } else if (obj instanceof String) {
-                mediaUrls.add((String) obj);
-            }
-        }
-
-        // Lấy userId từ session
-        UserSessionManager sessionManager = new UserSessionManager(this);
-        User user = sessionManager.getUser();
-
-        if (user == null) {
-            Toast.makeText(this, "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Tạo request
-        CommentRequest request = new CommentRequest(content, mediaUrls, "public", user.getUserId(), postId);
-
-        // Log JSON
-        Gson gson = new Gson();
-        Log.d("UPLOAD_COMMENT", "Request JSON: " + gson.toJson(request));
-
-        // Gọi API
-        ApiService apiService = RetrofitClient.getApiService();
-        Call<Void> call = apiService.createComment(request);
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(PostDetailActivity.this, "Bình luận thành công!", Toast.LENGTH_SHORT).show();
-                    // Clear nội dung và ảnh sau khi gửi
-                    etComment.setText("");
-                    selectedImages.clear();
-                    imageAdapter.notifyDataSetChanged();
-                    rvSelectedImages.setVisibility(View.GONE);
-
-                    loadPostComments(postId);
-
-                } else {
-                    try {
-                        String error = response.errorBody() != null ? response.errorBody().string() : "Lỗi không xác định";
-                        Log.e("UPLOAD_COMMENT", "Lỗi: " + error);
-                    } catch (Exception e) {
-                        Log.e("UPLOAD_COMMENT", "Lỗi đọc errorBody", e);
+                Uri imageUri = (Uri) obj;
+                ImageUploadService.uploadImage(this, imageUri, new ImageUploadService.UploadCallback() {
+                    @Override
+                    public void onSuccess(String imageUrl) {
+                        mediaUrls.add(imageUrl); // Đây sẽ là Cloudinary URL
+                        latch.countDown();
                     }
-                    Toast.makeText(PostDetailActivity.this, "Lỗi khi bình luận!", Toast.LENGTH_SHORT).show();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.e("UPLOAD_COMMENT", "Lỗi kết nối: " + t.getMessage());
-                Toast.makeText(PostDetailActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onFailure(String error) {
+                        latch.countDown();
+                        runOnUiThread(() -> {
+                            Toast.makeText(PostDetailActivity.this,
+                                    "Lỗi upload ảnh: " + error, Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                });
             }
-        });
+        }
+
+        // Chờ tất cả ảnh upload xong rồi mới tạo comment
+        new Thread(() -> {
+            try {
+                latch.await();
+                runOnUiThread(() -> {
+                    // Lấy userId từ session
+                    UserSessionManager sessionManager = new UserSessionManager(this);
+                    User user = sessionManager.getUser();
+
+                    if (user == null) {
+                        progressDialog.dismiss();
+                        Toast.makeText(this, "Không tìm thấy thông tin người dùng!",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Tạo request với URL ảnh từ Cloudinary
+                    CommentRequest request = new CommentRequest(content, mediaUrls, "public",
+                            user.getUserId(), postId);
+
+                    // Gọi API tạo comment
+                    ApiService apiService = RetrofitClient.getApiService();
+                    Call<Void> call = apiService.createComment(request);
+                    call.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            progressDialog.dismiss();
+                            if (response.isSuccessful()) {
+                                Toast.makeText(PostDetailActivity.this,
+                                        "Bình luận thành công!", Toast.LENGTH_SHORT).show();
+
+                                // Clear form
+                                etComment.setText("");
+                                selectedImages.clear();
+                                imageAdapter.notifyDataSetChanged();
+                                rvSelectedImages.setVisibility(View.GONE);
+
+                                // Reload comments
+                                loadPostComments(postId);
+                            } else {
+                                Toast.makeText(PostDetailActivity.this,
+                                        "Lỗi khi bình luận!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            progressDialog.dismiss();
+                            Toast.makeText(PostDetailActivity.this,
+                                    "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(PostDetailActivity.this,
+                            "Lỗi xử lý ảnh", Toast.LENGTH_SHORT).show();
+                });
+            }
+        }).start();
     }
-
 }

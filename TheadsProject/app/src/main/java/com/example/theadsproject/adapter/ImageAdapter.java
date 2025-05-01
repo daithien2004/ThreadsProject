@@ -40,44 +40,43 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Object image = imageList.get(position);
-        int imageCount = imageList.size(); // Số lượng ảnh
-        int screenWidth = getScreenWidth(); // Lấy thông tin chiều rộng của màn hình
+        int imageCount = imageList.size();
+        int screenWidth = getScreenWidth();
 
         // Khởi tạo LayoutParams cho ImageView
         ViewGroup.LayoutParams params = holder.imageView.getLayoutParams();
 
+        // Xử lý kích thước ảnh
         if (imageCount == 1) {
-            // Nếu chỉ có 1 ảnh, hiển thị lớn
             params.width = dpToPx(300);
             params.height = dpToPx(400);
         } else {
-            // Nếu có nhiều ảnh, giảm kích thước sao cho phù hợp
-            int itemWidth = screenWidth / Math.min(imageCount, 3);  // Chia đều tối đa 3 ảnh
-
+            int itemWidth = screenWidth / Math.min(imageCount, 3);
             params.width = itemWidth;
-
-            // Giả sử tỷ lệ chiều rộng / chiều cao của ảnh là 1.5 (hoặc bạn có thể điều chỉnh tùy theo ảnh)
-            float aspectRatio = 1.5f;  // Điều chỉnh tỷ lệ nếu cần
-
-            // Tính chiều cao sao cho giữ tỷ lệ
+            float aspectRatio = 1.5f;
             params.height = Math.min(dpToPx(207), (int) (itemWidth * aspectRatio));
         }
 
         holder.imageView.setLayoutParams(params);
         int cornerRadius = dpToPx(10);
-        // Load ảnh từ URL hoặc Uri
+
+        // Xử lý loading ảnh
+        String imageUrl;
         if (image instanceof String) {
-            Glide.with(context)
-                    .load((String) image)
-                    .transform(new CenterCrop(), new RoundedCorners((cornerRadius)))
-                    .into(holder.imageView);
+            imageUrl = (String) image; // Đây là Cloudinary URL từ database
         } else if (image instanceof Uri) {
-            Glide.with(context)
-                    .load((Uri) image)
-                    .transform(new CenterCrop(), new RoundedCorners((cornerRadius)))
-                    .into(holder.imageView);
+            imageUrl = image.toString(); // Đây là URI local khi user chọn ảnh mới
+        } else {
+            imageUrl = null;
         }
 
+        // Load ảnh với Glide
+        if (imageUrl != null) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .transform(new CenterCrop(), new RoundedCorners(cornerRadius))
+                    .into(holder.imageView);
+        }
 
         // Thêm sự kiện click vào ảnh để mở toàn màn hình
         holder.imageView.setOnClickListener(v -> {

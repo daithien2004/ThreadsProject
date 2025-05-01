@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.socketio.client)
     implementation(libs.stompProtocolAndroid)
     implementation(libs.rxJava)
+    implementation(libs.cloudinary.android)
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

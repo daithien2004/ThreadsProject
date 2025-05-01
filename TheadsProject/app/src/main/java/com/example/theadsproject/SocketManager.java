@@ -119,8 +119,8 @@
 
     public class SocketManager {
         private static final String TAG = "SocketManager";
-//        private static final String SOCKET_URL = "ws://192.168.1.2:8080/ws/websocket";
-        private static final String SOCKET_URL = "wss://threadsproject.onrender.com/ws/websocket"; // Thay bằng IP server Spring Boot
+        private static final String SOCKET_URL = "ws://192.168.8.114:8080/ws/websocket";
+//        private static final String SOCKET_URL = "wss://threadsproject.onrender.com/ws/websocket"; // Thay bằng IP server Spring Boot
 
         private static volatile StompClient stompClient;
         private static final List<NotificationListener> listeners = new CopyOnWriteArrayList<>();
