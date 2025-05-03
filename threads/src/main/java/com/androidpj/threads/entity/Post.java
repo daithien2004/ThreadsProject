@@ -2,6 +2,8 @@ package com.androidpj.threads.entity;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import lombok.*;
@@ -45,6 +47,10 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
+    
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Repost> reposts = new ArrayList<>();
+
 
     @Column(name = "like_count")
     private Integer likeCount = 0;

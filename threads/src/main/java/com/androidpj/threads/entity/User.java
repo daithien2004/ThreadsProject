@@ -1,5 +1,7 @@
 package com.androidpj.threads.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -66,6 +68,11 @@ public class User {
 
 	@Column(name = "session_id") // Thêm cột để lưu sessionId
 	private String sessionId;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Repost> reposts = new ArrayList<>();
+
 	
 	public int getFollowersCount() {
         return followers.size();

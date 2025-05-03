@@ -141,7 +141,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/ivRepeat"
+                android:id="@+id/ivRepost"
                 android:layout_width="16dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="12dp"
@@ -151,7 +151,7 @@
                 app:srcCompat="@drawable/retweet" />
 
             <TextView
-                android:id="@+id/tvRepeat"
+                android:id="@+id/tvRepost"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="3dp"
@@ -159,7 +159,7 @@
                 android:textSize="10sp"
                 android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ivRepeat"
+                app:layout_constraintStart_toEndOf="@id/ivRepost"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

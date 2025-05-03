@@ -9,30 +9,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class PostResponse {
+public class RepostResponse {
     private Long postId;
     private String content;
     private ArrayList<String> mediaUrls;
-    private String visibility;
-    private LocalDateTime createdAt;
-    private UserResponse user;
-    private boolean isLoved = false;
 
-    public PostResponse(String content, ArrayList<String> mediaUrls, String visibility, UserResponse user) {
-        this.content = content;
-        this.mediaUrls = mediaUrls;
-        this.visibility = visibility;
-        this.user = user;
-    }
-    public PostResponse(Long postId, String content, ArrayList<String> mediaUrls, String visibility, LocalDateTime createdAt, UserResponse user) {
-        this.postId = postId;
-        this.content = content;
-        this.mediaUrls = mediaUrls;
-        this.visibility = visibility;
-        this.createdAt = createdAt;
-        this.user = user;
-    }
-    public PostResponse() {}
+    private String visibility;
 
     public Long getPostId() {
         return postId;
@@ -82,11 +64,27 @@ public class PostResponse {
         this.user = user;
     }
 
-    public boolean isLoved() {
-        return isLoved;
+    public UserResponse getRepostedBy() {
+        return repostedBy;
     }
 
-    public void setLoved(boolean loved) {
-        isLoved = loved;
+    public void setRepostedBy(UserResponse repostedBy) {
+        this.repostedBy = repostedBy;
     }
+
+    private LocalDateTime createdAt;
+    private UserResponse user;         // người đăng bài gốc
+    private UserResponse repostedBy;   // người repost lại
+    public RepostResponse(UserResponse repostedBy, UserResponse user, LocalDateTime createdAt, String visibility, ArrayList<String> mediaUrls, String content, Long postId) {
+        this.repostedBy = repostedBy;
+        this.user = user;
+        this.createdAt = createdAt;
+        this.visibility = visibility;
+        this.mediaUrls = mediaUrls;
+        this.content = content;
+        this.postId = postId;
+    }
+    // Getter và Setter
 }
+
+
