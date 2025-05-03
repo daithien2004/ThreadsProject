@@ -12,8 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.R;
 import com.example.theadsproject.SocketManager;
 import com.example.theadsproject.UserSessionManager;
@@ -24,9 +22,6 @@ import com.example.theadsproject.activitySearch.SearchFragment;
 import com.example.theadsproject.databinding.ActivityBarBinding;
 import com.example.theadsproject.entity.User;
 
-import io.socket.client.IO;
-
-
 public class BarActivity extends AppCompatActivity {
     ActivityBarBinding binding;
     @Override
@@ -35,7 +30,7 @@ public class BarActivity extends AppCompatActivity {
         binding = ActivityBarBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Đặt insets cho barBottom nếu tồn tại
+        // Thiết lập insets cho barBottom nếu có (đảm bảo tương thích các thiết bị có thanh điều hướng)
         View barBottom = findViewById(R.id.barBottom);
         if (barBottom != null) {
             ViewCompat.setOnApplyWindowInsetsListener(barBottom, (v, insets) -> {
@@ -45,11 +40,15 @@ public class BarActivity extends AppCompatActivity {
             });
         }
 
-        // Set fragment mặc định
+        // Hiển thị fragment trang chủ mặc định khi vừa vào ứng dụng
         replaceFragment(new TabLayoutHomeFragment());
+
+        // Xóa nền của thanh điều hướng (bottom nav)
         binding.bottomNavigationView.setBackground(null);
+
+        // Xử lý sự kiện chọn các item trong thanh điều hướng
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if(item.getItemId() == R.id.home) {
+            if (item.getItemId() == R.id.home) {
                 replaceFragment(new TabLayoutHomeFragment());
             } else if(item.getItemId() == R.id.love) {
                 replaceFragment(new LoveFragment());
@@ -63,9 +62,11 @@ public class BarActivity extends AppCompatActivity {
             return true;
         });
 
+        // Lấy thông tin người dùng từ phiên đăng nhập
         UserSessionManager sessionManager = new UserSessionManager(BarActivity.this);
         User user = sessionManager.getUser();
 
+        // Kết nối socket nếu tìm thấy người dùng
         if (user != null) {
             SocketManager.connect(BarActivity.this, user.getUserId());
         } else {
@@ -73,6 +74,10 @@ public class BarActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Phương thức thay đổi fragment đang hiển thị
+     * @param fragment Fragment cần hiển thị
+     */
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

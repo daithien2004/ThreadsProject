@@ -24,7 +24,7 @@ public class WebSocketService {
             messagingTemplate.convertAndSendToUser(
                     sessionId,
                     "/user/queue/errors",
-                    "Invalid userId or session"
+                    "userId hoặc Session không hợp lệ"
             );
             return;
         }
@@ -38,12 +38,12 @@ public class WebSocketService {
                         user -> messagingTemplate.convertAndSendToUser(
                                 sessionId,
                                 "/user/queue/register",
-                                "User " + userId + " registered successfully"
+                                "User " + userId + " đăng ký thành công"
                         ),
                         () -> messagingTemplate.convertAndSendToUser(
                                 sessionId,
                                 "/user/queue/errors",
-                                "User " + userId + " not found"
+                                "User " + userId + " không tìm thấy"
                         )
                 );
     }
@@ -62,10 +62,10 @@ public class WebSocketService {
         }
 
         userRepository.findById(receiverId)
-                .filter(user -> user.getSessionId() != null)
-                .ifPresentOrElse(
-                        user -> messagingTemplate.convertAndSend("/topic/notifications/" + receiverId, notification),
-                        () -> System.out.println("Không tìm thấy người dùng {} hoặc người dùng không kết nối" + receiverId)
-                );
+            .filter(user -> user.getSessionId() != null)
+            .ifPresentOrElse(
+                    user -> messagingTemplate.convertAndSend("/topic/notifications/" + receiverId, notification),
+                    () -> System.out.println("Không tìm thấy người dùng {} hoặc người dùng không kết nối" + receiverId)
+            );
     }
 }

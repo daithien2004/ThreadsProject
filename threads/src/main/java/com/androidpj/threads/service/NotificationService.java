@@ -50,6 +50,11 @@ public class NotificationService {
 
     @Transactional
     public NotificationResponse createNotification(NotificationRequest request) {
+        // Kiểm tra nếu sender và receiver là cùng một người
+        if (request.getSenderId().equals(request.getReceiverId())) {
+            return null;
+        }
+
         User sender = findUserOrThrow(request.getSenderId(), "Sender");
         User receiver = findUserOrThrow(request.getReceiverId(), "Receiver");
 

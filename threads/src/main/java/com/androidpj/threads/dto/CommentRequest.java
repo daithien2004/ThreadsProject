@@ -15,4 +15,14 @@ public class CommentRequest {
     private String visibility;
     private Long userId;
     private Long postId;
+    // Thêm trường parentId để xác định comment cha
+    private Long parentCommentId;
+
+    public CommentRequest(String content, ArrayList<String> mediaUrls, String visibility, Long userId, Long postId) {
+        this.content = content;
+        this.mediaUrls = mediaUrls;
+        this.visibility = visibility;
+        this.userId = userId;
+        this.postId = postId;
+    }
 }

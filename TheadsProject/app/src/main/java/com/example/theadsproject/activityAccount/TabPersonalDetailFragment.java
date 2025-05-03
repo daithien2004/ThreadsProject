@@ -39,11 +39,7 @@ public class TabPersonalDetailFragment extends Fragment {
             if (position == 0) {
                 tab.setText("Threads");
             } else if (position == 1) {
-                tab.setText("Replies");
-            } else if (position == 2) {
-                tab.setText("Media");
-            } else if (position == 3) {
-                tab.setText("Reports");
+                tab.setText("Reposts");
             }
         }).attach();
         // Chặn thao tác vuốt

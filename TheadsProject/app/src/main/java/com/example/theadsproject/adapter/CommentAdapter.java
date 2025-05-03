@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.R;
+import com.example.theadsproject.activityPost.CommentDetailActivity;
 import com.example.theadsproject.activityPost.ConfigPostFragment;
 import com.example.theadsproject.activityPost.PostDetailActivity;
 import com.example.theadsproject.commonClass.TimeUtils;
@@ -88,6 +89,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             ImageAdapter imageAdapter = new ImageAdapter(context, imageObjects);
             holder.recyclerViewImages.setAdapter(imageAdapter);
         }
+
+        // Sửa lại click listener cho comment
+        holder.clItemPost.setOnClickListener(v -> {
+            Intent intent = new Intent(context, CommentDetailActivity.class);
+            intent.putExtra("commentId", comment.getCommentId());
+            intent.putExtra("postId", comment.getPost().getPostId());
+            context.startActivity(intent);
+        });
 
 
         ///// xử lí khi văn bản quá dài

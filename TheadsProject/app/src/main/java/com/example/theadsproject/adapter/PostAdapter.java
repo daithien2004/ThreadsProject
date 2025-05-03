@@ -36,16 +36,16 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private final Context context;
     private final List<PostResponse> postList;
-    ApiService apiService = RetrofitClient.getApiService();
+    private final ApiService apiService = RetrofitClient.getApiService();
 
     public PostAdapter(Context context, List<PostResponse> postList) {
         this.context = context;
         this.postList = postList;
     }
-
 
     @NonNull
     @Override
@@ -58,13 +58,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         PostResponse post = postList.get(position);
 
+        // Hiển thị thông tin cơ bản
         holder.txtNickName.setText(post.getUser().getNickName());
         holder.txtTextPost.setText(post.getContent());
-        LocalDateTime createdAt = post.getCreatedAt();
 
+        // Hiển thị thời gian
+        LocalDateTime createdAt = post.getCreatedAt();
         if (createdAt != null) {
             try {
-                // Chuyển LocalDateTime thành timestamp (milliseconds)
                 long timestamp = createdAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 holder.txtTime.setText(TimeUtils.getTimeAgo(timestamp));
             } catch (Exception e) {
@@ -74,18 +75,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         } else {
             holder.txtTime.setText("Không có dữ liệu");
         }
-        holder.imgDots.setOnClickListener(v -> {
-            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(post.getPostId(), postId -> {
-                removePost(postId); // Xóa bài đăng khỏi RecyclerView ngay lập tức
-            });
-            bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
-        });
 
-        // lấy user đang sử dụng app
-        UserSessionManager sessionManager = new UserSessionManager(context);
-        User currentUser = sessionManager.getUser(); // lấy từ local
-        Long currentUserId = currentUser.getUserId();
-
+        // Xử lý avatar
         Glide.with(context)
                 .load(post.getUser().getImage())
                 .placeholder(R.drawable.user)
@@ -93,42 +84,42 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 .apply(RequestOptions.circleCropTransform())
                 .into(holder.imgAvatar);
 
+        // Hiển thị ảnh nếu có
         List<String> mediaUrls = post.getMediaUrls();
         if (mediaUrls == null || mediaUrls.isEmpty()) {
             holder.recyclerViewImages.setVisibility(View.GONE);
         } else {
             holder.recyclerViewImages.setVisibility(View.VISIBLE);
-            ImageAdapter imageAdapter = new ImageAdapter(context, new ArrayList<>(mediaUrls));
-            holder.recyclerViewImages.setAdapter(imageAdapter);
+            holder.recyclerViewImages.setAdapter(new ImageAdapter(context, new ArrayList<>(mediaUrls)));
         }
 
-
-        ///// xử lí khi văn bản quá dài
-        holder.txtTextPost.setText(post.getContent());
-        // Giới hạn số dòng ban đầu
+        // Thu gọn / mở rộng nội dung
         holder.txtTextPost.setMaxLines(2);
         holder.txtTextPost.setEllipsize(TextUtils.TruncateAt.END);
-
-        // Xử lý khi người dùng nhấn vào để mở rộng nội dung
         holder.txtTextPost.setOnClickListener(v -> {
-            if (holder.txtTextPost.getMaxLines() == 2) {
-                holder.txtTextPost.setMaxLines(Integer.MAX_VALUE); // Mở rộng full văn bản
-                holder.txtTextPost.setEllipsize(null);
-            } else {
-                holder.txtTextPost.setMaxLines(2); // Thu gọn lại
-                holder.txtTextPost.setEllipsize(TextUtils.TruncateAt.END);
-            }
+            boolean expanded = holder.txtTextPost.getMaxLines() != 2;
+            holder.txtTextPost.setMaxLines(expanded ? 2 : Integer.MAX_VALUE);
+            holder.txtTextPost.setEllipsize(expanded ? TextUtils.TruncateAt.END : null);
         });
 
-        //// Kiểm tra xem post.getContent() có rỗng không
         if (TextUtils.isEmpty(post.getContent())) {
-            holder.txtTextPost.setVisibility(View.GONE); // Ẩn TextView nếu không có nội dung
+            holder.txtTextPost.setVisibility(View.GONE);
         } else {
-            holder.txtTextPost.setVisibility(View.VISIBLE); // Hiển thị TextView nếu có nội dung
+            holder.txtTextPost.setVisibility(View.VISIBLE);
         }
-        /////// Xử lí phần tương tác
-        // thả tim
 
+        // Xử lý nút menu ba chấm (cấu hình bài viết)
+        holder.imgDots.setOnClickListener(v -> {
+            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(post.getPostId(), this::removePost);
+            bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
+        });
+
+        // Lấy thông tin người dùng hiện tại
+        UserSessionManager sessionManager = new UserSessionManager(context);
+        User currentUser = sessionManager.getUser();
+        Long currentUserId = currentUser.getUserId();
+
+        // Bấm thả tim
         holder.ivLove.setOnClickListener(v -> {
             boolean isLoved = post.isLoved();
 
@@ -138,7 +129,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         holder.ivLove.setImageResource(R.drawable.heart);
                         post.setLoved(false);
-                        updateLikeCount(holder, post.getPostId()); // gọi API để cập nhật số like
+                        updateLikeCount(holder, post.getPostId());
                     }
 
                     @Override
@@ -159,33 +150,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         });
 
-
-        // Truyền post
-        holder.clItemPost.setOnClickListener(v -> {
-            Intent intent = new Intent(context, PostDetailActivity.class);
-            intent.putExtra("postId", post.getPostId());
-            context.startActivity(intent);
-        });
-
+        // Kiểm tra trạng thái đã like
         apiService.isPostLiked(currentUserId, post.getPostId()).enqueue(new Callback<Boolean>() {
             @Override
-            public void onResponse(Call<Boolean> call, Response <Boolean> response) {
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 boolean isLiked = response.body() != null && response.body();
-                post.setLoved(isLiked); // cập nhật trạng thái trong post
-
-                if (isLiked) {
-                    holder.ivLove.setImageResource(R.drawable.heart_red);
-                } else {
-                    holder.ivLove.setImageResource(R.drawable.heart);
-                }
+                post.setLoved(isLiked);
+                holder.ivLove.setImageResource(isLiked ? R.drawable.heart_red : R.drawable.heart);
             }
 
             @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                // có thể log lỗi nếu cần
-            }
+            public void onFailure(Call<Boolean> call, Throwable t) { }
         });
 
+        // Hiển thị số lượng like
         apiService.countLikes(post.getPostId()).enqueue(new Callback<Long>() {
             @Override
             public void onResponse(Call<Long> call, Response<Long> response) {
@@ -196,19 +174,41 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             @Override
             public void onFailure(Call<Long> call, Throwable t) {
-                holder.tvLove.setText("0"); // fallback nếu lỗi
+                holder.tvLove.setText("0");
             }
         });
 
+        // Hiển thị số lượng comment
+        apiService.countComments(post.getPostId()).enqueue(new Callback<Long>() {
+            @Override
+            public void onResponse(Call<Long> call, Response<Long> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    holder.tvConversation.setText(String.valueOf(response.body()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Long> call, Throwable t) {
+                holder.tvConversation.setText("0");
+            }
+        });
+
+        // Xử lý khi click vào post để xem chi tiết
+        holder.clItemPost.setOnClickListener(v -> {
+            Intent intent = new Intent(context, PostDetailActivity.class);
+            intent.putExtra("postId", post.getPostId());
+            context.startActivity(intent);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return (postList != null) ? postList.size() : 0;
+        return postList != null ? postList.size() : 0;
     }
 
+    // ViewHolder class
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNickName, txtTextPost, txtTime, tvLove, tvConversation, tvRepeat, tvSend;
+        TextView txtNickName, txtTextPost, txtTime, tvLove, tvConversation;
         ImageView imgAvatar, imgDots, ivLove;
         RecyclerView recyclerViewImages;
         ConstraintLayout clItemPost;
@@ -224,9 +224,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             clItemPost = itemView.findViewById(R.id.clItemPost);
             ivLove = itemView.findViewById(R.id.ivLove);
             tvLove = itemView.findViewById(R.id.tvLove);
+            tvConversation = itemView.findViewById(R.id.tvConversation);
             recyclerViewImages.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
     }
+
+    // Xóa bài viết khỏi danh sách
     public void removePost(Long postId) {
         int indexToRemove = -1;
         for (int i = 0; i < postList.size(); i++) {
@@ -240,8 +243,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             notifyItemRemoved(indexToRemove);
         }
     }
+
+    // Cập nhật lại số lượng like
     private void updateLikeCount(PostViewHolder holder, Long postId) {
-        ApiService apiService = RetrofitClient.getApiService();
         apiService.countLikes(postId).enqueue(new Callback<Long>() {
             @Override
             public void onResponse(Call<Long> call, Response<Long> response) {
@@ -251,9 +255,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
 
             @Override
-            public void onFailure(Call<Long> call, Throwable t) {
-                // log lỗi nếu muốn
-            }
+            public void onFailure(Call<Long> call, Throwable t) { }
         });
     }
 }

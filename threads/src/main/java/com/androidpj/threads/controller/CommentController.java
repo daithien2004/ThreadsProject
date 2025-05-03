@@ -20,10 +20,15 @@ public class CommentController {
     @Autowired
     private NotificationService notificationService;
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<List<CommentResponse>> getCommentsByPost(@PathVariable Long postId) {
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<List<CommentResponse>> getPostComments(@PathVariable Long postId) {
         List<CommentResponse> comments = commentService.getCommentsByPost(postId);
         return ResponseEntity.ok(comments);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> countComments(@RequestParam Long postId) {
+        return ResponseEntity.ok(commentService.countComments(postId));
     }
 
     @PostMapping
@@ -35,6 +40,18 @@ public class CommentController {
         NotificationRequest request = new NotificationRequest(post.getUser().getUserId(), commentRequest.getUserId(), "comment", commentRequest.getPostId());
         NotificationResponse response = notificationService.createNotification(request);
 
+        return ResponseEntity.ok(commentResponse);
+    }
+
+    @GetMapping("/{commentId}")
+    public ResponseEntity<CommentResponse> getPostById(@PathVariable Long commentId) {
+        CommentResponse commentResponse = commentService.getCommentById(commentId);
+        return ResponseEntity.ok(commentResponse);
+    }
+
+    @GetMapping("/replies/{parentId}")
+    public ResponseEntity<List<CommentResponse>> getCommentReplies(@PathVariable Long parentId) {
+        List<CommentResponse> commentResponse = commentService.getReplies(parentId);
         return ResponseEntity.ok(commentResponse);
     }
 }

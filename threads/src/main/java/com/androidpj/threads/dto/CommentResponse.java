@@ -6,11 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.*;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class CommentResponse {
     private Long commentId;
     String content;
@@ -19,6 +19,10 @@ public class CommentResponse {
     private String visibility;
     private UserResponse user;
     private PostResponse post;
+    // Thêm trường để chứa danh sách replies
+    private List<CommentResponse> replies;
+    // Thêm trường để xác định level của comment
+    private int level;
 
     public CommentResponse(Comment comment) {
         this.commentId = comment.getCommentId();

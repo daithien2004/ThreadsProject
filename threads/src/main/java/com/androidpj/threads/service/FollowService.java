@@ -56,4 +56,7 @@ public class FollowService {
                         .collect(Collectors.toList());
     }
 
+    public long getFollowerCount(Long userId) {
+        return followRepository.countFollowersByUserId(userId);
+    }
 }

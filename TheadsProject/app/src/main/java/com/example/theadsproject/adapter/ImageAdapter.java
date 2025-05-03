@@ -21,10 +21,11 @@ import com.example.theadsproject.commonClass.FullScreenImageActivity;
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
-    private Context context;
-    private List<Object> imageList; // Chứa cả Uri và String
+    private final Context context;
+    private final List<Object> imageList; // Có thể là Uri hoặc String
     private OnDataChangedListener onDataChangedListener;
 
+    // Constructor
     public ImageAdapter(Context context, List<Object> imageList) {
         this.context = context;
         this.imageList = imageList;
@@ -117,6 +118,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public interface OnDataChangedListener {
         void onDataChanged();
     }
+    // ViewHolder
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
 

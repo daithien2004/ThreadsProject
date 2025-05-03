@@ -47,24 +47,6 @@ public class ThreadsFragment extends Fragment {
         postAdapter = new PostAdapter(getContext(), posts);
         rvPosts.setAdapter(postAdapter);
 
-        UserSessionManager sessionManager = new UserSessionManager(requireContext());
-        User user = sessionManager.getUser();
-
-        ImageView ivPostAvatar = view.findViewById(R.id.ivPostAvatar);
-        TextView tvPostName = view.findViewById(R.id.tvPostName);
-
-
-        if (user != null) {
-            tvPostName.setText(user.getNickName());
-
-            // Load ảnh đại diện (Sử dụng Glide hoặc Picasso)
-            if (user.getImage() != null && !user.getImage().isEmpty()) {
-                Glide.with(this).load(user.getImage()).apply(RequestOptions.circleCropTransform()).into(ivPostAvatar);
-            }
-        } else {
-            Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
-        }
-
         // Gọi hàm loadUserPosts để tải dữ liệu
         loadUserPosts();
 

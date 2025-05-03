@@ -25,14 +25,14 @@ public class WebSocketController {
     @MessageMapping("/register")
     @Transactional
     public void registerUser(@Payload Long userId, SimpMessageHeaderAccessor headerAccessor) {
-        String sessionId = Objects.requireNonNull(headerAccessor.getSessionId(), "Session ID cannot be null");
+        String sessionId = Objects.requireNonNull(headerAccessor.getSessionId(), "Session ID không thể null");
         webSocketService.registerUser(userId, sessionId);
     }
 
     @MessageMapping("/disconnect")
     @Transactional
     public void handleClientDisconnect(SimpMessageHeaderAccessor headerAccessor) {
-        String sessionId = Objects.requireNonNull(headerAccessor.getSessionId(), "Session ID cannot be null");
+        String sessionId = Objects.requireNonNull(headerAccessor.getSessionId(), "Session ID không thể null");
         webSocketService.handleClientDisconnect(sessionId);
     }
 }

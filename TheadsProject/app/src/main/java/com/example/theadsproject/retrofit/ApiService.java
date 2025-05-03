@@ -56,6 +56,9 @@ public interface ApiService {
     @GET("follows/users/{userId}/following")
     Call<List<UserResponse>> getFollowingUsers(@Path("userId") Long userId);
 
+    @GET("follows/count/{userId}")
+    Call<Long> getFollowerCount(@Path("userId") Long userId);
+
     @GET("users")
     Call<List<UserResponse>> getAllUsers();
     @PUT("users/{id}")
@@ -89,11 +92,20 @@ public interface ApiService {
     @GET("saved/posts/{postId}/saved-by/{userId}")
     Call<Boolean> isPostSaved(@Path("userId") Long userId, @Path("postId") Long postId);
 
-    @GET("comments/{postId}")
+    @GET("comments/post/{postId}")
     Call<List<CommentResponse>> getPostComments(@Path("postId") Long postId);
 
     @POST("comments")
     Call<Void> createComment(@Body CommentRequest commentRequest);
+
+    @GET("comments/count")
+    Call<Long> countComments(@Query("postId") Long postId);
+
+    @GET("comments/{id}")
+    Call<CommentResponse> getCommentById(@Path("id") Long commentId);
+
+    @GET("comments/replies/{parentId}")
+    Call<List<CommentResponse>> getCommentReplies(@Path("parentId") Long postId);
 
     // Upload ảnh
     @Multipart

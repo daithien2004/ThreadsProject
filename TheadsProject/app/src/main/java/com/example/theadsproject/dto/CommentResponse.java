@@ -2,6 +2,7 @@ package com.example.theadsproject.dto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,11 @@ public class CommentResponse {
     private UserResponse user;
     private PostResponse post;
 
+    // Thêm trường để chứa danh sách replies
+    private List<CommentResponse> replies;
+    // Thêm trường để xác định level của comment
+    private int level;
+
     public CommentResponse(Long commentId, String content, ArrayList<String> mediaUrls, LocalDateTime createAt, String visibility, UserResponse user, PostResponse post) {
         this.commentId = commentId;
         this.content = content;
@@ -26,6 +32,18 @@ public class CommentResponse {
         this.visibility = visibility;
         this.user = user;
         this.post = post;
+    }
+
+    public CommentResponse(Long commentId, String content, ArrayList<String> mediaUrls, LocalDateTime createAt, String visibility, UserResponse user, PostResponse post, List<CommentResponse> replies, int level) {
+        this.commentId = commentId;
+        this.content = content;
+        this.mediaUrls = mediaUrls;
+        this.createAt = createAt;
+        this.visibility = visibility;
+        this.user = user;
+        this.post = post;
+        this.replies = replies;
+        this.level = level;
     }
 
     public Long getCommentId() {

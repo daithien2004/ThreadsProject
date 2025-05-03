@@ -34,7 +34,7 @@ public class TabLayoutHomeFragment extends Fragment {
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
         if (tabLayout == null || viewPager == null) {
-            Log.e("TabLayoutHomeFragment", "Lỗi: tabLayout hoặc viewPager là null");
+            Log.e("TabLayoutHomeFragment", "Lỗi: TabLayout hoặc ViewPager là null");
         }
         ViewPagerAdapter adapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(adapter);

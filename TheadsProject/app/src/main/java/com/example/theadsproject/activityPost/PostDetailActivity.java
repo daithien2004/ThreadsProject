@@ -249,7 +249,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
                     // Tạo request với URL ảnh từ Cloudinary
                     CommentRequest request = new CommentRequest(content, mediaUrls, "public",
-                            user.getUserId(), postId);
+                            user.getUserId(), postId, null);
 
                     // Gọi API tạo comment
                     ApiService apiService = RetrofitClient.getApiService();

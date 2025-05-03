@@ -15,6 +15,8 @@ import com.androidpj.threads.entity.User;
 public interface PostRepository extends JpaRepository<Post, Long> {
 	List<Post> findByUser(User user);
 
+    Post findByPostId(Long postId);
+
     @Query("SELECT p FROM Post p WHERE p.visibility = 'public' ORDER BY p.createdAt DESC")
     List<Post> findPublicPosts();
     
@@ -29,6 +31,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p " +
     	       "WHERE p.user.userId IN (SELECT f.following.userId FROM Follow f WHERE f.follower.userId = :userId) " +
     	       "ORDER BY p.createdAt DESC")
-    	List<Post> findPostsByFollowing(@Param("userId") Long userId);
+    List<Post> findPostsByFollowing(@Param("userId") Long userId);
 
 }
