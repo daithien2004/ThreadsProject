@@ -83,14 +83,14 @@ public class PersonalDetailFragment extends Fragment {
         // Load phần header (profile info)
         loadProfileData();
 
-        // Thêm ThreadsFragment vào FrameLayout để hiển thị bài viết của user được chọn
+        // Thêm Tab fragment vào FrameLayout
+        FrameLayout frame = view.findViewById(R.id.frame_layout);
         if (savedInstanceState == null) {
-            ThreadsFragment threadsFragment = ThreadsFragment.newInstance(viewedUserId);
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            ft.replace(R.id.frame_layout, threadsFragment);
+            TabPersonalDetailFragment tabFragment = TabPersonalDetailFragment.newInstance(viewedUserId);
+            ft.replace(R.id.frame_layout, tabFragment);
             ft.commit();
         }
-
 
         // Nút Setting (chỉ hiện khi là profile của chính user)
         if (viewedUserId == new UserSessionManager(requireContext()).getUser().getUserId()) {
