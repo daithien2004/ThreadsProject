@@ -58,7 +58,7 @@ public class PostService {
 			throw new RuntimeException("Post not found");
 		}
 		postRepository.deleteById(postId);
-	}
+		}
 
 	public PostResponse getPostById(Long postId) {
 		Post post = postRepository.findById(postId)

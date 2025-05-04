@@ -13,6 +13,8 @@ public class UserRequest {
     private String username;
     private String password;
     private String nickName;
+    private String bio;
+    private String image;
 
     public UserRequest(String username, String password) {
         this.username = username;
@@ -28,5 +30,12 @@ public class UserRequest {
         this.username = username;
         this.password = password;
         this.nickName = nickName;
+    }
+
+    public UserRequest(String username, String nickName, String bio, String image) {
+        this.nickName = nickName;
+        this.username = username;
+        this.bio = bio;
+        this.image = image;
     }
 }

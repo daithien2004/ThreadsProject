@@ -2,8 +2,10 @@ package com.androidpj.threads.controller;
 
 import java.util.List;
 
+import com.androidpj.threads.dto.CommentResponse;
 import com.androidpj.threads.dto.NotificationRequest;
 import com.androidpj.threads.dto.NotificationResponse;
+import com.androidpj.threads.service.CommentService;
 import com.androidpj.threads.service.NotificationService;
 import com.androidpj.threads.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class LikeController {
     @Autowired
     private PostService postService;
     @Autowired
+    private CommentService commentService;
+    @Autowired
     private LikeService likeService;
     
     // Lấy danh sách bài viết mà người dùng đã thích
@@ -36,7 +40,7 @@ public class LikeController {
         return likeService.getPostsLikedByUser(userId);
     }
 
-    @PostMapping("/like")
+    @PostMapping("/likePost")
     public ResponseEntity<?> likePost(@RequestParam Long userId, @RequestParam Long postId) {
         try {
             // Like the post and check if a new like was created
@@ -63,7 +67,7 @@ public class LikeController {
         }
     }
 
-    @PostMapping("/unlike")
+    @PostMapping("/unlikePost")
     public ResponseEntity<?> unlikePost(@RequestParam Long userId, @RequestParam Long postId) {
         try {
             likeService.unlikePost(postId, userId);
@@ -74,14 +78,62 @@ public class LikeController {
         }
     }
 
+    @PostMapping("/likeComment")
+    public ResponseEntity<?> likeComment(@RequestParam Long userId, @RequestParam Long commentId) {
+        try {
+            // Like the post and check if a new like was created
+            boolean isNewLike = likeService.likeComment(commentId, userId);
 
-    @GetMapping("/count")
+            if (!isNewLike) {
+                // If no new like was created (post already liked), return success without sending notification
+                return ResponseEntity.ok().body("Comment already liked");
+            }
+
+            // Lấy thông tin bài viết
+            CommentResponse comment = commentService.getCommentById(commentId);
+            Long receiverId = comment.getUser().getUserId();
+
+            // Tạo yêu cầu thông báo
+            NotificationRequest request = new NotificationRequest(receiverId, userId, "like", commentId);
+            NotificationResponse response = notificationService.createNotification(request);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            // Xử lý lỗi
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not process like or send notification: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/unlikeComment")
+    public ResponseEntity<?> unlikeComment(@RequestParam Long userId, @RequestParam Long commentId) {
+        try {
+            likeService.unlikeComment(commentId, userId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not unlike post: " + e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/postCount")
     public ResponseEntity<Long> countLikes(@RequestParam Long postId) {
-        return ResponseEntity.ok(likeService.countLikes(postId));
+        return ResponseEntity.ok(likeService.countPostLikes(postId));
+    }
+
+    @GetMapping("/commentCount")
+    public ResponseEntity<Long> countCommentLikes(@RequestParam Long commentId) {
+        return ResponseEntity.ok(likeService.countCommentLikes(commentId));
     }
 
     @GetMapping("/is-liked")
     public ResponseEntity<Boolean> isLiked(@RequestParam Long userId, @RequestParam Long postId) {
         return ResponseEntity.ok(likeService.isPostLikedByUser(userId, postId));
+    }
+
+    @GetMapping("comment/is-liked")
+    public ResponseEntity<Boolean> isCommentLiked(@RequestParam Long userId, @RequestParam Long commentId) {
+        return ResponseEntity.ok(likeService.isCommentLikedByUser(userId, commentId));
     }
 }

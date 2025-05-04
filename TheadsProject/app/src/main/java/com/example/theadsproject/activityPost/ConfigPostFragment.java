@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.theadsproject.R;
+import com.example.theadsproject.UserSessionManager;
+import com.example.theadsproject.entity.User;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -27,29 +29,34 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ConfigPostFragment extends BottomSheetDialogFragment {
-    private Long postId;
-    private static final Long loggedInUserId = 1L; // Giả định đã đăng nhập
-    private OnPostDeletedListener deleteListener;
+    public enum ConfigType { POST, COMMENT }
+
+    private ConfigType type;
+    private Long id;
+    private Long userId;
+    private UserSessionManager sessionManager;
+    private OnDeleteListener deleteListener;
     private boolean isSaved = false;
 
     private LinearLayout saveOption;
     private TextView tvSave;
     private ImageView iconSave;
 
-    public interface OnPostDeletedListener {
-        void onPostDeleted(long postId);
+    public interface OnDeleteListener {
+        void onDelete(ConfigType type, long id);
     }
 
-    public static ConfigPostFragment newInstance(Long postId, OnPostDeletedListener listener) {
+    public static ConfigPostFragment newInstance(ConfigType type, Long id, OnDeleteListener listener) {
         ConfigPostFragment fragment = new ConfigPostFragment();
         Bundle args = new Bundle();
-        args.putLong("postId", postId);
+        args.putSerializable("type", type);
+        args.putLong("id", id);
         fragment.setArguments(args);
         fragment.setDeleteListener(listener);
         return fragment;
     }
 
-    public void setDeleteListener(OnPostDeletedListener listener) {
+    public void setDeleteListener(OnDeleteListener listener) {
         this.deleteListener = listener;
     }
 
@@ -58,46 +65,87 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_config_post_of_user, container, false);
 
+        sessionManager = new UserSessionManager(requireContext());
+        User user = sessionManager.getUser();
+        if (user != null) {
+            userId = user.getUserId();
+        } else {
+            Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
+            dismiss();
+            return view;
+        }
+
         if (getArguments() != null) {
-            postId = getArguments().getLong("postId", -1);
+            type = (ConfigType) getArguments().getSerializable("type");
+            id = getArguments().getLong("id", -1);
         }
 
         // Thiết lập sự kiện saveOption ban đầu (cho user layout)
-        setupSaveOption(view);
+        setupUI(view);
 
-        // Kiểm tra quyền sở hữu bài viết
-        checkIfUserIsOwner(postId);
-
-        // Kiểm tra trạng thái lưu
-        checkIfPostIsSaved();
+        if (type == ConfigType.POST) {
+            // Kiểm tra quyền sở hữu bài viết
+            checkIfUserIsOwnerPost(id);
+            // Kiểm tra trạng thái lưu
+            checkIfPostIsSaved();
+        } else if (type == ConfigType.COMMENT) {
+            // Kiểm tra quyền sở hữu bài viết
+            checkIfUserIsOwnerComment(id);
+        }
 
         return view;
     }
 
-    // Thiết lập sự kiện saveOption (dùng chung cho cả user và guest)
-    private void setupSaveOption(View currentView) {
+    private void setupUI(View view) {
         if (!isAdded() || getContext() == null) return;
 
-        saveOption = currentView.findViewById(R.id.saveOption);
-        tvSave = currentView.findViewById(R.id.tvSave);
-        iconSave = currentView.findViewById(R.id.iconSave);
+        saveOption = view.findViewById(R.id.saveOption);
+        tvSave = view.findViewById(R.id.tvSave);
+        iconSave = view.findViewById(R.id.iconSave);
 
-        if (saveOption != null) {
+        // Ẩn tính năng save cho comment
+        if (type == ConfigType.COMMENT && saveOption != null) {
+            saveOption.setVisibility(View.GONE);
+        }
+
+        // Xử lý sự kiện save cho post
+        if (type == ConfigType.POST && saveOption != null) {
             saveOption.setOnClickListener(v -> {
-                if (isSaved) {
-                    unsavePost();
-                } else {
-                    savePost();
-                }
+                if (isSaved) unsavePost();
+                else savePost();
             });
         }
     }
 
-    private void checkIfUserIsOwner(Long postId) {
+    private void checkIfUserIsOwnerPost(Long postId) {
         if (postId == -1 || !isAdded()) return;
 
         ApiService apiService = RetrofitClient.getApiService();
-        apiService.isPostOwner(postId, loggedInUserId).enqueue(new Callback<Boolean>() {
+        apiService.isPostOwner(postId, userId).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (!isAdded()) return;
+
+                if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
+                    showUserPostOptions();
+                } else {
+                    showGuestPostOptions();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("ERROR", "Lỗi kết nối API: " + t.getMessage());
+                Toast.makeText(requireContext(), "Lỗi kiểm tra quyền sở hữu", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void checkIfUserIsOwnerComment(Long commentId) {
+        if (commentId == -1 || !isAdded()) return;
+
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.isCommentOwner(commentId, userId).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (!isAdded()) return;
@@ -138,7 +186,7 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
                 parent.addView(guestView);
 
                 // Gán lại sự kiện saveOption cho guest layout
-                setupSaveOption(guestView);
+                setupUI(guestView);
                 checkIfPostIsSaved();
             }
         }
@@ -160,7 +208,12 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
         alertDialog.getWindow().setLayout(700, 600);
 
         dialogView.findViewById(R.id.btnDelete).setOnClickListener(view -> {
-            deletePost();
+            if (type == ConfigType.POST) {
+                deletePost();
+            } else if (type == ConfigType.COMMENT) {
+                deleteComment();
+            }
+
             alertDialog.dismiss();
         });
 
@@ -169,13 +222,13 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
 
     private void deletePost() {
         ApiService apiService = RetrofitClient.getApiService();
-        apiService.deletePost(postId).enqueue(new Callback<Void>() {
+        apiService.deletePost(id).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (!isAdded()) return;
 
                 if (response.isSuccessful()) {
-                    if (deleteListener != null) deleteListener.onPostDeleted(postId);
+                    if (deleteListener != null) deleteListener.onDelete(type, id);
                     dismiss();
                 } else {
                     Log.e("ERROR", "Xóa thất bại: " + response.code());
@@ -191,9 +244,33 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
         });
     }
 
+    private void deleteComment() {
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.deleteComment(id).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!isAdded()) return;
+
+                if (response.isSuccessful()) {
+                    if (deleteListener != null) deleteListener.onDelete(type, id);
+                    dismiss();
+                } else {
+                    Log.e("ERROR", "Xóa thất bại: " + response.code());
+                    Toast.makeText(requireContext(), "Lỗi xóa bình luận", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("ERROR", "Lỗi kết nối API: " + t.getMessage());
+                Toast.makeText(requireContext(), "Lỗi kết nối khi xóa bình luận", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void checkIfPostIsSaved() {
         ApiService apiService = RetrofitClient.getApiService();
-        apiService.isPostSaved(loggedInUserId, postId).enqueue(new Callback<Boolean>() {
+        apiService.isPostSaved(userId, id).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -211,7 +288,7 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
 
     private void savePost() {
         ApiService apiService = RetrofitClient.getApiService();
-        apiService.savePost(loggedInUserId, postId).enqueue(new Callback<Void>() {
+        apiService.savePost(userId, id).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (!isAdded()) return;
@@ -235,7 +312,7 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
 
     private void unsavePost() {
         ApiService apiService = RetrofitClient.getApiService();
-        apiService.unsavePost(loggedInUserId, postId).enqueue(new Callback<Void>() {
+        apiService.unsavePost(userId, id).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (!isAdded()) return;

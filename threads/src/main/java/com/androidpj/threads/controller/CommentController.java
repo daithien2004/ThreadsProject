@@ -1,6 +1,7 @@
 package com.androidpj.threads.controller;
 
 import com.androidpj.threads.dto.*;
+import com.androidpj.threads.entity.Notification;
 import com.androidpj.threads.service.CommentService;
 import com.androidpj.threads.service.NotificationService;
 import com.androidpj.threads.service.PostService;
@@ -26,10 +27,16 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
-    @GetMapping("/count")
-    public ResponseEntity<Long> countComments(@RequestParam Long postId) {
-        return ResponseEntity.ok(commentService.countComments(postId));
+    @GetMapping("/postCount")
+    public ResponseEntity<Long> countPostComments(@RequestParam Long postId) {
+        return ResponseEntity.ok(commentService.countPostComments(postId));
     }
+
+    @GetMapping("/commentCount")
+    public ResponseEntity<Long> countCommentComments(@RequestParam Long commentId) {
+        return ResponseEntity.ok(commentService.countCommentComments(commentId));
+    }
+
 
     @PostMapping
     public ResponseEntity<CommentResponse> createComment(@RequestBody CommentRequest commentRequest) {
@@ -53,5 +60,17 @@ public class CommentController {
     public ResponseEntity<List<CommentResponse>> getCommentReplies(@PathVariable Long parentId) {
         List<CommentResponse> commentResponse = commentService.getReplies(parentId);
         return ResponseEntity.ok(commentResponse);
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
+        return ResponseEntity.ok("Comment deleted successfully");
+    }
+
+    @GetMapping("/{commentId}/isOwner")
+    public ResponseEntity<Boolean> iscCommentOwner(@PathVariable Long commentId, @RequestParam Long userId) {
+        boolean isOwner = commentService.isUserOwnerOfComment(commentId, userId);
+        return ResponseEntity.ok(isOwner);
     }
 }

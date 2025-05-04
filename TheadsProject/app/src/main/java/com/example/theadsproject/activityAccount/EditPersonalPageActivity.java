@@ -1,5 +1,6 @@
 package com.example.theadsproject.activityAccount;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,8 +19,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.R;
 import com.example.theadsproject.UserSessionManager;
+import com.example.theadsproject.dto.UserRequest;
 import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.entity.User;
+import com.example.theadsproject.retrofit.ApiService;
+import com.example.theadsproject.retrofit.RetrofitClient;
+import com.example.theadsproject.service.ImageUploadService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EditPersonalPageActivity extends AppCompatActivity {
 
@@ -101,23 +110,66 @@ public class EditPersonalPageActivity extends AppCompatActivity {
             String newNickname = edtNickname.getText().toString().trim();
             String newBio = tvBio.getText().toString().trim();
 
-            user.setUsername(newName);
-            user.setNickName(newNickname);
-            user.setBio(newBio);
+            ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Đang cập nhật...");
+            progressDialog.show();
 
-            // Nếu có chọn ảnh mới
             if (selectedImageUri != null) {
-                user.setImage(selectedImageUri.toString());
+                // Upload ảnh lên Cloudinary trước
+                ImageUploadService.uploadImage(this, selectedImageUri, new ImageUploadService.UploadCallback() {
+                    @Override
+                    public void onSuccess(String imageUrl) {
+                        updateUserOnServer(newName, newNickname, newBio, imageUrl, progressDialog);
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(EditPersonalPageActivity.this, "Lỗi upload ảnh: " + error, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                // Không có ảnh mới
+                updateUserOnServer(newName, newNickname, newBio, user.getImage(), progressDialog);
             }
-
-            // Convert User -> UserResponse
-            UserResponse userResponse = new UserResponse(user.getUserId(), user.getUsername(), user.getNickName(), user.getBio(), user.getImage());
-            sessionManager.saveUser(userResponse); // lưu đúng kiểu UserResponse
-
-            Toast.makeText(this, "Đã cập nhật thành công!", Toast.LENGTH_SHORT).show();
-            finish();
         }
     }
+
+    private void updateUserOnServer(String name, String nickname, String bio, String imageUrl, ProgressDialog progressDialog) {
+        UserRequest request = new UserRequest(name, nickname, bio, imageUrl);
+
+        ApiService apiService = RetrofitClient.getApiService();
+        Call<Void> call = apiService.updateUser(user.getUserId(), request);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful()) {
+                    // Lưu local session sau khi cập nhật
+                    user.setUsername(name);
+                    user.setNickName(nickname);
+                    user.setBio(bio);
+                    user.setImage(imageUrl);
+
+                    UserResponse updatedUser = new UserResponse(user.getUserId(), name, nickname, bio, imageUrl);
+                    sessionManager.saveUser(updatedUser);
+
+                    Toast.makeText(EditPersonalPageActivity.this, "Đã cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(EditPersonalPageActivity.this, "Cập nhật thất bại!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(EditPersonalPageActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

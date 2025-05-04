@@ -3,6 +3,8 @@ package com.androidpj.threads.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.androidpj.threads.entity.Notification;
+import com.androidpj.threads.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class FollowService {
 
     @Autowired
     private FollowRepository followRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -44,6 +48,12 @@ public class FollowService {
     @Transactional
     public void unfollowUser(Long followerId, Long followingId) {
         followRepository.deleteByFollower_UserIdAndFollowing_UserId(followerId, followingId);
+
+        Notification notification = notificationRepository.findBySenderUserIdAndReceiverUserIdAndType(
+                followerId, followingId, "follow");
+        if (notification != null) {
+            notificationRepository.delete(notification);
+        }
     }
 
     public boolean isFollowing(Long followerId, Long followingId) {

@@ -11,34 +11,61 @@
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <!-- Header -->
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp">
+            android:gravity="center"
+            android:paddingTop="8dp"
+            app:layout_scrollFlags="scroll|enterAlways|snap">
 
-            <ImageView
-                android:id="@+id/ivBack"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/back_button"/>
-
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Header -->
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Reply"
-                android:textStyle="bold"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:paddingBottom="4dp">
 
-        <!-- Comment Detail -->
-        <include
-            android:id="@+id/commentDetail"
-            layout="@layout/item_post"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+                <ImageView
+                    android:id="@+id/ivBack"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="1dp"
+                    android:src="@drawable/back_button"
+                    android:layout_gravity="center_vertical"/>
 
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:text="Reply"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+
+                <!-- Comment Detail -->
+                <include
+                    android:id="@+id/commentDetail"
+                    layout="@layout/item_post"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- Replies RecyclerView -->

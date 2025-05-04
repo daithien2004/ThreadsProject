@@ -4,20 +4,20 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CommentResponse {
+public class CommentResponse implements BindableContent {
     private Long commentId;
     String content;
     private ArrayList<String> mediaUrls;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     private String visibility;
     private UserResponse user;
     private PostResponse post;
+    private boolean isLoved = false;
 
     // Thêm trường để chứa danh sách replies
     private List<CommentResponse> replies;
@@ -28,7 +28,7 @@ public class CommentResponse {
         this.commentId = commentId;
         this.content = content;
         this.mediaUrls = mediaUrls;
-        this.createAt = createAt;
+        this.createdAt = createAt;
         this.visibility = visibility;
         this.user = user;
         this.post = post;
@@ -38,7 +38,7 @@ public class CommentResponse {
         this.commentId = commentId;
         this.content = content;
         this.mediaUrls = mediaUrls;
-        this.createAt = createAt;
+        this.createdAt = createAt;
         this.visibility = visibility;
         this.user = user;
         this.post = post;
@@ -54,40 +54,19 @@ public class CommentResponse {
         this.commentId = commentId;
     }
 
-    public String getContent() {
-        return content;
-    }
-
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public ArrayList<String> getMediaUrls() {
-        return mediaUrls;
     }
 
     public void setMediaUrls(ArrayList<String> mediaUrls) {
         this.mediaUrls = mediaUrls;
     }
-
-    public LocalDateTime getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
-    }
-
-    public String getVisibility() {
-        return visibility;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public void setVisibility(String visibility) {
         this.visibility = visibility;
-    }
-
-    public UserResponse getUser() {
-        return user;
     }
 
     public void setUser(UserResponse user) {
@@ -100,5 +79,46 @@ public class CommentResponse {
 
     public void setPost(PostResponse post) {
         this.post = post;
+    }
+
+    // Implement BindableContent
+    @Override
+    public Long getId() {
+        return commentId;
+    }
+
+    @Override
+    public ArrayList<String> getMediaUrls() {
+        return mediaUrls;
+    }
+
+    @Override
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    @Override
+    public String getContent() {
+        return content;
+    }
+
+    @Override
+    public String getVisibility() {
+        return visibility;
+    }
+
+    @Override
+    public UserResponse getUser() {
+        return user;
+    }
+
+    @Override
+    public Boolean getIsLoved() {
+        return isLoved;
+    }
+
+    @Override
+    public void setIsLoved(boolean loved) {
+        isLoved = loved;
     }
 }

@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activityAccount.AllLikedActivity">
+    tools:context=".activityAccount.AllLikedActivity"
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/lnLiked"
@@ -14,7 +15,6 @@
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -22,24 +22,25 @@
             android:id="@+id/turnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
             app:srcCompat="@drawable/arrow" />
 
         <TextView
             android:id="@+id/Liked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_weight="10"
             android:text="Liked"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPosts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

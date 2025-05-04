@@ -40,10 +40,10 @@ public class AllSavedActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rvPosts);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        fetchLikedPosts();
+        fetchSavedPosts();
     }
 
-    private void fetchLikedPosts() {
+    private void fetchSavedPosts() {
         ApiService apiService = RetrofitClient.getApiService();
         UserSessionManager sessionManager = new UserSessionManager(this);
         User user = sessionManager.getUser();
