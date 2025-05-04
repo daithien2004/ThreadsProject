@@ -32,6 +32,7 @@ import com.example.theadsproject.adapter.CommentAdapter;
 import com.example.theadsproject.adapter.ImageAdapter;
 import com.example.theadsproject.adapter.PostAdapter;
 import com.example.theadsproject.commonClass.FileUtil;
+import com.example.theadsproject.commonClass.ImagePickerHelper;
 import com.example.theadsproject.commonClass.TimeUtils;
 import com.example.theadsproject.config.CloudinaryConfig;
 import com.example.theadsproject.dto.CommentRequest;
@@ -40,6 +41,7 @@ import com.example.theadsproject.dto.PostRequest;
 import com.example.theadsproject.dto.PostResponse;
 import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.entity.User;
+import com.example.theadsproject.handler.PostLikeHandler;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
 import com.example.theadsproject.service.ImageUploadService;
@@ -68,8 +70,9 @@ public class PostDetailActivity extends AppCompatActivity {
     private ImageAdapter imageAdapter;
     private RecyclerView rvSelectedImages;
     private EditText etComment;
-    private ImageButton ibSend;
-
+    private ImageButton ibSend, ibImage;
+    private ActivityResultLauncher<Intent> pickImagesLauncher;
+    private PostLikeHandler postLikeHandler = new PostLikeHandler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,39 +112,23 @@ public class PostDetailActivity extends AppCompatActivity {
 
         etComment = findViewById(R.id.etComment);
 
-        ImageButton ibImage = findViewById(R.id.ibImage);
-        ibImage.setOnClickListener(v -> openGallery());
+        ibImage = findViewById(R.id.ibImage);
+        ibImage.setOnClickListener(v -> ImagePickerHelper.openGallery(this, pickImagesLauncher));
 
-        ImageButton ibSend = findViewById(R.id.ibSend);
+        ibSend = findViewById(R.id.ibSend);
         ibSend.setOnClickListener(v -> uploadComment(postId));
-    }
 
-    private ActivityResultLauncher<Intent> pickImagesLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    ClipData clipData = result.getData().getClipData();
-                    if (clipData != null) {
-                        for (int i = 0; i < clipData.getItemCount(); i++) {
-                            selectedImages.add(clipData.getItemAt(i).getUri());
-                        }
-                    } else {
-                        Uri imageUri = result.getData().getData();
-                        if (imageUri != null) {
-                            selectedImages.add(imageUri);
-                        }
+        pickImagesLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        List<Uri> imageUris = ImagePickerHelper.handleGalleryResult(result.getData());
+                        selectedImages.addAll(imageUris);
+                        imageAdapter.notifyDataSetChanged();
+                        rvSelectedImages.setVisibility(View.VISIBLE);
                     }
-                    imageAdapter.notifyDataSetChanged();
-                    rvSelectedImages.setVisibility(View.VISIBLE);
                 }
-            }
-    );
-
-    private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setType("image/*");
-        pickImagesLauncher.launch(intent);
+        );
     }
 
     private void loadPostComments(Long postId) {
@@ -176,7 +163,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     if (!PostDetailActivity.this.isFinishing() && !PostDetailActivity.this.isDestroyed()) {
                         PostResponse post = response.body();
                         View includeView = findViewById(R.id.icPost); // view include
-                        PostItemView postItemView = new PostItemView(includeView);
+                        PostItemView postItemView = new PostItemView(includeView, PostDetailActivity.this, postLikeHandler);
                         postItemView.bind(post, PostDetailActivity.this);
                     }
 

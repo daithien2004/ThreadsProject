@@ -36,7 +36,7 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private void fetchPosts() {
+    public void fetchPosts() {
         ApiService apiService = RetrofitClient.getApiService();
         apiService.getAllPosts().enqueue(new Callback<List<PostResponse>>() {
             @Override

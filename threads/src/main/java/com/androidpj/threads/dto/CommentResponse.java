@@ -15,7 +15,7 @@ public class CommentResponse {
     private Long commentId;
     String content;
     private ArrayList<String> mediaUrls;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     private String visibility;
     private UserResponse user;
     private PostResponse post;
@@ -28,7 +28,7 @@ public class CommentResponse {
         this.commentId = comment.getCommentId();
         this.content = comment.getContent();
         this.mediaUrls = new ArrayList<>(comment.getMediaUrls());
-        this.createAt = comment.getCreateAt();
+        this.createdAt = comment.getCreateAt();
         this.visibility = comment.getVisibility();
         this.user = new UserResponse(comment.getUser());
         this.post = new PostResponse(comment.getPost());

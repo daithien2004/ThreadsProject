@@ -23,5 +23,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     void markAllAsReadByReceiver(@Param("receiver") User receiver);
 
     Notification findBySenderAndReceiverAndTypeAndPostId(User sender, User receiver, String type, Long postId);
+    Notification findBySenderUserIdAndReceiverUserIdAndType(Long senderId, Long receiverId, String type);
+    Notification findByPostId(Long postId);
 }
 

@@ -6,14 +6,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".activityAccount.EditBioActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="24dp"
+        android:layout_margin="20dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,9 +23,8 @@
             android:id="@+id/imClose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            app:srcCompat="@drawable/close">
-
+            app:srcCompat="@drawable/close"
+            android:layout_weight="2">
         </ImageView>
 
         <TextView
@@ -33,9 +32,9 @@
             android:layout_height="match_parent"
             android:text="Chỉnh sửa tiểu sử"
             android:textSize="20dp"
-            android:layout_marginLeft="100dp"
-            android:textStyle="bold">
-
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_weight="4">
         </TextView>
 
         <ImageView
@@ -43,19 +42,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:layout_marginLeft="80dp"
-            app:srcCompat="@drawable/check">
-
+            app:srcCompat="@drawable/check"
+            android:layout_weight="2">
         </ImageView>
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_margin="20dp"
+        android:padding="10dp"
         android:background="@drawable/bg_image_outline"
         android:layout_width="match_parent"
-        android:layout_height="254dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,21 +62,26 @@
 
         <TextView
             android:id="@+id/textView"
+            android:paddingStart="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:layout_marginLeft="10dp"
+            android:layout_margin="10dp"
             android:text="Tiểu sử" />
 
         <EditText
             android:id="@+id/edtBio"
             android:layout_width="match_parent"
             android:layout_height="223dp"
+            android:paddingStart="8dp"
+            android:paddingTop="9dp"
             android:background="@android:color/transparent"
             android:hint="Viết tiểu sử"
             android:textStyle="bold"
             android:textColor="@color/gray"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             android:gravity="left"
             android:textSize="16sp">
 

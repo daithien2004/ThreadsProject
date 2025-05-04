@@ -24,6 +24,7 @@ import com.example.theadsproject.entity.User;
 
 public class BarActivity extends AppCompatActivity {
     ActivityBarBinding binding;
+    private Fragment currentFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +80,7 @@ public class BarActivity extends AppCompatActivity {
      * @param fragment Fragment cần hiển thị
      */
     private void replaceFragment(Fragment fragment) {
+        this.currentFragment = fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);

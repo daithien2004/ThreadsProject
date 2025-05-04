@@ -2,14 +2,13 @@ package com.example.theadsproject.dto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class PostResponse {
+public class PostResponse implements BindableContent {
     private Long postId;
     private String content;
     private ArrayList<String> mediaUrls;
@@ -33,59 +32,70 @@ public class PostResponse {
         this.user = user;
     }
 
-    public Long getPostId() {
+    // Implement BindableContent
+    @Override
+    public Long getId() {
         return postId;
     }
 
-    public void setPostId(Long postId) {
-        this.postId = postId;
+    @Override
+    public ArrayList<String> getMediaUrls() {
+        return mediaUrls;
     }
 
+    @Override
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    @Override
     public String getContent() {
         return content;
+    }
+
+    @Override
+    public String getVisibility() {
+        return visibility;
+    }
+
+    @Override
+    public UserResponse getUser() {
+        return user;
+    }
+
+    @Override
+    public Boolean getIsLoved() {
+        return isLoved;
+    }
+
+    @Override
+    public void setIsLoved(boolean loved) {
+        isLoved = loved;
+    }
+
+    public Long getPostId() { return postId; }
+
+    public void setPostId(Long postId) {
+        this.postId = postId;
     }
 
     public void setContent(String content) {
         this.content = content;
     }
 
-    public ArrayList<String> getMediaUrls() {
-        return mediaUrls;
-    }
-
     public void setMediaUrls(ArrayList<String> mediaUrls) {
         this.mediaUrls = mediaUrls;
-    }
-
-    public String getVisibility() {
-        return visibility;
     }
 
     public void setVisibility(String visibility) {
         this.visibility = visibility;
     }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public UserResponse getUser() {
-        return user;
     }
 
     public void setUser(UserResponse user) {
         this.user = user;
     }
 
-    public boolean isLoved() {
-        return isLoved;
-    }
-
-    public void setLoved(boolean loved) {
-        isLoved = loved;
-    }
 }

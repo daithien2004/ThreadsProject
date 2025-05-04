@@ -6,7 +6,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "post_like", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "post_id"})
+        @UniqueConstraint(columnNames = {"user_id", "post_id"}),
+        @UniqueConstraint(columnNames = {"user_id", "comment_id"})
 })
 @Getter
 @Setter
@@ -25,6 +26,11 @@ public class Like {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id")
     private Post post;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 }

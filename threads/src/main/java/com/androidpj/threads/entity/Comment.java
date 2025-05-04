@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -51,5 +52,9 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "post_id")
+    @ToString.Exclude
     private Post post;
+
+    @Column(name = "like_count")
+    private Integer likeCount = 0;
 }

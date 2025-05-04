@@ -30,6 +30,9 @@ public interface ApiService {
     @DELETE("posts/{id}")
     Call<Void> deletePost(@Path("id") Long postId);
 
+    @DELETE("comments/{id}")
+    Call<Void> deleteComment(@Path("id") Long commentId);
+
     @GET("posts/{id}")
     Call<PostResponse> getPostById(@Path("id") Long postId);
 
@@ -65,17 +68,29 @@ public interface ApiService {
     Call<Void> updateUser(@Path("id") Long userId, @Body UserRequest userRequest);
 
 
-    @POST("likes/like")
+    @POST("likes/likePost")
     Call<Void> likePost(@Query("userId") Long userId, @Query("postId") Long postId);
 
-    @POST("likes/unlike")
+    @POST("likes/unlikePost")
     Call<Void> unlikePost(@Query("userId") Long userId, @Query("postId") Long postId);
 
-    @GET("likes/count")
-    Call<Long> countLikes(@Query("postId") Long postId);
+    @POST("likes/likeComment")
+    Call<Void> likeComment(@Query("userId") Long userId, @Query("commentId") Long commentId);
+
+    @POST("likes/unlikeComment")
+    Call<Void> unlikeComment(@Query("userId") Long userId, @Query("commentId") Long commentId);
+
+    @GET("likes/postCount")
+    Call<Long> countPostLikes(@Query("postId") Long postId);
+
+    @GET("likes/commentCount")
+    Call<Long> countCommentLikes(@Query("commentId") Long commentId);
 
     @GET("likes/is-liked")
     Call<Boolean> isPostLiked(@Query("userId") Long userId, @Query("postId") Long postId);
+
+    @GET("likes/comment/is-liked")
+    Call<Boolean> isCommentLiked(@Query("userId") Long userId, @Query("commentId") Long commentId);
 
     @GET("likes/user/{userId}")
     Call<List<PostResponse>> getLikedPostsByUser(@Path("userId") Long userId);
@@ -98,8 +113,11 @@ public interface ApiService {
     @POST("comments")
     Call<Void> createComment(@Body CommentRequest commentRequest);
 
-    @GET("comments/count")
-    Call<Long> countComments(@Query("postId") Long postId);
+    @GET("comments/postCount")
+    Call<Long> countPostComments(@Query("postId") Long postId);
+
+    @GET("comments/commentCount")
+    Call<Long> countCommentComments(@Query("commentId") Long commentId);
 
     @GET("comments/{id}")
     Call<CommentResponse> getCommentById(@Path("id") Long commentId);
@@ -118,6 +136,9 @@ public interface ApiService {
 
     @GET("posts/{postId}/isOwner")
     Call<Boolean> isPostOwner(@Path("postId") Long postId, @Query("userId") Long userId);
+
+    @GET("comments/{commentId}/isOwner")
+    Call<Boolean> isCommentOwner(@Path("commentId") Long commentId, @Query("userId") Long userId);
 
     @POST("login")
     Call<UserResponse> checkLogin(@Body UserRequest userRequest);

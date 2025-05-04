@@ -2,6 +2,10 @@ package com.androidpj.threads.controller;
 
 import java.util.List;
 
+import com.androidpj.threads.dto.NotificationRequest;
+import com.androidpj.threads.dto.NotificationResponse;
+import com.androidpj.threads.entity.Notification;
+import com.androidpj.threads.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,12 +25,19 @@ public class FollowController {
 
     @Autowired
     private FollowService followService;
+    @Autowired
+    private NotificationService notificationService;
 
     // Theo dõi người dùng
     @PostMapping
     public ResponseEntity<String> follow(@RequestParam Long followerId,
                                          @RequestParam Long followingId) {
         followService.followUser(followerId, followingId);
+
+        // Tạo yêu cầu thông báo
+        NotificationRequest request = new NotificationRequest(followingId, followerId, "follow");
+        NotificationResponse response = notificationService.createNotification(request);
+
         return ResponseEntity.ok("Đã theo dõi");
     }
 
