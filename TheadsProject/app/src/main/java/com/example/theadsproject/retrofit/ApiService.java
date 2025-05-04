@@ -151,4 +151,10 @@ public interface ApiService {
     @GET("reposts/posts/{postId}/reposted/{username}")
     Call<Boolean> isPostReposted(@Path("postId") Long postId, @Path("username") String username);
 
+
+
+    // GET thông tin user bất kỳ
+    @GET("users/{userId}")
+    Call<UserResponse> getUserById(@Path("userId") Long userId);
+
 }

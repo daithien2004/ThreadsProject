@@ -33,6 +33,23 @@ public class ThreadsFragment extends Fragment {
     private RecyclerView rvPosts;
     private PostAdapter postAdapter;
     private List<PostResponse> posts = new ArrayList<>();
+    private static final String ARG_USER_ID = "userId";
+    private Long userId;
+
+    public static ThreadsFragment newInstance(Long userId) {
+        ThreadsFragment fragment = new ThreadsFragment();
+        Bundle args = new Bundle();
+        args.putLong(ARG_USER_ID, userId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            userId = getArguments().getLong(ARG_USER_ID);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,10 +71,11 @@ public class ThreadsFragment extends Fragment {
     }
 
     private void loadUserPosts() {
-        UserSessionManager sessionManager = new UserSessionManager(requireContext());
-        User user = sessionManager.getUser();
+        if (userId == null) return;
+//        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+//        User user = sessionManager.getUser();
         ApiService apiService = RetrofitClient.getApiService();
-        Call<List<PostResponse>> call = apiService.getUserPosts(user.getUserId()); // Giả sử API trả về List<PostResponse>
+        Call<List<PostResponse>> call = apiService.getUserPosts(userId); // Giả sử API trả về List<PostResponse>
 
         call.enqueue(new Callback<List<PostResponse>>() {
             @Override
