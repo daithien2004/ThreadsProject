@@ -31,6 +31,7 @@ public class PostResponse implements BindableContent {
         this.createdAt = createdAt;
         this.user = user;
     }
+    public PostResponse() {}
 
     // Implement BindableContent
     @Override

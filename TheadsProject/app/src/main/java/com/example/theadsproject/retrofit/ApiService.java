@@ -7,6 +7,7 @@ import com.example.theadsproject.dto.NotificationResponse;
 import com.example.theadsproject.dto.OtpRequest;
 import com.example.theadsproject.dto.PostRequest;
 import com.example.theadsproject.dto.PostResponse;
+import com.example.theadsproject.dto.RepostResponse;
 import com.example.theadsproject.dto.UserRequest;
 import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.entity.User;
@@ -157,4 +158,18 @@ public interface ApiService {
 
 	@GET("notifications/{userId}")
     Call<List<NotificationResponse>> getUserNotifications(@Path("userId") Long userId);
+
+    @GET("reposts/my-reposts")
+    Call<List<RepostResponse>> getMyReposts(@Query("username") String username);
+
+    @POST("reposts/repost/{postId}")
+    Call<Void> repost(
+            @Path("postId") Long postId,
+            @Query("username") String username
+    );
+    @GET("reposts/count/{postId}")
+    Call<Long> countReposts(@Path("postId") Long postId);
+    @GET("reposts/posts/{postId}/reposted/{username}")
+    Call<Boolean> isPostReposted(@Path("postId") Long postId, @Path("username") String username);
+
 }

@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.theadsproject.R;
 
 public class CommonViewHolder extends RecyclerView.ViewHolder {
-    public TextView txtNickName, txtTextPost, txtTime, tvLove, tvConversation;
-    public ImageView imgAvatar, imgDots, ivLove;
+    public TextView txtNickName, txtTextPost, txtTime, tvLove, tvConversation, tvRepost;
+    public ImageView imgAvatar, imgDots, ivLove, ivRepost;
     public RecyclerView recyclerViewImages;
     public ConstraintLayout clItemPost;
 
@@ -27,7 +27,9 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
         recyclerViewImages = itemView.findViewById(R.id.rvImages);
         clItemPost = itemView.findViewById(R.id.clItemPost);
         ivLove = itemView.findViewById(R.id.ivLove);
+        ivRepost = itemView.findViewById(R.id.ivRepost);
         tvLove = itemView.findViewById(R.id.tvLove);
+        tvRepost = itemView.findViewById(R.id.tvRepost);
         tvConversation = itemView.findViewById(R.id.tvConversation);
         recyclerViewImages.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
