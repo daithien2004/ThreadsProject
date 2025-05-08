@@ -132,16 +132,6 @@
             android:backgroundTint="#000000"
             android:text="Xác nhận"
             android:textColor="#FFFFFF" />
-
-        <!-- Liên kết Resend Code -->
-        <TextView
-            android:id="@+id/resend_code_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:text="Không nhận được OTP? Gửi lại (5s)"
-            android:textColor="#808080" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

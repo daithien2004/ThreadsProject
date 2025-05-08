@@ -48,36 +48,33 @@ public class FollowingFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rvPosts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         UserSessionManager sessionManager = new UserSessionManager();
-        if (!sessionManager.isLoggedIn()) {
-            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
-        } else {
-            fetchPosts();
-        }
+
+        fetchPosts();
         return view;
     }
 
     private void fetchPosts() {
         ApiService apiService = RetrofitClient.getApiService();
         UserSessionManager sessionManager = new UserSessionManager();
-        User user = sessionManager.getUser();
-
-        apiService.getPostsByFollowing(user.getUserId()).enqueue(new Callback<List<PostResponse>>() {
-            @Override
-            public void onResponse(retrofit2.Call<List<PostResponse>> call, Response<List<PostResponse>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    postList = response.body();
-                    postAdapter = new PostAdapter(getContext(), postList);
-                    recyclerView.setAdapter(postAdapter);
-                } else {
-                    Log.e("API_ERROR", "Không lấy được dữ liệu");
+        if (sessionManager.isLoggedIn()) {
+            User user = sessionManager.getUser();
+            apiService.getPostsByFollowing(user.getUserId()).enqueue(new Callback<List<PostResponse>>() {
+                @Override
+                public void onResponse(retrofit2.Call<List<PostResponse>> call, Response<List<PostResponse>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        postList = response.body();
+                        postAdapter = new PostAdapter(getContext(), postList);
+                        recyclerView.setAdapter(postAdapter);
+                    } else {
+                        Log.e("API_ERROR", "Không lấy được dữ liệu");
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<PostResponse>> call, Throwable t) {
-                Log.e("API_ERROR", "Lỗi kết nối: " + t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<List<PostResponse>> call, Throwable t) {
+                    Log.e("API_ERROR", "Lỗi kết nối: " + t.getMessage());
+                }
+            });
+        }
     }
-
 }

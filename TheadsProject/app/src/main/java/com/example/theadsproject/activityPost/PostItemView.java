@@ -16,8 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.R;
 import com.example.theadsproject.UserSessionManager;
+import com.example.theadsproject.activityAccount.PersonalDetailFragment;
+import com.example.theadsproject.activityHome.BarActivity;
 import com.example.theadsproject.adapter.CommonViewHolder;
 import com.example.theadsproject.adapter.ImageAdapter;
 import com.example.theadsproject.adapter.PostAdapter;
@@ -45,7 +48,7 @@ public class PostItemView {
     private TextView tvNickname, tvTextPost, tvTimePost, tvLove, tvConversation, tvRepost;
     private ImageView imgAvatar, ivLove, ivConversation, imgDots, ivRepost;
     private RecyclerView rvImages;
-    private LinearLayout llRepost;
+    private LinearLayout llRepost, llLove;
     private final ApiService apiService = RetrofitClient.getApiService();
 
     private LikeHandler likeHandler;
@@ -68,6 +71,7 @@ public class PostItemView {
         tvConversation = view.findViewById(R.id.tvConversation);
         imgDots = view.findViewById(R.id.ivDots);
         llRepost = view.findViewById(R.id.llRepost);
+        llLove = view.findViewById(R.id.llLove);
         this.context = context;
         this.likeHandler = likeHandler;
 
@@ -104,10 +108,31 @@ public class PostItemView {
             tvTimePost.setText(TimeUtils.getTimeAgo(timestamp));
         }
 
+        //////// xem trang cá nhân của user khi click vào avatar
+        imgAvatar.setOnClickListener(v -> {
+            if (context instanceof BarActivity) {
+                ((BarActivity) context).replaceFragment(
+                        PersonalDetailFragment.newInstance(userId)
+                );
+            }
+        });
+
         if (!isLoggedIn) {
             // Vô hiệu hóa các chức năng khi chưa đăng nhập
-            ivLove.setEnabled(false);
-            ivRepost.setEnabled(false);
+            imgDots.setVisibility(View.INVISIBLE);
+            llRepost.setOnClickListener(v -> {
+                if (context instanceof AppCompatActivity) {
+                    LoginRequiredDialogFragment dialog = new LoginRequiredDialogFragment();
+                    dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "LoginDialog");
+                }
+            });
+
+            llLove.setOnClickListener(v -> {
+                if (context instanceof AppCompatActivity) {
+                    LoginRequiredDialogFragment dialog = new LoginRequiredDialogFragment();
+                    dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "LoginDialog");
+                }
+            });
         } else {
             likeHandler.checkIfLiked(userId, item.getId(), new Callback<Boolean>() {
                 @Override

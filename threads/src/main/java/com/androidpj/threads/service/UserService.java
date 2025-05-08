@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -44,10 +45,9 @@ public class UserService implements UserDetailsService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-//    public User getUserById(Long userId) {
-//        return userRepository.findByUserId(userId);
-//    }
     public UserResponse getUserById(Long id) {
         Optional<User> userOpt = userRepository.findById(id);
         if (userOpt.isPresent()) {
@@ -61,7 +61,7 @@ public class UserService implements UserDetailsService {
     public UserResponse checkLogin(UserRequest userRequest) {
         User user = userRepository.findByUsername(userRequest.getUsername());
 
-        if (user != null && user.getPassword().equals(userRequest.getPassword())) {
+        if (user != null && passwordEncoder.matches(userRequest.getPassword(), user.getPassword())) {
             return new UserResponse(user);
         }
         return null;
@@ -76,7 +76,7 @@ public class UserService implements UserDetailsService {
         user.setUsername(userRequest.getUsername());
         user.setEmail(userRequest.getEmail());
         user.setPhone(userRequest.getPhone());
-        user.setPassword(userRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setNickName(userRequest.getNickName());
         userRepository.save(user);
 

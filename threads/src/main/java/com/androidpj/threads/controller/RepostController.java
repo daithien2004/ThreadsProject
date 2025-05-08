@@ -24,8 +24,8 @@ public class RepostController {
 
     // Lấy các bài repost của người dùng
     @GetMapping("/my-reposts")
-    public ResponseEntity<List<RepostResponse>> getMyReposts(@RequestParam String username) {
-        List<RepostResponse> repostedPosts = repostService.getMyReposts(username);
+    public ResponseEntity<List<RepostResponse>> getMyReposts(@RequestParam Long userId) {
+        List<RepostResponse> repostedPosts = repostService.getMyReposts(userId);
         return ResponseEntity.ok(repostedPosts);
     }
  // API đếm số lượng repost của một bài viết

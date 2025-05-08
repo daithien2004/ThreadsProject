@@ -160,7 +160,7 @@ public interface ApiService {
     Call<List<NotificationResponse>> getUserNotifications(@Path("userId") Long userId);
 
     @GET("reposts/my-reposts")
-    Call<List<RepostResponse>> getMyReposts(@Query("username") String username);
+    Call<List<RepostResponse>> getMyReposts(@Query("userId") Long userId);
 
     @POST("reposts/repost/{postId}")
     Call<Void> repost(

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.activityAccount.PersonalDetailFragment;
 import com.example.theadsproject.activityHome.BarActivity;
@@ -76,8 +77,13 @@ public class PostAdapter extends RecyclerView.Adapter<CommonViewHolder> {
 
         if (!isLoggedIn) {
             // Vô hiệu hóa các chức năng khi chưa đăng nhập
-            holder.imgDots.setEnabled(false);
-            holder.ivRepost.setEnabled(false);
+            holder.imgDots.setVisibility(View.INVISIBLE);
+            holder.llRepost.setOnClickListener(v -> {
+                if (context instanceof AppCompatActivity) {
+                    LoginRequiredDialogFragment dialog = new LoginRequiredDialogFragment();
+                    dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "LoginDialog");
+                }
+            });
         } else {
             if (currentUser != null) {
                 holder.imgDots.setVisibility(View.VISIBLE);

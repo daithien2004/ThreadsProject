@@ -63,6 +63,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommonViewHolder> {
             bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
         });
 
+        holder.llRepost.setVisibility(View.INVISIBLE);
+
         // Sửa lại click listener cho comment
         holder.clItemPost.setOnClickListener(v -> {
             Intent intent = new Intent(context, CommentDetailActivity.class);

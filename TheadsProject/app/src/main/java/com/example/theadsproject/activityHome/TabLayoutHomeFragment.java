@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.R;
+import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.activityCommon.LoginActivity;
 import com.example.theadsproject.adapter.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
@@ -33,6 +35,7 @@ public class TabLayoutHomeFragment extends Fragment {
 
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
+
         if (tabLayout == null || viewPager == null) {
             Log.e("TabLayoutHomeFragment", "Lỗi: TabLayout hoặc ViewPager là null");
         }
@@ -43,13 +46,37 @@ public class TabLayoutHomeFragment extends Fragment {
         // Chặn thao tác vuốt
         viewPager.setUserInputEnabled(false);
 
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+        TabLayoutMediator mediator = new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if (position == 0) {
                 tab.setText("Home");
             } else {
                 tab.setText("Following");
             }
-        }).attach();
+        });
+        mediator.attach();
+
+        // Kiểm tra login khi chọn tab
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 1) {
+                    UserSessionManager sessionManager = new UserSessionManager();
+                    if (!sessionManager.isLoggedIn()) {
+                        // Hiển thị dialog yêu cầu đăng nhập
+                        new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
+
+                        // Quay lại tab Home mà không gây vòng lặp
+                        viewPager.post(() -> viewPager.setCurrentItem(0, false));
+                    }
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
 
         return view;
     }

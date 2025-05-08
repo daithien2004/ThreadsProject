@@ -44,16 +44,6 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        sessionManager = new UserSessionManager();
-
-        if (!sessionManager.isLoggedIn()) {
-            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
-        }
-
-        UserSessionManager sessionManager = new UserSessionManager();
-        User user = sessionManager.getUser();
-        userId = user.getUserId();
-
         edtSearch = view.findViewById(R.id.edtSearch);
         recyclerView = view.findViewById(R.id.recyclerSearchResults);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -83,6 +73,7 @@ public class SearchFragment extends Fragment {
     }
 
     private void loadAllUsers() {
+        sessionManager = new UserSessionManager();
         ApiService apiService = RetrofitClient.getApiService();
 
         apiService.getAllUsers().enqueue(new Callback<List<UserResponse>>() {
@@ -92,41 +83,46 @@ public class SearchFragment extends Fragment {
                     List<UserResponse> allUsers = response.body();
                     Log.d("ALL_USERS", "Tổng số user: " + allUsers.size());
 
-                    // Lấy danh sách những người dùng mà người dùng hiện tại đang theo dõi
-                    apiService.getFollowingUsers(userId).enqueue(new Callback<List<UserResponse>>() {
-                        @Override
-                        public void onResponse(Call<List<UserResponse>> call, Response<List<UserResponse>> followResponse) {
-                            if (followResponse.isSuccessful() && followResponse.body() != null) {
-                                List<UserResponse> followingUsers = followResponse.body();
-                                List<Long> followingIds = new ArrayList<>();
-                                for (UserResponse u : followingUsers) {
-                                    if (u.getUserId() != null) {
-                                        followingIds.add(u.getUserId());
-                                        Log.d("FOLLOWING_USER", "ID: " + u.getUserId());
+                    userList.clear();
+                    userList.addAll(allUsers);
+                    adapter.notifyDataSetChanged();
+
+                    if (sessionManager.isLoggedIn()) {
+                        // Lấy danh sách những người dùng mà người dùng hiện tại đang theo dõi
+                        apiService.getFollowingUsers(userId).enqueue(new Callback<List<UserResponse>>() {
+                            @Override
+                            public void onResponse(Call<List<UserResponse>> call, Response<List<UserResponse>> followResponse) {
+                                if (followResponse.isSuccessful() && followResponse.body() != null) {
+                                    List<UserResponse> followingUsers = followResponse.body();
+                                    List<Long> followingIds = new ArrayList<>();
+                                    for (UserResponse u : followingUsers) {
+                                        if (u.getUserId() != null) {
+                                            followingIds.add(u.getUserId());
+                                            Log.d("FOLLOWING_USER", "ID: " + u.getUserId());
+                                        }
                                     }
-                                }
 
-                                // Ánh xạ trạng thái theo dõi
-                                for (UserResponse user : allUsers) {
-                                    boolean isFollowed = followingIds.contains(user.getUserId());
-                                    user.setFollowing(isFollowed);
-                                    Log.d("CHECK_USER", "User ID: " + user.getUserId() + ", isFollowing: " + isFollowed);
-                                }
+                                    // Ánh xạ trạng thái theo dõi
+                                    for (UserResponse user : allUsers) {
+                                        boolean isFollowed = followingIds.contains(user.getUserId());
+                                        user.setFollowing(isFollowed);
+                                        Log.d("CHECK_USER", "User ID: " + user.getUserId() + ", isFollowing: " + isFollowed);
+                                    }
 
-                                userList.clear();
-                                userList.addAll(allUsers);
-                                adapter.notifyDataSetChanged();
-                            } else {
-                                Log.e("FOLLOW_API", "Không thể tải danh sách đã theo dõi hoặc null body");
+                                    userList.clear();
+                                    userList.addAll(allUsers);
+                                    adapter.notifyDataSetChanged();
+                                } else {
+                                    Log.e("FOLLOW_API", "Không thể tải danh sách đã theo dõi hoặc null body");
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<List<UserResponse>> call, Throwable t) {
-                            Log.e("FOLLOW_API", "Lỗi kết nối: " + t.getMessage());
-                        }
-                    });
-
+                            @Override
+                            public void onFailure(Call<List<UserResponse>> call, Throwable t) {
+                                Log.e("FOLLOW_API", "Lỗi kết nối: " + t.getMessage());
+                            }
+                        });
+                    }
                 } else {
                     Log.e("ALL_USERS", "API không thành công hoặc body null");
                 }

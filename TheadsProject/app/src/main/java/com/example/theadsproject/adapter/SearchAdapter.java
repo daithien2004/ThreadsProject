@@ -14,7 +14,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.R;
+import com.example.theadsproject.UserSessionManager;
+import com.example.theadsproject.activityAccount.PersonalDetailFragment;
+import com.example.theadsproject.activityHome.BarActivity;
 import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.retrofit.ApiService;
 import com.example.theadsproject.retrofit.RetrofitClient;
@@ -29,6 +33,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     private Context context;
     private List<UserResponse> userList;
     private Long currentUserId;
+    private UserSessionManager sessionManager;
 
     public SearchAdapter(Context context, List<UserResponse> userList, Long currentUserId) {
         this.context = context;
@@ -49,21 +54,36 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         holder.txtUsername.setText(user.getUsername());
         holder.txtNickName.setText(user.getNickName());
         holder.txtCountFollowers.setText(String.valueOf(user.getFollowerCount()));
-        Glide.with(context).load(user.getImage()).into(holder.ivUserAvatar);
+        Glide.with(context).load(user.getImage()).placeholder(R.drawable.user)
+                .error(R.drawable.user).apply(RequestOptions.circleCropTransform()).into(holder.ivUserAvatar);
 
-        if (user.getUserId().equals(currentUserId)) {
-            holder.btnFollow.setVisibility(View.GONE);
-        } else {
-            holder.btnFollow.setVisibility(View.VISIBLE);
-            updateFollowButtonUI(holder, user.isFollowing());
+        //////// xem trang cá nhân của user khi click vào avatar
+        holder.ivUserAvatar.setOnClickListener(v -> {
+            long authorId = user.getUserId();
+            if (context instanceof BarActivity) {
+                ((BarActivity) context).replaceFragment(
+                        PersonalDetailFragment.newInstance(authorId)
+                );
+            }
+        });
 
-            holder.btnFollow.setOnClickListener(v -> {
-                if (user.isFollowing()) {
-                    unfollowUser(currentUserId, user.getUserId(), holder.getAdapterPosition());
-                } else {
-                    followUser(currentUserId, user.getUserId(), holder.getAdapterPosition());
-                }
-            });
+        sessionManager = new UserSessionManager();
+
+        if (sessionManager.isLoggedIn()) {
+            if (user.getUserId().equals(currentUserId)) {
+                holder.btnFollow.setVisibility(View.GONE);
+            } else {
+                holder.btnFollow.setVisibility(View.VISIBLE);
+                updateFollowButtonUI(holder, user.isFollowing());
+
+                holder.btnFollow.setOnClickListener(v -> {
+                    if (user.isFollowing()) {
+                        unfollowUser(currentUserId, user.getUserId(), holder.getAdapterPosition());
+                    } else {
+                        followUser(currentUserId, user.getUserId(), holder.getAdapterPosition());
+                    }
+                });
+            }
         }
     }
 

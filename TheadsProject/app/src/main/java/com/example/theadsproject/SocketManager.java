@@ -6,6 +6,8 @@
     import android.util.Log;
     import android.widget.Toast;
     import com.example.theadsproject.dto.NotificationResponse;
+    import com.example.theadsproject.listener.NotificationListener;
+
     import org.json.JSONException;
     import org.json.JSONObject;
     import java.util.List;
@@ -20,6 +22,7 @@
     public class SocketManager {
         private static final String TAG = "SocketManager";
 //      private static final String SOCKET_URL = "wss://threadsproject.onrender.com/ws/websocket";
+        private static final String SOCKET_URL = "ws://192.168.1.17:8080/ws/websocket";
 
         private static volatile StompClient stompClient;
         private static final List<NotificationListener> listeners = new CopyOnWriteArrayList<>();

@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -23,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.R;
+import com.example.theadsproject.SocketManager;
 import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.activityHome.BarActivity;
 import com.example.theadsproject.dto.UserResponse;
@@ -72,21 +75,9 @@ public class PersonalDetailFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        sessionManager = new UserSessionManager();
-
-        if (!sessionManager.isLoggedIn()) {
-            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
-        }
-
-        FrameLayout frameLayout = view.findViewById(R.id.frame_layout);
-        if (savedInstanceState == null) {
-            getChildFragmentManager().beginTransaction()
-                    .replace(R.id.frame_layout, new TabPersonalDetailFragment()) // Thay thế với TabPersonalDetailFragment
-                    .commit();
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_personal_detail, container, false);
 
         // Ánh xạ
         tvName        = view.findViewById(R.id.tvName);
@@ -96,6 +87,43 @@ public class PersonalDetailFragment extends Fragment {
         ivAvatar      = view.findViewById(R.id.ivAvatar);
         imSetting     = view.findViewById(R.id.imSetting);
         btnEditProfile= view.findViewById(R.id.btnEditProfile);
+        imSetting = view.findViewById(R.id.imSetting);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        sessionManager = new UserSessionManager();
+
+        if (sessionManager.isLoggedIn()) {
+            // Nút Setting (chỉ hiện khi là profile của chính user)
+            if (viewedUserId == new UserSessionManager().getUser().getUserId()) {
+                imSetting.setOnClickListener(v ->
+                        startActivity(new Intent(requireContext(), SettingActivity.class))
+                );
+                btnEditProfile.setOnClickListener(v -> {
+                    Intent intent = new Intent(requireContext(), EditPersonalPageActivity.class);
+                    editProfileLauncher.launch(intent);
+                });
+
+            } else {
+                imSetting.setVisibility(View.GONE);
+                btnEditProfile.setVisibility(View.GONE);
+            }
+        } else {
+            imSetting.setVisibility(View.GONE);
+            btnEditProfile.setVisibility(View.GONE);
+        }
+
+        FrameLayout frameLayout = view.findViewById(R.id.frame_layout);
+        if (savedInstanceState == null) {
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.frame_layout, new TabPersonalDetailFragment()) // Thay thế với TabPersonalDetailFragment
+                    .commit();
+        }
 
         // Load phần header (profile info)
         loadProfileData();
@@ -107,21 +135,6 @@ public class PersonalDetailFragment extends Fragment {
             TabPersonalDetailFragment tabFragment = TabPersonalDetailFragment.newInstance(viewedUserId);
             ft.replace(R.id.frame_layout, tabFragment);
             ft.commit();
-        }
-
-        // Nút Setting (chỉ hiện khi là profile của chính user)
-        if (viewedUserId == new UserSessionManager().getUser().getUserId()) {
-            imSetting.setOnClickListener(v ->
-                    startActivity(new Intent(requireContext(), SettingActivity.class))
-            );
-            btnEditProfile.setOnClickListener(v -> {
-                Intent intent = new Intent(requireContext(), EditPersonalPageActivity.class);
-                editProfileLauncher.launch(intent);
-            });
-
-        } else {
-            imSetting.setVisibility(View.GONE);
-            btnEditProfile.setVisibility(View.GONE);
         }
     }
     private final ActivityResultLauncher<Intent> editProfileLauncher =

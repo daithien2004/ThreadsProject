@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.R;
 import com.example.theadsproject.SocketManager;
 import com.example.theadsproject.UserSessionManager;
@@ -55,10 +56,14 @@ public class BarActivity extends AppCompatActivity {
                 replaceFragment(new LoveFragment());
             } else if(item.getItemId() == R.id.account) {
                 // Lấy userId hiện tại
-                UserSessionManager sessionManager = new UserSessionManager(this);
-                long currentUserId = sessionManager.getUser().getUserId();
-                // Hiển thị fragment với userId
-                replaceFragment(PersonalDetailFragment.newInstance(currentUserId));
+                UserSessionManager sessionManager = new UserSessionManager();
+                if (sessionManager.isLoggedIn()) {
+                    long currentUserId = sessionManager.getUser().getUserId();
+                    // Hiển thị fragment với userId
+                    replaceFragment(PersonalDetailFragment.newInstance(currentUserId));
+                } else {
+                    new LoginRequiredDialogFragment().show(getSupportFragmentManager(), "login_required_dialog");
+                }
         } else if(item.getItemId() == R.id.search) {
                 replaceFragment(new SearchFragment());
             } else if(item.getItemId() == R.id.addPost) {

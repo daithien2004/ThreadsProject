@@ -46,8 +46,8 @@ public class RepostService {
     }
 
     // Lấy danh sách bài repost của người dùng
-    public List<RepostResponse> getMyReposts(String username) {
-        User currentUser = userRepository.findByUsername(username);
+    public List<RepostResponse> getMyReposts(Long userId) {
+        User currentUser = userRepository.findByUserId(userId);
         List<Repost> reposts = repostRepository.findByUser(currentUser);
         return reposts.stream()
                 .map(repost -> new RepostResponse(repost.getPost(), currentUser)) // Tạo RepostResponse với thông tin người repost

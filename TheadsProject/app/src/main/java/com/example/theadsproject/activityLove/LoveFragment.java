@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.theadsproject.LoginRequiredDialogFragment;
-import com.example.theadsproject.NotificationListener;
+import com.example.theadsproject.listener.NotificationListener;
 import com.example.theadsproject.R;
 import com.example.theadsproject.SocketManager;
 import com.example.theadsproject.UserSessionManager;
-import com.example.theadsproject.activityHome.BarActivity;
 import com.example.theadsproject.adapter.NotificationAdapter;
 import com.example.theadsproject.dto.NotificationResponse;
 import com.example.theadsproject.entity.User;
@@ -27,9 +25,7 @@ import com.example.theadsproject.retrofit.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import io.socket.client.Socket;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,20 +42,23 @@ public class LoveFragment extends Fragment implements NotificationListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        sessionManager = new UserSessionManager();
+
+        if (!sessionManager.isLoggedIn()) {
+            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
+            return null;
+        }
+
         View view = inflater.inflate(R.layout.fragment_love, container, false);
 
         // Ánh xạ view
         rcvNotification = view.findViewById(R.id.rcvNotification);
-        btnAll = view.findViewById(R.id.btnAll);
-        btnFollow = view.findViewById(R.id.btnFollow);
-        btnReply = view.findViewById(R.id.btnReply);
 
         // Setup RecyclerView
         adapter = new NotificationAdapter(new ArrayList<>());
         rcvNotification.setLayoutManager(new LinearLayoutManager(getContext()));
         rcvNotification.setAdapter(adapter);
-
-
 
         return view;
     }
@@ -68,29 +67,18 @@ public class LoveFragment extends Fragment implements NotificationListener {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        sessionManager = new UserSessionManager();
-
         SocketManager.setListener(this);
 
-        if (!sessionManager.isLoggedIn()) {
-            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
+        User user = sessionManager.getUser();
+        if (user != null) {
+            currentUserId = user.getUserId();
         } else {
-            User user = sessionManager.getUser();
-            if (user != null) {
-                currentUserId = user.getUserId();
-            } else {
-                Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
-            }
-            // Khởi tạo kết nối WebSocket
-            SocketManager.connect(requireContext().getApplicationContext(), currentUserId);
-            // Lấy dữ liệu ban đầu
-            fetchNotifications();
+            Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
         }
-
-        // Bắt sự kiện lọc
-        btnAll.setOnClickListener(v -> showFiltered("all"));
-        btnFollow.setOnClickListener(v -> showFiltered("follow"));
-        btnReply.setOnClickListener(v -> showFiltered("comment"));
+        // Khởi tạo kết nối WebSocket
+        SocketManager.connect(requireContext().getApplicationContext(), currentUserId);
+        // Lấy dữ liệu ban đầu
+        fetchNotifications();
     }
 
     private void fetchNotifications() {
@@ -101,7 +89,7 @@ public class LoveFragment extends Fragment implements NotificationListener {
                 if (response.isSuccessful() && response.body() != null) {
                     fullList.clear();
                     fullList.addAll(response.body());
-                    showFiltered("all");
+                    adapter.updateData(fullList);
                 } else {
                     Toast.makeText(getContext(), "Không lấy được thông báo", Toast.LENGTH_SHORT).show();
                 }
@@ -112,18 +100,6 @@ public class LoveFragment extends Fragment implements NotificationListener {
                 Toast.makeText(getContext(), "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void showFiltered(String type) {
-        List<NotificationResponse> filtered;
-        if (type.equals("all")) {
-            filtered = fullList;
-        } else {
-            filtered = fullList.stream()
-                    .filter(n -> type.equals(n.getType()))
-                    .collect(Collectors.toList());
-        }
-        adapter.updateData(filtered);
     }
 
     @Override

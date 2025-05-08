@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.R;
 import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.activityPost.ConfigPostFragment;
@@ -82,42 +83,6 @@ public class BindingUtils {
             holder.txtTextPost.setVisibility(View.VISIBLE);
         }
 
-        // Lấy thông tin người dùng hiện tại
-        UserSessionManager sessionManager = new UserSessionManager();
-        User currentUser = sessionManager.getUser();
-        Long currentUserId = currentUser.getUserId();
-
-        // Bấm thả tim
-        holder.llLove.setOnClickListener(v -> {
-            boolean isLoved = item.getIsLoved();
-
-            if (isLoved) {
-                likeHandler.unlike(currentUserId, item.getId(), new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        holder.ivLove.setImageResource(R.drawable.heart);
-                        item.setIsLoved(false);
-                        updateLikeCount(holder, item.getId(), likeHandler);
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) { }
-                });
-            } else {
-                likeHandler.like(currentUserId, item.getId(), new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        holder.ivLove.setImageResource(R.drawable.heart_red);
-                        item.setIsLoved(true);
-                        updateLikeCount(holder, item.getId(), likeHandler);
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) { }
-                });
-            }
-        });
-
         likeHandler.checkIfLiked(item.getUser().getUserId(), item.getId(), new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -160,12 +125,22 @@ public class BindingUtils {
             }
         });
 
+        // Lấy thông tin người dùng hiện tại
+        UserSessionManager sessionManager = new UserSessionManager();
+
         if (!sessionManager.isLoggedIn()) {
-            // Vô hiệu hóa các chức năng khi chưa đăng nhập
-            holder.ivLove.setEnabled(false);
+            holder.llLove.setOnClickListener(v -> {
+                if (context instanceof AppCompatActivity) {
+                    LoginRequiredDialogFragment dialog = new LoginRequiredDialogFragment();
+                    dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "LoginDialog");
+                }
+            });
         } else {
+            User currentUser = sessionManager.getUser();
+            Long currentUserId = currentUser.getUserId();
+
             // Bấm thả tim
-            holder.ivLove.setOnClickListener(v -> {
+            holder.llLove.setOnClickListener(v -> {
                 boolean isLoved = item.getIsLoved();
 
                 if (isLoved) {

@@ -40,7 +40,12 @@ public class SecurityConfig {
                                 "reposts/count/{postId}",
                                 "comments/post/{postId}",
                                 "comments/{id}",
-                                "comments/replies/{parentId}"
+                                "comments/replies/{parentId}",
+                                "users/{userId}",
+                                "follows/count/{userId}",
+                                "reposts/my-reposts",
+                                "users",
+                                "reposts/my-reposts"
                         ).permitAll()
 
                         // Các endpoint yêu cầu xác thực
@@ -59,11 +64,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
 

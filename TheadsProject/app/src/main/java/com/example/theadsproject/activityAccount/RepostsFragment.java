@@ -71,13 +71,50 @@ public class RepostsFragment extends Fragment {
         return view;
     }
 
+//    private void loadUserPosts() {
+//        UserSessionManager sessionManager = new UserSessionManager();
+//        if (sessionManager.isLoggedIn()) {
+//            User user = sessionManager.getUser();
+//            ApiService apiService = RetrofitClient.getApiService();
+//
+//            // Giữ nguyên cách sử dụng username từ sessionManager thay vì userId
+//            Call<List<RepostResponse>> call = apiService.getMyReposts(user.getUsername());
+//
+//            call.enqueue(new Callback<List<RepostResponse>>() {
+//                @Override
+//                public void onResponse(Call<List<RepostResponse>> call, Response<List<RepostResponse>> response) {
+//                    if (response.isSuccessful() && response.body() != null) {
+//                        posts.clear();
+//                        for (RepostResponse repost : response.body()) {
+//                            // Convert từng RepostResponse -> PostResponse để tái sử dụng PostAdapter
+//                            PostResponse post = new PostResponse();
+//                            post.setPostId(repost.getPostId());
+//                            post.setContent(repost.getContent());
+//                            post.setMediaUrls(new ArrayList<>(repost.getMediaUrls()));
+//                            post.setVisibility(repost.getVisibility());
+//                            post.setCreatedAt(repost.getCreatedAt());
+//                            post.setUser(repost.getUser()); // Lưu ý: đây là người đăng gốc, không phải người repost
+//
+//                            posts.add(post);
+//                        }
+//                        postAdapter.notifyDataSetChanged();
+//                    } else {
+//                        Toast.makeText(getContext(), "Lỗi khi tải bài repost!", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<List<RepostResponse>> call, Throwable t) {
+//                    Toast.makeText(getContext(), "Lỗi kết nối!", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//        }
+//    }
     private void loadUserPosts() {
-        UserSessionManager sessionManager = new UserSessionManager();
-        User user = sessionManager.getUser();
         ApiService apiService = RetrofitClient.getApiService();
 
         // Giữ nguyên cách sử dụng username từ sessionManager thay vì userId
-        Call<List<RepostResponse>> call = apiService.getMyReposts(user.getUsername());
+        Call<List<RepostResponse>> call = apiService.getMyReposts(userId);
 
         call.enqueue(new Callback<List<RepostResponse>>() {
             @Override
@@ -108,68 +145,4 @@ public class RepostsFragment extends Fragment {
             }
         });
     }
-
 }
-
-//public class RepostsFragment extends Fragment {
-//
-//    private RecyclerView rvPosts;
-//    private PostAdapter postAdapter;
-//    private List<PostResponse> posts = new ArrayList<>();
-//
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        View view = inflater.inflate(R.layout.fragment_reposts, container, false);
-//
-//        // Setup RecyclerView
-//        rvPosts = view.findViewById(R.id.rvPostsPersonal);
-//        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
-//
-//        postAdapter = new PostAdapter(getContext(), posts);
-//        rvPosts.setAdapter(postAdapter);
-//
-//        // Gọi hàm loadUserPosts để tải dữ liệu
-//        loadUserPosts();
-//
-//        return view;
-//    }
-//
-//    private void loadUserPosts() {
-//        UserSessionManager sessionManager = new UserSessionManager(requireContext());
-//        User user = sessionManager.getUser();
-//        ApiService apiService = RetrofitClient.getApiService();
-//
-//        Call<List<RepostResponse>> call = apiService.getMyReposts(user.getUsername());
-//
-//        call.enqueue(new Callback<List<RepostResponse>>() {
-//            @Override
-//            public void onResponse(Call<List<RepostResponse>> call, Response<List<RepostResponse>> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    posts.clear();
-//                    for (RepostResponse repost : response.body()) {
-//                        // Convert từng RepostResponse -> PostResponse để tái sử dụng PostAdapter
-//                        PostResponse post = new PostResponse();
-//                        post.setPostId(repost.getPostId());
-//                        post.setContent(repost.getContent());
-//                        post.setMediaUrls(new ArrayList<>(repost.getMediaUrls()));
-//                        post.setVisibility(repost.getVisibility());
-//                        post.setCreatedAt(repost.getCreatedAt());
-//                        post.setUser(repost.getUser()); // Lưu ý: đây là người đăng gốc, không phải người repost
-//
-//                        posts.add(post);
-//                    }
-//                    postAdapter.notifyDataSetChanged();
-//                } else {
-//                    Toast.makeText(getContext(), "Lỗi khi tải bài repost!", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<RepostResponse>> call, Throwable t) {
-//                Toast.makeText(getContext(), "Lỗi kết nối!", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-//}

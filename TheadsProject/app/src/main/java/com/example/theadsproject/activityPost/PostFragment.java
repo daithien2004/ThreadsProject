@@ -67,12 +67,6 @@ public class PostFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sessionManager = new UserSessionManager();
-
-        if (!sessionManager.isLoggedIn()) {
-            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
-        }
-
         // Xử lý chọn ảnh từ thư viện
         pickImagesLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -99,6 +93,15 @@ public class PostFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        sessionManager = new UserSessionManager();
+
+        // Kiểm tra đăng nhập trước khi load view
+        if (!sessionManager.isLoggedIn()) {
+            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
+            return null; // Dừng việc load giao diện
+        }
+
         View view = inflater.inflate(R.layout.fragment_post, container, false);
 
         TextView tvPostName = view.findViewById(R.id.tvPostName);

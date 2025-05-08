@@ -1,4 +1,4 @@
-package com.example.theadsproject;
+package com.example.theadsproject.listener;
 
 import com.example.theadsproject.dto.NotificationResponse;
 

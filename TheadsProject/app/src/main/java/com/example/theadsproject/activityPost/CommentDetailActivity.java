@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,7 +56,11 @@ public class CommentDetailActivity extends AppCompatActivity {
     private ImageAdapter imageAdapter;          // Adapter cho ảnh đã chọn
     private Long postId;                        // ID bài viết
     private ActivityResultLauncher<Intent> pickImagesLauncher;
+
+    private ConstraintLayout commentBar;
     CommentLikeHandler commentLikeHandler = new CommentLikeHandler();
+
+    private UserSessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +108,11 @@ public class CommentDetailActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        UserSessionManager sessionManager = new UserSessionManager();
+        commentBar = findViewById(R.id.comment_bar);
+        if (!sessionManager.isLoggedIn()) {
+            commentBar.setVisibility(View.INVISIBLE);
+        }
         // Ánh xạ các thành phần UI
         ivBack = findViewById(R.id.ivBack);
         recyclerView = findViewById(R.id.rvReplies);

@@ -15,18 +15,17 @@ public class LoginRequiredDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        // Cấm bấm ra ngoài
-        setCancelable(false);  // Dòng quan trọng nhất
-
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle("Yêu cầu đăng nhập")
                 .setMessage("Bạn cần đăng nhập để sử dụng tính năng này.")
                 .setPositiveButton("Đăng nhập", (dialog, which) -> {
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     startActivity(intent);
-                });
+                })
+                .setNegativeButton("Hủy", (dialog, which) -> dismiss());
 
         return builder.create();
     }
 }
+
 

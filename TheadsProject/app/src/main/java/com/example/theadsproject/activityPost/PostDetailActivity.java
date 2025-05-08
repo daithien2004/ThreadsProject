@@ -18,6 +18,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -73,12 +74,19 @@ public class PostDetailActivity extends AppCompatActivity {
     private ImageButton ibSend, ibImage;
     private ActivityResultLauncher<Intent> pickImagesLauncher;
     private PostLikeHandler postLikeHandler = new PostLikeHandler();
+    private ConstraintLayout commentBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_post_detail);
+
+        UserSessionManager sessionManager = new UserSessionManager();
+        commentBar = findViewById(R.id.comment_bar);
+        if (!sessionManager.isLoggedIn()) {
+            commentBar.setVisibility(View.INVISIBLE);
+        }
 
         ivBack = findViewById(R.id.ivBack);
         ivBack.setOnClickListener(new View.OnClickListener() {
