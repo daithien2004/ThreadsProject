@@ -19,6 +19,8 @@ public class UserResponse {
     private String message;
     private int followerCount;
 
+    private String token;
+
     public UserResponse(User user) {
         this.userId = user.getUserId();
         this.username = user.getUsername();

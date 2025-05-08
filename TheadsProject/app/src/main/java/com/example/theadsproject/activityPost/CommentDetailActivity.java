@@ -212,7 +212,7 @@ public class CommentDetailActivity extends AppCompatActivity {
     }
 
     private void createReplyWithUrls(String content, Long parentCommentId, ArrayList<String> mediaUrls, ProgressDialog progressDialog) {
-        UserSessionManager sessionManager = new UserSessionManager(this);
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
 
         if (user == null) {

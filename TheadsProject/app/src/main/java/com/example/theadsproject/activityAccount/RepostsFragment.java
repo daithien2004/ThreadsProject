@@ -54,7 +54,7 @@ public class RepostsFragment extends Fragment {
     }
 
     private void loadUserPosts() {
-        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
         ApiService apiService = RetrofitClient.getApiService();
 

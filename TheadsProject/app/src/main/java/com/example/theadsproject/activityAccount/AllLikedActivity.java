@@ -42,7 +42,7 @@ public class AllLikedActivity extends AppCompatActivity {
 
     private void fetchLikedPosts() {
         ApiService apiService = RetrofitClient.getApiService();
-        UserSessionManager sessionManager = new UserSessionManager(this);
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
 
         apiService.getLikedPostsByUser(user.getUserId()).enqueue(new Callback<List<PostResponse>>() {

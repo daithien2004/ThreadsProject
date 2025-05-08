@@ -65,7 +65,7 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_config_post_of_user, container, false);
 
-        sessionManager = new UserSessionManager(requireContext());
+        sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
         if (user != null) {
             userId = user.getUserId();

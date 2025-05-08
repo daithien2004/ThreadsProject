@@ -15,15 +15,19 @@ public class UserSessionManager {
     private static final String KEY_NICKNAME = "nickName";
     private static final String KEY_USERNAME = "username";
     private static final String KEY_PHONE = "phone";
+    private static final String KEY_TOKEN = "token";
+    private static final String KEY_TOKEN_EXPIRY = "token_expiry";
+
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    public UserSessionManager(Context context) {
+    public UserSessionManager() {
+        Context context = MyApp.getAppContext();
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
     }
 
-    //  Lưu thông tin user
+    // Lưu thông tin user và token
     public void saveUser(UserResponse user) {
         editor.putLong(KEY_USER_ID, user.getUserId());
         editor.putString(KEY_BIO, user.getBio());
@@ -32,10 +36,60 @@ public class UserSessionManager {
         editor.putString(KEY_NICKNAME, user.getNickName());
         editor.putString(KEY_USERNAME, user.getUsername());
         editor.putString(KEY_PHONE, user.getPhone());
-        editor.apply(); // Lưu thay đổi
+
+        // Lưu token nếu có
+        if (user.getToken() != null) {
+            editor.putString(KEY_TOKEN, user.getToken());
+            // Có thể lưu thêm thời gian hết hạn nếu cần
+            // editor.putLong(KEY_TOKEN_EXPIRY, calculateExpiryTime());
+        }
+
+        editor.apply();
     }
 
-    //  Lấy thông tin user
+    // Lấy token
+    public String getToken() {
+        return sharedPreferences.getString(KEY_TOKEN, null);
+    }
+
+    // Kiểm tra token có hợp lệ không
+    public boolean isValidToken() {
+        String token = getToken();
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+
+        // Có thể thêm logic kiểm tra thời gian hết hạn ở đây
+        // long expiryTime = sharedPreferences.getLong(KEY_TOKEN_EXPIRY, 0);
+        // return System.currentTimeMillis() < expiryTime;
+
+        return true;
+    }
+
+    // Kiểm tra user đã đăng nhập chưa (có token hợp lệ)
+    public boolean isLoggedIn() {
+        return sharedPreferences.contains(KEY_USER_ID) && isValidToken();
+    }
+
+    // Xóa thông tin user và token khi đăng xuất
+    public void logout() {
+        editor.clear();
+        editor.apply();
+    }
+
+    // Cập nhật thông tin user
+    public void updateUserInfo(UserResponse user) {
+        if (user.getBio() != null) editor.putString(KEY_BIO, user.getBio());
+        if (user.getEmail() != null) editor.putString(KEY_EMAIL, user.getEmail());
+        if (user.getImage() != null) editor.putString(KEY_IMAGE, user.getImage());
+        if (user.getNickName() != null) editor.putString(KEY_NICKNAME, user.getNickName());
+        if (user.getPhone() != null) editor.putString(KEY_PHONE, user.getPhone());
+        if (user.getToken() != null) editor.putString(KEY_TOKEN, user.getToken());
+
+        editor.apply();
+    }
+
+    // Lấy thông tin user
     public User getUser() {
         long userId = sharedPreferences.getLong(KEY_USER_ID, -1);
         String bio = sharedPreferences.getString(KEY_BIO, null);
@@ -46,39 +100,33 @@ public class UserSessionManager {
         String phone = sharedPreferences.getString(KEY_PHONE, null);
 
         if (userId == -1 || username == null) {
-            return null; // Không có user nào đăng nhập
+            return null;
         }
 
         return new User(userId, email, nickName, image, username, bio, phone);
     }
 
-    //  Kiểm tra user đã đăng nhập chưa
-    public boolean isLoggedIn() {
-        return sharedPreferences.contains(KEY_USER_ID);
-    }
-
-    //  Xóa thông tin user khi đăng xuất
-    public void logout() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear(); // hoặc remove("user") nếu chỉ lưu một key
-        editor.apply();
-    }
-
+    // Cập nhật bio
     public void updateBio(String newBio) {
-        User user = getUser();
-        if (user != null) {
-            user.setBio(newBio);
-            saveUser(user);
-        }
-    }
-
-    private void saveUser(User user) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong(KEY_USER_ID, user.getUserId());
-        editor.putString(KEY_USERNAME, user.getUsername());
-        editor.putString(KEY_IMAGE, user.getImage());
-        editor.putString(KEY_BIO, user.getBio());
+        editor.putString(KEY_BIO, newBio);
         editor.apply();
     }
 
+    // Lấy username
+    public String getUsername() {
+        return sharedPreferences.getString(KEY_USERNAME, null);
+    }
+
+    // Lấy user ID
+    public long getUserId() {
+        return sharedPreferences.getLong(KEY_USER_ID, -1);
+    }
+
+    // Refresh token (khi có token mới)
+    public void refreshToken(String newToken) {
+        editor.putString(KEY_TOKEN, newToken);
+        // Cập nhật thời gian hết hạn nếu cần
+        // editor.putLong(KEY_TOKEN_EXPIRY, calculateExpiryTime());
+        editor.apply();
+    }
 }

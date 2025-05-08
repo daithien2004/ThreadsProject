@@ -52,7 +52,7 @@ public class SettingActivity extends AppCompatActivity {
                     .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
                     .setPositiveButton("Đồng ý", (dialog, which) -> {
                         // Xoá thông tin đăng nhập
-                        UserSessionManager sessionManager = new UserSessionManager(this);
+                        UserSessionManager sessionManager = new UserSessionManager();
                         sessionManager.logout();
 
                         // Chuyển về màn hình đăng nhập

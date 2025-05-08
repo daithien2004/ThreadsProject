@@ -48,6 +48,8 @@ public class PostItemView {
 
     private LikeHandler likeHandler;
     private ConfigPostFragment.ConfigType type;
+    private boolean isLoggedIn;
+    private final User currentUser;
 
     public PostItemView(View view, Context context, LikeHandler likeHandler) {
         rootView = view;
@@ -65,6 +67,11 @@ public class PostItemView {
         imgDots = view.findViewById(R.id.ivDots);
         this.context = context;
         this.likeHandler = likeHandler;
+
+        // Kiểm tra trạng thái đăng nhập khi khởi tạo adapter
+        UserSessionManager sessionManager = new UserSessionManager();
+        this.isLoggedIn = sessionManager.isLoggedIn();
+        this.currentUser = isLoggedIn ? sessionManager.getUser() : null;
     }
 
     public void bind(BindableContent item, Context context) {
@@ -94,49 +101,55 @@ public class PostItemView {
             tvTimePost.setText(TimeUtils.getTimeAgo(timestamp));
         }
 
+        if (!isLoggedIn) {
+            // Vô hiệu hóa các chức năng khi chưa đăng nhập
+            ivLove.setEnabled(false);
+            ivRepost.setEnabled(false);
+        } else {
+            likeHandler.checkIfLiked(userId, item.getId(), new Callback<Boolean>() {
+                @Override
+                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                    boolean isLiked = response.body() != null && response.body();
+                    item.setIsLoved(isLiked);
+                    ivLove.setImageResource(isLiked ? R.drawable.heart_red : R.drawable.heart);
+                }
 
-        likeHandler.checkIfLiked(userId, item.getId(), new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                boolean isLiked = response.body() != null && response.body();
-                item.setIsLoved(isLiked);
-                ivLove.setImageResource(isLiked ? R.drawable.heart_red : R.drawable.heart);
-            }
+                @Override
+                public void onFailure(Call<Boolean> call, Throwable t) { }
+            });
 
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) { }
-        });
+            // Bấm thả tim
+            ivLove.setOnClickListener(v -> {
+                boolean isLoved = item.getIsLoved();
 
-        // Bấm thả tim
-        ivLove.setOnClickListener(v -> {
-            boolean isLoved = item.getIsLoved();
+                if (isLoved) {
+                    likeHandler.unlike(userId, item.getId(), new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            ivLove.setImageResource(R.drawable.heart);
+                            item.setIsLoved(false);
+                            updateLikeCount(item.getId());
+                        }
 
-            if (isLoved) {
-                likeHandler.unlike(userId, item.getId(), new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        ivLove.setImageResource(R.drawable.heart);
-                        item.setIsLoved(false);
-                        updateLikeCount(item.getId());
-                    }
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) { }
+                    });
+                } else {
+                    likeHandler.like(userId, item.getId(), new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            ivLove.setImageResource(R.drawable.heart_red);
+                            item.setIsLoved(true);
+                            updateLikeCount(item.getId());
+                        }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) { }
-                });
-            } else {
-                likeHandler.like(userId, item.getId(), new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        ivLove.setImageResource(R.drawable.heart_red);
-                        item.setIsLoved(true);
-                        updateLikeCount(item.getId());
-                    }
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) { }
+                    });
+                }
+            });
+        }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) { }
-                });
-            }
-        });
 
         // Hiển thị số lượng like
         likeHandler.countLikes(item.getId(), new Callback<Long>() {
@@ -204,10 +217,7 @@ public class PostItemView {
             rvImages.setVisibility(View.GONE);
         }
 
-        if (type == ConfigPostFragment.ConfigType.POST) {
-            // Lấy thông tin người dùng hiện tại
-            UserSessionManager sessionManager = new UserSessionManager(context);
-            User currentUser = sessionManager.getUser();
+        if (type == ConfigPostFragment.ConfigType.POST && isLoggedIn) {
 
             //Repost
             String usernameRepost = currentUser.getUsername();

@@ -49,7 +49,7 @@ public class EditBioActivity extends AppCompatActivity {
         imTick.setOnClickListener(view -> updateBio());
         imClose.setOnClickListener(view -> finish());
 
-        UserSessionManager sessionManager = new UserSessionManager(this);
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
 
         if (user != null && user.getBio() != null) {
@@ -66,19 +66,19 @@ public class EditBioActivity extends AppCompatActivity {
             return;
         }
 
-        UserSessionManager sessionManager = new UserSessionManager(this);
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
 
         Map<String, String> body = new HashMap<>();
         body.put("bio", bio);
 
-        ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
+        ApiService apiService = RetrofitClient.getApiService();
         apiService.updateBio(user.getUserId(), body).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     // Cập nhật lại UserSessionManager
-                    UserSessionManager sessionManager = new UserSessionManager(EditBioActivity.this);
+                    UserSessionManager sessionManager = new UserSessionManager();
                     sessionManager.updateBio(bio);
 
                     Intent resultIntent = new Intent();

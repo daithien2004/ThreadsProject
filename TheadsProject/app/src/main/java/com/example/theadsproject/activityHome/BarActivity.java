@@ -64,14 +64,14 @@ public class BarActivity extends AppCompatActivity {
         });
 
         // Lấy thông tin người dùng từ phiên đăng nhập
-        UserSessionManager sessionManager = new UserSessionManager(BarActivity.this);
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
 
         // Kết nối socket nếu tìm thấy người dùng
         if (user != null) {
             SocketManager.connect(BarActivity.this, user.getUserId());
         } else {
-            Toast.makeText(BarActivity.this, "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(BarActivity.this, "Bạn đang ở chế độ khách!", Toast.LENGTH_SHORT).show();
         }
     }
 

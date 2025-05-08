@@ -45,7 +45,7 @@ public class AllSavedActivity extends AppCompatActivity {
 
     private void fetchSavedPosts() {
         ApiService apiService = RetrofitClient.getApiService();
-        UserSessionManager sessionManager = new UserSessionManager(this);
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
 
         apiService.getSavedPostsByUser(user.getUserId()).enqueue(new Callback<List<PostResponse>>() {

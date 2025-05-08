@@ -224,7 +224,7 @@ public class PostDetailActivity extends AppCompatActivity {
                 latch.await();
                 runOnUiThread(() -> {
                     // Lấy userId từ session
-                    UserSessionManager sessionManager = new UserSessionManager(this);
+                    UserSessionManager sessionManager = new UserSessionManager();
                     User user = sessionManager.getUser();
 
                     if (user == null) {

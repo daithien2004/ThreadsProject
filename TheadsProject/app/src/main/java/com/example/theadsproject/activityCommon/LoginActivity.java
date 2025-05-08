@@ -29,13 +29,13 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     private TextInputEditText etUsernameInput, etPasswordInput;
-    private Button btnLogin;
+    private Button btnLogin, btnGuest;
     private TextView tvForgotPassword, tvRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UserSessionManager sessionManager = new UserSessionManager(this);
+        UserSessionManager sessionManager = new UserSessionManager();
         if (sessionManager.isLoggedIn()) {
             // Nếu đã login -> chuyển sang BarActivity luôn
             Intent intent = new Intent(this, BarActivity.class);
@@ -51,6 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         initViews();
 
         btnLogin.setOnClickListener(v -> handleLogin());
+
+        btnGuest.setOnClickListener(v -> handleGuestLogin());
 
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
         etUsernameInput = etUsername.findViewById(R.id.etUsernameInput);
         etPasswordInput = etPassword.findViewById(R.id.etPasswordInput);
         btnLogin = findViewById(R.id.btnLogin);
+        btnGuest = findViewById(R.id.btnGuest);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
         tvRegister = findViewById(R.id.tvRegister);
     }
@@ -105,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     else {
                         // Lưu thông tin user vào SharedPreferences
-                        UserSessionManager sessionManager = new UserSessionManager(LoginActivity.this);
+                        UserSessionManager sessionManager = new UserSessionManager();
                         sessionManager.saveUser(userResponse);
 
                         Intent intent = new Intent(LoginActivity.this, BarActivity.class);
@@ -125,5 +128,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void handleGuestLogin() {
+        Intent intent = new Intent(LoginActivity.this, BarActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.UserSessionManager;
+import com.example.theadsproject.activityCommon.LoginActivity;
 import com.example.theadsproject.activityPost.PostDetailActivity;
 import com.example.theadsproject.commonClass.BindingUtils;
 import com.example.theadsproject.commonClass.TimeUtils;
@@ -44,12 +45,19 @@ import retrofit2.Response;
 public class PostAdapter extends RecyclerView.Adapter<CommonViewHolder> {
     private final Context context;
     private final List<PostResponse> postList;
-    private final ApiService apiService = RetrofitClient.getApiService();
     private PostLikeHandler postLikeHandler = new PostLikeHandler();
+    private boolean isLoggedIn;
+    private final User currentUser;
+    ApiService apiService = RetrofitClient.getApiService();
 
     public PostAdapter(Context context, List<PostResponse> postList) {
         this.context = context;
         this.postList = postList;
+
+        // Kiểm tra trạng thái đăng nhập khi khởi tạo adapter
+        UserSessionManager sessionManager = new UserSessionManager();
+        this.isLoggedIn = sessionManager.isLoggedIn();
+        this.currentUser = isLoggedIn ? sessionManager.getUser() : null;
     }
 
     @NonNull
@@ -65,12 +73,89 @@ public class PostAdapter extends RecyclerView.Adapter<CommonViewHolder> {
         BindableContent item = postList.get(position);
         BindingUtils.bindCommonData(holder, item, context, postLikeHandler);
 
+        if (!isLoggedIn) {
+            // Vô hiệu hóa các chức năng khi chưa đăng nhập
+            holder.imgDots.setEnabled(false);
+            holder.ivRepost.setEnabled(false);
+        } else {
+            if (currentUser != null) {
+                holder.imgDots.setVisibility(View.VISIBLE);
+                holder.imgDots.setOnClickListener(v -> {
+                    ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(
+                            ConfigPostFragment.ConfigType.POST,
+                            post.getPostId(),
+                            this::removePost
+                    );
+                    bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
+                });
 
-        // Xử lý nút menu ba chấm (cấu hình bài viết)
-        holder.imgDots.setOnClickListener(v -> {
-            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(ConfigPostFragment.ConfigType.POST, post.getPostId(), this::removePost);
-            bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
-        });
+                String username = currentUser.getUsername();
+                apiService.isPostReposted(post.getPostId(), username).enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
+                            holder.ivRepost.setImageResource(R.drawable.reposted);
+                        } else {
+                            holder.ivRepost.setImageResource(R.drawable.retweet);
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        holder.ivRepost.setImageResource(R.drawable.retweet);
+                    }
+                });
+
+                holder.ivRepost.setOnClickListener(v -> {
+                    Long postId = post.getPostId();
+
+                    // 1. Kiểm tra đã repost chưa
+                    apiService.isPostReposted(postId, username).enqueue(new Callback<Boolean>() {
+                        @Override
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            if (Boolean.TRUE.equals(response.body())) {
+                                Toast.makeText(context, "Bạn đã repost bài viết này rồi!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                // 2. Hiển thị dialog xác nhận repost
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Repost bài viết?")
+                                        .setMessage("Bạn có chắc chắn muốn repost bài viết này?")
+                                        .setPositiveButton("Đồng ý", (dialog, which) -> {
+                                            // 3. Gọi API thực hiện repost
+                                            apiService.repost(postId, username).enqueue(new Callback<Void>() {
+                                                @Override
+                                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                                    if (response.isSuccessful()) {
+                                                        Toast.makeText(context, "Repost thành công!", Toast.LENGTH_SHORT).show();
+
+                                                        // Đổi icon sau khi repost
+                                                        holder.ivRepost.setImageResource(R.drawable.reposted);
+
+                                                        // 4. Cập nhật lại số lượng repost
+                                                        updateRepostCount(postId, holder);
+                                                    } else {
+                                                        Toast.makeText(context, "Repost thất bại!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<Void> call, Throwable t) {
+                                                    Toast.makeText(context, "Lỗi kết nối!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        })
+                                        .setNegativeButton("Hủy", null)
+                                        .show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Boolean> call, Throwable t) {
+                            Toast.makeText(context, "Không thể kiểm tra trạng thái repost!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+            }
+        }
 
         // Xử lý khi click vào post để xem chi tiết
         holder.clItemPost.setOnClickListener(v -> {
@@ -80,86 +165,10 @@ public class PostAdapter extends RecyclerView.Adapter<CommonViewHolder> {
         });
 
 
-        // Lấy thông tin người dùng hiện tại
-        UserSessionManager sessionManager = new UserSessionManager(context);
-        User currentUser = sessionManager.getUser();
-
-        //Repost
-        String usernameRepost = currentUser.getUsername();
-        // Kiểm tra user đã repost bài viết này chưa
-        apiService.isPostReposted(post.getPostId(), usernameRepost).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
-                    // Nếu đã repost => đổi icon
-                    holder.ivRepost.setImageResource(R.drawable.reposted); // icon đã repost
-                } else {
-                    // Nếu chưa repost => icon mặc định
-                    holder.ivRepost.setImageResource(R.drawable.retweet); // icon repost bình thường
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                holder.ivRepost.setImageResource(R.drawable.retweet); // fallback nếu lỗi
-            }
-        });
-
-        holder.ivRepost.setOnClickListener(v -> {
-            String username = currentUser.getUsername();
-            Long postId = post.getPostId();
-
-            // 1. Kiểm tra đã repost chưa
-            apiService.isPostReposted(postId, username).enqueue(new Callback<Boolean>() {
-                @Override
-                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                    if (Boolean.TRUE.equals(response.body())) {
-                        Toast.makeText(context, "Bạn đã repost bài viết này rồi!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // 2. Hiển thị dialog xác nhận repost
-                        new AlertDialog.Builder(context)
-                                .setTitle("Repost bài viết?")
-                                .setMessage("Bạn có chắc chắn muốn repost bài viết này?")
-                                .setPositiveButton("Đồng ý", (dialog, which) -> {
-                                    // 3. Gọi API thực hiện repost
-                                    apiService.repost(postId, username).enqueue(new Callback<Void>() {
-                                        @Override
-                                        public void onResponse(Call<Void> call, Response<Void> response) {
-                                            if (response.isSuccessful()) {
-                                                Toast.makeText(context, "Repost thành công!", Toast.LENGTH_SHORT).show();
-
-                                                // Đổi icon sau khi repost
-                                                holder.ivRepost.setImageResource(R.drawable.reposted);
-
-                                                // 4. Cập nhật lại số lượng repost
-                                                updateRepostCount(postId, holder);
-                                            } else {
-                                                Toast.makeText(context, "Repost thất bại!", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call<Void> call, Throwable t) {
-                                            Toast.makeText(context, "Lỗi kết nối!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                })
-                                .setNegativeButton("Hủy", null)
-                                .show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Boolean> call, Throwable t) {
-                    Toast.makeText(context, "Không thể kiểm tra trạng thái repost!", Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
-
         // Gọi riêng ở ngoài để luôn hiển thị đúng số lượng repost khi load item
         updateRepostCount(post.getPostId(), holder);
-
     }
+
     private void updateRepostCount(Long postId, CommonViewHolder holder) {
         ApiService apiService = RetrofitClient.getApiService();
 

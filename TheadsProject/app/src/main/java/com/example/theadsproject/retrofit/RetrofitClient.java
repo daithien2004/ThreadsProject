@@ -1,45 +1,85 @@
 // Nguyễn Lý Hùng --22110337
 package com.example.theadsproject.retrofit;
 
+import android.content.Context;
+import android.content.Intent;
 
+import com.example.theadsproject.MyApp;
+import com.example.theadsproject.UserSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.io.IOException;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class RetrofitClient extends BaseClient {
-
-
-	//private static final String BASE_URL = "https://threadsproject.onrender.com/api/";
-    private static final String BASE_URL = "http://192.168.8.114:8080/api/";
+    private static final String BASE_URL = "http://172.16.30.208:8080/api/";
 
     private static Retrofit retrofit;
+    private static OkHttpClient okHttpClient;
 
-    public static Retrofit getInstance() {
+    public static void initialize() {
         if (retrofit == null) {
-            // Thêm logging (tùy chọn)
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            // Interceptor để thêm token vào header
+            Interceptor authInterceptor = new Interceptor() {
+                @Override
+                public Response intercept(Chain chain) throws IOException {
+                    Request originalRequest = chain.request();
+                    String token = new UserSessionManager().getToken();
 
-            OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(logging)
+                    if (token != null && !token.isEmpty()) {
+                        Request newRequest = originalRequest.newBuilder()
+                                .header("Authorization", "Bearer " + token)
+                                .build();
+                        return chain.proceed(newRequest);
+                    }
+                    return chain.proceed(originalRequest);
+                }
+            };
+
+            // Interceptor xử lý lỗi 401
+            Interceptor unauthorizedInterceptor = new Interceptor() {
+                @Override
+                public Response intercept(Chain chain) throws IOException {
+                    Request request = chain.request();
+                    Response response = chain.proceed(request);
+
+                    if (response.code() == 401) {
+                        new UserSessionManager().logout();
+                        MyApp.getAppContext().sendBroadcast(new Intent("ACTION_TOKEN_EXPIRED"));
+                    }
+                    return response;
+                }
+            };
+
+            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+            okHttpClient = new OkHttpClient.Builder()
+                    .addInterceptor(authInterceptor)
+                    .addInterceptor(unauthorizedInterceptor)
+                    .addInterceptor(loggingInterceptor)
                     .build();
 
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
                         @Override
-                        public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                        public LocalDateTime deserialize(JsonElement json, Type typeOfT,
+                                                         com.google.gson.JsonDeserializationContext context)
+                                throws JsonParseException {
                             return LocalDateTime.parse(json.getAsString());
                         }
                     })
@@ -47,10 +87,16 @@ public class RetrofitClient extends BaseClient {
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
+                    .client(okHttpClient)
+                    .addConverterFactory(ScalarsConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson))
-                    .addConverterFactory(ScalarsConverterFactory.create()) // Thêm ScalarsConverterFactory
-                    .client(client)
                     .build();
+        }
+    }
+
+    public static Retrofit getInstance() {
+        if (retrofit == null) {
+            initialize();
         }
         return retrofit;
     }

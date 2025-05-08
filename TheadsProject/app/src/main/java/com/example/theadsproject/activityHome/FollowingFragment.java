@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.R;
 import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.dto.PostResponse;
@@ -46,13 +47,18 @@ public class FollowingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_following, container, false);
         recyclerView = view.findViewById(R.id.rvPosts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        fetchPosts();
+        UserSessionManager sessionManager = new UserSessionManager();
+        if (!sessionManager.isLoggedIn()) {
+            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
+        } else {
+            fetchPosts();
+        }
         return view;
     }
 
     private void fetchPosts() {
         ApiService apiService = RetrofitClient.getApiService();
-        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
 
         apiService.getPostsByFollowing(user.getUserId()).enqueue(new Callback<List<PostResponse>>() {

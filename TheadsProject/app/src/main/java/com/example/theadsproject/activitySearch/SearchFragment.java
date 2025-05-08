@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.R;
 import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.adapter.SearchAdapter;
@@ -37,12 +38,19 @@ public class SearchFragment extends Fragment {
     private SearchAdapter adapter;
     private List<UserResponse> userList = new ArrayList<>();
     Long userId;
+    private UserSessionManager sessionManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        sessionManager = new UserSessionManager();
+
+        if (!sessionManager.isLoggedIn()) {
+            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
+        }
+
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
         userId = user.getUserId();
 

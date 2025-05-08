@@ -64,7 +64,7 @@ public class EditPersonalPageActivity extends AppCompatActivity {
         tvBio = findViewById(R.id.tvBio);
         ivAvatar = findViewById(R.id.imgAvatar);
 
-        sessionManager = new UserSessionManager(this);
+        sessionManager = new UserSessionManager();
         user = sessionManager.getUser();
     }
 

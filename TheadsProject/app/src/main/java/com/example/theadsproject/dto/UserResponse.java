@@ -20,6 +20,7 @@ public class UserResponse {
     private String phone;
     private String message;
     private int followerCount;
+    private String token;
 
     public boolean isFollowing() {
         return isFollowing;
@@ -134,5 +135,13 @@ public class UserResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

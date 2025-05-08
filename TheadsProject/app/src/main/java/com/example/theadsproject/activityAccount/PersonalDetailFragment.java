@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.R;
 
 import com.example.theadsproject.UserSessionManager;
@@ -42,6 +43,7 @@ public class PersonalDetailFragment extends Fragment {
     private List<PostResponse> posts = new ArrayList<>();
     private TextView tvName, tvDescription, tvBio, tvFollower;
     private ImageView ivAvatar;
+    private UserSessionManager sessionManager;
 
     public PersonalDetailFragment() {
         super(R.layout.fragment_personal_detail);
@@ -50,6 +52,12 @@ public class PersonalDetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        sessionManager = new UserSessionManager();
+
+        if (!sessionManager.isLoggedIn()) {
+            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
+        }
 
         FrameLayout frameLayout = view.findViewById(R.id.frame_layout);
         if (savedInstanceState == null) {
@@ -65,7 +73,7 @@ public class PersonalDetailFragment extends Fragment {
         tvFollower = view.findViewById(R.id.tvFollower);
 
         // Lấy thông tin user từ UserSessionManager
-        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
 
         if (user != null) {
@@ -115,7 +123,7 @@ public class PersonalDetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // Lấy thông tin user mới nhất từ SessionManager
-        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
 
         if (user != null) {

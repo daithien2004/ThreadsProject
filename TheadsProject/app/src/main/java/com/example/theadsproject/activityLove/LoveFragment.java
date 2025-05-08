@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.NotificationListener;
 import com.example.theadsproject.R;
 import com.example.theadsproject.SocketManager;
@@ -40,19 +41,12 @@ public class LoveFragment extends Fragment implements NotificationListener {
     private List<NotificationResponse> fullList = new ArrayList<>();
     private Button btnAll, btnFollow, btnReply;
     private Long currentUserId; // Lấy từ login thực tế hoặc SharedPreferences
+    private UserSessionManager sessionManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_love, container, false);
-
-        UserSessionManager sessionManager = new UserSessionManager(getContext());
-        User user = sessionManager.getUser();
-        if (user != null) {
-            currentUserId = user.getUserId();
-        } else {
-            Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
-        }
 
         // Ánh xạ view
         rcvNotification = view.findViewById(R.id.rcvNotification);
@@ -65,8 +59,7 @@ public class LoveFragment extends Fragment implements NotificationListener {
         rcvNotification.setLayoutManager(new LinearLayoutManager(getContext()));
         rcvNotification.setAdapter(adapter);
 
-        // Khởi tạo kết nối WebSocket
-        SocketManager.connect(requireContext().getApplicationContext(), currentUserId);
+
 
         return view;
     }
@@ -75,10 +68,24 @@ public class LoveFragment extends Fragment implements NotificationListener {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        sessionManager = new UserSessionManager();
+
         SocketManager.setListener(this);
 
-        // Lấy dữ liệu ban đầu
-        fetchNotifications();
+        if (!sessionManager.isLoggedIn()) {
+            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
+        } else {
+            User user = sessionManager.getUser();
+            if (user != null) {
+                currentUserId = user.getUserId();
+            } else {
+                Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
+            }
+            // Khởi tạo kết nối WebSocket
+            SocketManager.connect(requireContext().getApplicationContext(), currentUserId);
+            // Lấy dữ liệu ban đầu
+            fetchNotifications();
+        }
 
         // Bắt sự kiện lọc
         btnAll.setOnClickListener(v -> showFiltered("all"));

@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.UserSessionManager;
 import com.example.theadsproject.activityHome.TabLayoutHomeFragment;
 import com.example.theadsproject.dto.PostRequest;
@@ -60,10 +61,17 @@ public class PostFragment extends Fragment {
     private EditText edtPostContent;
     private Button btnPost;
     RecyclerView rvImages;
+    private UserSessionManager sessionManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sessionManager = new UserSessionManager();
+
+        if (!sessionManager.isLoggedIn()) {
+            new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required_dialog");
+        }
 
         // Xử lý chọn ảnh từ thư viện
         pickImagesLauncher = registerForActivityResult(
@@ -97,7 +105,7 @@ public class PostFragment extends Fragment {
         ImageView ivPostAvatar = view.findViewById(R.id.ivPostAvatar);
 
         // Lấy thông tin user từ UserSessionManager
-        UserSessionManager sessionManager = new UserSessionManager(requireContext());
+        UserSessionManager sessionManager = new UserSessionManager();
         User user = sessionManager.getUser();
 
         if (user != null) {
@@ -244,7 +252,7 @@ public class PostFragment extends Fragment {
                 latch.await();
                 requireActivity().runOnUiThread(() -> {
                     // Lấy user từ session
-                    UserSessionManager sessionManager = new UserSessionManager(requireContext());
+                    UserSessionManager sessionManager = new UserSessionManager();
                     User user = sessionManager.getUser();
 
                     // Tạo request với URL ảnh từ Cloudinary

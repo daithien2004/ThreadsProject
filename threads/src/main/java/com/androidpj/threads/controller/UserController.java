@@ -7,6 +7,7 @@ import com.androidpj.threads.dto.UserRequest;
 import com.androidpj.threads.dto.UserResponse;
 import com.androidpj.threads.entity.User;
 import com.androidpj.threads.service.UserService;
+import com.androidpj.threads.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +25,17 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/login")
     public ResponseEntity<UserResponse> checkLogin(@RequestBody UserRequest userRequest) {
         UserResponse userResponse = userService.checkLogin(userRequest);
-        if (userResponse != null)
+        if (userResponse != null) {
+            String token = jwtUtil.generateToken(userRequest.getUsername());
+            userResponse.setToken(token);
             return ResponseEntity.ok(userResponse);
+        }
         return ResponseEntity.badRequest().body(new UserResponse("Sai tài khoản hoặc mật khẩu"));
     }
 
