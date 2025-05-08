@@ -22,7 +22,7 @@ public class RetrofitClient extends BaseClient {
 
 
 	//private static final String BASE_URL = "https://threadsproject.onrender.com/api/";
-    private static final String BASE_URL = "http://192.168.1.9:8080/api/";
+    private static final String BASE_URL = "http://196.169.4.225:8080/api/";
 
     private static Retrofit retrofit;
 

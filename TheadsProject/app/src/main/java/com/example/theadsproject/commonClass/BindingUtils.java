@@ -88,7 +88,7 @@ public class BindingUtils {
         Long currentUserId = currentUser.getUserId();
 
         // Bấm thả tim
-        holder.ivLove.setOnClickListener(v -> {
+        holder.llLove.setOnClickListener(v -> {
             boolean isLoved = item.getIsLoved();
 
             if (isLoved) {

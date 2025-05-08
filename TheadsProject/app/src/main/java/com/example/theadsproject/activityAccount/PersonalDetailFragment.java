@@ -1,5 +1,6 @@
 package com.example.theadsproject.activityAccount;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
@@ -97,14 +100,23 @@ public class PersonalDetailFragment extends Fragment {
             imSetting.setOnClickListener(v ->
                     startActivity(new Intent(requireContext(), SettingActivity.class))
             );
-            btnEditProfile.setOnClickListener(v ->
-                    startActivity(new Intent(requireContext(), EditPersonalPageActivity.class))
-            );
+            btnEditProfile.setOnClickListener(v -> {
+                Intent intent = new Intent(requireContext(), EditPersonalPageActivity.class);
+                editProfileLauncher.launch(intent);
+            });
+
         } else {
             imSetting.setVisibility(View.GONE);
             btnEditProfile.setVisibility(View.GONE);
         }
     }
+    private final ActivityResultLauncher<Intent> editProfileLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // reload lại dữ liệu mới
+                    loadProfileData();
+                }
+            });
 
     /**
      * Gọi API lấy user info & follower count

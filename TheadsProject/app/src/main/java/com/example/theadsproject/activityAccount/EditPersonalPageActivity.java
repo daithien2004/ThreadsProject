@@ -156,6 +156,7 @@ public class EditPersonalPageActivity extends AppCompatActivity {
                     sessionManager.saveUser(updatedUser);
 
                     Toast.makeText(EditPersonalPageActivity.this, "Đã cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     Toast.makeText(EditPersonalPageActivity.this, "Cập nhật thất bại!", Toast.LENGTH_SHORT).show();
