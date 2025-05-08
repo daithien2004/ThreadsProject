@@ -54,8 +54,12 @@ public class BarActivity extends AppCompatActivity {
             } else if(item.getItemId() == R.id.love) {
                 replaceFragment(new LoveFragment());
             } else if(item.getItemId() == R.id.account) {
-                replaceFragment(new PersonalDetailFragment());
-            } else if(item.getItemId() == R.id.search) {
+                // Lấy userId hiện tại
+                UserSessionManager sessionManager = new UserSessionManager(this);
+                long currentUserId = sessionManager.getUser().getUserId();
+                // Hiển thị fragment với userId
+                replaceFragment(PersonalDetailFragment.newInstance(currentUserId));
+        } else if(item.getItemId() == R.id.search) {
                 replaceFragment(new SearchFragment());
             } else if(item.getItemId() == R.id.addPost) {
                 replaceFragment(new PostFragment());
@@ -73,13 +77,15 @@ public class BarActivity extends AppCompatActivity {
         } else {
             Toast.makeText(BarActivity.this, "Bạn đang ở chế độ khách!", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     /**
      * Phương thức thay đổi fragment đang hiển thị
      * @param fragment Fragment cần hiển thị
      */
-    private void replaceFragment(Fragment fragment) {
+
+    public void replaceFragment(Fragment fragment) {
         this.currentFragment = fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

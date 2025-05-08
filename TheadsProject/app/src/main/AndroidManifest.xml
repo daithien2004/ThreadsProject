@@ -22,6 +22,9 @@
         <activity
             android:name=".activityPost.CommentDetailActivity"
             android:exported="false" />
+		<activity
+            android:name=".PersonalVisitDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".activityAccount.EditBioActivity"
             android:exported="false" />

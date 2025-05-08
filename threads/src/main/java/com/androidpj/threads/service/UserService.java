@@ -45,8 +45,17 @@ public class UserService implements UserDetailsService {
     private String fromEmail;
 
 
-    public User getUserById(Long userId) {
-        return userRepository.findByUserId(userId);
+//    public User getUserById(Long userId) {
+//        return userRepository.findByUserId(userId);
+//    }
+    public UserResponse getUserById(Long id) {
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            return new UserResponse(user); // hoặc chuyển đổi sang DTO theo cách bạn làm
+        } else {
+            return null;
+        }
     }
 
     public UserResponse checkLogin(UserRequest userRequest) {

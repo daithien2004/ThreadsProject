@@ -21,6 +21,23 @@ public class TabPersonalDetailFragment extends Fragment {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
+    private long userId;
+
+    public static TabPersonalDetailFragment newInstance(long userId) {
+        TabPersonalDetailFragment fragment = new TabPersonalDetailFragment();
+        Bundle args = new Bundle();
+        args.putLong("user_id", userId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            userId = getArguments().getLong("user_id");
+        }
+    }
 
     @Nullable
     @Override
@@ -30,8 +47,8 @@ public class TabPersonalDetailFragment extends Fragment {
         tabLayout = view.findViewById(R.id.tabLayoutPersonal);
         viewPager = view.findViewById(R.id.viewPagerPersonal);
 
-        // Cấu hình Adapter cho ViewPager2
-        ViewPagerAdapterPersonalDetail adapter = new ViewPagerAdapterPersonalDetail(this);
+        // ✅ Truyền userId vào adapter
+        ViewPagerAdapterPersonalDetail adapter = new ViewPagerAdapterPersonalDetail(this, userId);
         viewPager.setAdapter(adapter);
 
         // Kết nối TabLayout với ViewPager2
@@ -42,6 +59,7 @@ public class TabPersonalDetailFragment extends Fragment {
                 tab.setText("Reposts");
             }
         }).attach();
+
         // Chặn thao tác vuốt
         viewPager.setUserInputEnabled(false);
 

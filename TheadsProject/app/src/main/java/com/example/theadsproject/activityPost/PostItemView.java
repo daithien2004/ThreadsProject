@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ public class PostItemView {
     private TextView tvNickname, tvTextPost, tvTimePost, tvLove, tvConversation, tvRepost;
     private ImageView imgAvatar, ivLove, ivConversation, imgDots, ivRepost;
     private RecyclerView rvImages;
+    private LinearLayout llRepost;
     private final ApiService apiService = RetrofitClient.getApiService();
 
     private LikeHandler likeHandler;
@@ -65,6 +67,7 @@ public class PostItemView {
         tvRepost = view.findViewById(R.id.tvRepost);
         tvConversation = view.findViewById(R.id.tvConversation);
         imgDots = view.findViewById(R.id.ivDots);
+        llRepost = view.findViewById(R.id.llRepost);
         this.context = context;
         this.likeHandler = likeHandler;
 
@@ -240,7 +243,7 @@ public class PostItemView {
                 }
             });
 
-            ivRepost.setOnClickListener(v -> {
+            llRepost.setOnClickListener(v -> {
                 String username = currentUser.getUsername();
                 Long postId = item.getId();
 

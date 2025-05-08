@@ -19,7 +19,6 @@
 
     public class SocketManager {
         private static final String TAG = "SocketManager";
-        private static final String SOCKET_URL = "ws://172.16.30.208:8080/ws/websocket";
 //      private static final String SOCKET_URL = "wss://threadsproject.onrender.com/ws/websocket";
 
         private static volatile StompClient stompClient;

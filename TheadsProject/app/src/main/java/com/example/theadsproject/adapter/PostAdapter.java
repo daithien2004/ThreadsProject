@@ -20,7 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.theadsproject.UserSessionManager;
-import com.example.theadsproject.activityCommon.LoginActivity;
+import com.example.theadsproject.activityAccount.PersonalDetailFragment;
+import com.example.theadsproject.activityHome.BarActivity;
 import com.example.theadsproject.activityPost.PostDetailActivity;
 import com.example.theadsproject.commonClass.BindingUtils;
 import com.example.theadsproject.commonClass.TimeUtils;
@@ -167,6 +168,16 @@ public class PostAdapter extends RecyclerView.Adapter<CommonViewHolder> {
 
         // Gọi riêng ở ngoài để luôn hiển thị đúng số lượng repost khi load item
         updateRepostCount(post.getPostId(), holder);
+
+        //////// xem trang cá nhân của user khi click vào avatar
+        holder.imgAvatar.setOnClickListener(v -> {
+            long authorId = post.getUser().getUserId();
+            if (context instanceof BarActivity) {
+                ((BarActivity) context).replaceFragment(
+                        PersonalDetailFragment.newInstance(authorId)
+                );
+            }
+        });
     }
 
     private void updateRepostCount(Long postId, CommonViewHolder holder) {
