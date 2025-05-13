@@ -163,10 +163,13 @@ public class PersonalDetailFragment extends Fragment {
                 tvName.setText(u.getUsername());
                 tvDescription.setText(u.getNickName());
                 tvBio.setText(u.getBio());
-                Glide.with(PersonalDetailFragment.this)
-                        .load(u.getImage())
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(ivAvatar);
+                if (isAdded() && u.getImage() != null && !u.getImage().isEmpty()) {
+                    Glide.with(requireContext())
+                            .load(u.getImage())
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(ivAvatar);
+                }
+
 
                 // 2. Lấy follower count
                 api.getFollowerCount(viewedUserId).enqueue(new Callback<Long>() {

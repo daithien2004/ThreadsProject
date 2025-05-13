@@ -22,7 +22,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     
     Page<Post> findAll(Pageable pageable);
     
-    @Query("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.mediaUrls LEFT JOIN FETCH p.user WHERE p.visibility = 'public'")
+    @Query("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.mediaUrls LEFT JOIN FETCH p.user WHERE p.visibility = 'public' ORDER BY p.createdAt DESC")
     List<Post> findAllWithImages();
     
     boolean existsByPostIdAndUser_UserId(Long postId, Long userId);
