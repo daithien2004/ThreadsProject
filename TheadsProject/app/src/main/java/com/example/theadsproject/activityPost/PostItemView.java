@@ -55,8 +55,9 @@ public class PostItemView {
     private ConfigPostFragment.ConfigType type;
     private boolean isLoggedIn;
     private final User currentUser;
+    private final ConfigPostFragment.OnDeleteListener deleteListener;
 
-    public PostItemView(View view, Context context, LikeHandler likeHandler) {
+    public PostItemView(View view, Context context, LikeHandler likeHandler, ConfigPostFragment.OnDeleteListener deleteListener) {
         rootView = view;
         tvNickname = view.findViewById(R.id.tvNickname);
         tvTextPost = view.findViewById(R.id.tvTextPost);
@@ -79,6 +80,8 @@ public class PostItemView {
         UserSessionManager sessionManager = new UserSessionManager();
         this.isLoggedIn = sessionManager.isLoggedIn();
         this.currentUser = isLoggedIn ? sessionManager.getUser() : null;
+
+        this.deleteListener = deleteListener; // Gán listener
     }
 
     public void bind(BindableContent item, Context context) {
@@ -226,7 +229,7 @@ public class PostItemView {
 
         // Xử lý nút menu ba chấm (cấu hình bài viết)
         imgDots.setOnClickListener(v -> {
-            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(ConfigPostFragment.ConfigType.COMMENT, item.getId(), this::remove);
+            ConfigPostFragment bottomSheet = ConfigPostFragment.newInstance(type, item.getId(), this::onDelete);
             bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
         });
 
@@ -364,9 +367,9 @@ public class PostItemView {
         });
     }
 
-    public void remove(ConfigPostFragment.ConfigType type, Long id) {
-        if (context != null && context instanceof AppCompatActivity) {
-            ((AppCompatActivity) context).finish();
+    public void onDelete(ConfigPostFragment.ConfigType type, long id) {
+        if (deleteListener != null && context instanceof AppCompatActivity && !((AppCompatActivity) context).isFinishing()) {
+            deleteListener.onDelete(type, id);
         }
     }
 }

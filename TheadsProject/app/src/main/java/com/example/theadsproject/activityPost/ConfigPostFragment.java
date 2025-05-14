@@ -228,7 +228,8 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
                 if (!isAdded()) return;
 
                 if (response.isSuccessful()) {
-                    if (deleteListener != null) deleteListener.onDelete(type, id);
+                    if (deleteListener != null)
+                        deleteListener.onDelete(type, id);
                     dismiss();
                 } else {
                     Log.e("ERROR", "Xóa thất bại: " + response.code());
@@ -252,7 +253,8 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
                 if (!isAdded()) return;
 
                 if (response.isSuccessful()) {
-                    if (deleteListener != null) deleteListener.onDelete(type, id);
+                    if (deleteListener != null)
+                        deleteListener.onDelete(type, id);
                     dismiss();
                 } else {
                     Log.e("ERROR", "Xóa thất bại: " + response.code());

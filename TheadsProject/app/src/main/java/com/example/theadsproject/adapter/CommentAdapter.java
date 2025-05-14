@@ -1,5 +1,7 @@
 package com.example.theadsproject.adapter;
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -38,10 +41,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommonViewHolder> {
     private final Context context;
     private final List<CommentResponse> commentList;
     private CommentLikeHandler commentLikeHandler = new CommentLikeHandler();
+    private final ActivityResultLauncher<Intent> activityResultLauncher;  // Thêm biến này để lưu ActivityResultLauncher
 
-    public CommentAdapter(Context context, List<CommentResponse> commentList) {
+    public CommentAdapter(Context context, List<CommentResponse> commentList, ActivityResultLauncher<Intent> activityResultLauncher) {
         this.context = context;
         this.commentList = commentList;
+        this.activityResultLauncher = activityResultLauncher;
     }
 
     @NonNull
@@ -70,7 +75,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommonViewHolder> {
             Intent intent = new Intent(context, CommentDetailActivity.class);
             intent.putExtra("commentId", comment.getId());
             intent.putExtra("postId", comment.getPost().getPostId());
-            context.startActivity(intent);
+            // Sử dụng activityResultLauncher từ Activity/Fragment
+            activityResultLauncher.launch(intent);
         });
     }
 

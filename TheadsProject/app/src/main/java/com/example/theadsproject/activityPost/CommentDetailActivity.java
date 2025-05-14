@@ -62,10 +62,25 @@ public class CommentDetailActivity extends AppCompatActivity {
 
     private UserSessionManager sessionManager;
 
+    // Khai báo ActivityResultLauncher trong Activity hoặc Fragment
+    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    long deletedId = result.getData().getLongExtra("deleted_comment_id", -1);
+                    if (deletedId != -1) {
+                        // Gọi hàm xóa comment khỏi RecyclerView adapter
+                        removeCommentById(deletedId);
+                    }
+                }
+            }
+    );
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_detail);
+
 
         // Khởi tạo các thành phần UI
         initViews();
@@ -138,7 +153,19 @@ public class CommentDetailActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     CommentResponse comment = response.body();
                     View view = findViewById(R.id.commentDetail);
-                    PostItemView commentItemView = new PostItemView(view, CommentDetailActivity.this, commentLikeHandler);
+                    PostItemView commentItemView = new PostItemView(
+                            view,
+                            CommentDetailActivity.this,
+                            commentLikeHandler,
+                            (type, id) -> {
+                                if (type == ConfigPostFragment.ConfigType.COMMENT && !isFinishing()) {
+                                    Toast.makeText(CommentDetailActivity.this, "Bình luận đã được xóa", Toast.LENGTH_SHORT).show();
+                                    Intent resultIntent = new Intent();
+                                    resultIntent.putExtra("deleted_comment_id", id);  // Truyền id
+                                    setResult(RESULT_OK, resultIntent);
+                                    finish();
+                                }
+                            });
                     commentItemView.bind(comment, CommentDetailActivity.this);
                 }
             }
@@ -158,7 +185,7 @@ public class CommentDetailActivity extends AppCompatActivity {
             public void onResponse(Call<List<CommentResponse>> call, Response<List<CommentResponse>> response) {
                 if (response.isSuccessful()) {
                     commentList = response.body();
-                    commentAdapter = new CommentAdapter(CommentDetailActivity.this, commentList);
+                    commentAdapter = new CommentAdapter(CommentDetailActivity.this, commentList, activityResultLauncher);
                     recyclerView.setAdapter(commentAdapter);
                 }
             }
@@ -266,5 +293,23 @@ public class CommentDetailActivity extends AppCompatActivity {
                         "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void removeCommentById(long commentId) {
+        int indexToRemove = -1;
+
+        // Duyệt qua commentList để tìm bình luận có commentId khớp
+        for (int i = 0; i < commentList.size(); i++) {
+            if (commentList.get(i).getCommentId() == commentId) { // So sánh id để tìm bình luận cần xóa
+                indexToRemove = i;
+                break;
+            }
+        }
+
+        // Nếu tìm thấy bình luận cần xóa, thực hiện xóa và cập nhật RecyclerView
+        if (indexToRemove != -1) {
+            commentList.remove(indexToRemove);  // Xóa bình luận khỏi danh sách
+            commentAdapter.notifyItemRemoved(indexToRemove);   // Cập nhật RecyclerView để hiển thị lại danh sách
+        }
     }
 }

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,6 +52,19 @@ public class PostAdapter extends RecyclerView.Adapter<CommonViewHolder> {
     private boolean isLoggedIn;
     private final User currentUser;
     ApiService apiService = RetrofitClient.getApiService();
+    private ActivityResultLauncher<Intent> activityResultLauncher;
+
+    public PostAdapter(Context context, List<PostResponse> postList, ActivityResultLauncher<Intent> activityResultLauncher) {
+        this.context = context;
+        this.postList = postList;
+
+        // Kiểm tra trạng thái đăng nhập khi khởi tạo adapter
+        UserSessionManager sessionManager = new UserSessionManager();
+        this.isLoggedIn = sessionManager.isLoggedIn();
+        this.currentUser = isLoggedIn ? sessionManager.getUser() : null;
+
+        this.activityResultLauncher = activityResultLauncher;
+    }
 
     public PostAdapter(Context context, List<PostResponse> postList) {
         this.context = context;
@@ -168,7 +182,7 @@ public class PostAdapter extends RecyclerView.Adapter<CommonViewHolder> {
         holder.clItemPost.setOnClickListener(v -> {
             Intent intent = new Intent(context, PostDetailActivity.class);
             intent.putExtra("postId", post.getPostId());
-            context.startActivity(intent);
+            activityResultLauncher.launch(intent);
         });
 
 
