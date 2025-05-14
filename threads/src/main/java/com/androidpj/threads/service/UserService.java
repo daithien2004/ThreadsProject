@@ -188,7 +188,7 @@ public class UserService implements UserDetailsService {
 
             User user = userRepository.findByEmail(email);
             if (user != null) {
-                user.setPassword(password);
+                user.setPassword(passwordEncoder.encode(password));
                 userRepository.save(user);
                 otpRepository.deleteById(otpEntity.getId());
                 return true;

@@ -3,6 +3,7 @@ package com.example.theadsproject.retrofit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.example.theadsproject.MyApp;
 import com.example.theadsproject.UserSessionManager;
@@ -58,9 +59,15 @@ public class RetrofitClient extends BaseClient {
                     Response response = chain.proceed(request);
 
                     if (response.code() == 401) {
+                        // Gửi broadcast thông báo token hết hạn
+                        Intent intent = new Intent("ACTION_TOKEN_EXPIRED");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        MyApp.getAppContext().sendBroadcast(intent);
+
+                        // Đăng xuất người dùng
                         new UserSessionManager().logout();
-                        MyApp.getAppContext().sendBroadcast(new Intent("ACTION_TOKEN_EXPIRED"));
                     }
+
                     return response;
                 }
             };

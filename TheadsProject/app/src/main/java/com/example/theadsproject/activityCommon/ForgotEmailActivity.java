@@ -65,9 +65,9 @@ public class ForgotEmailActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }
-                else {
-                    Toast.makeText(ForgotEmailActivity.this, "Lỗi gửi email, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-                }
+//                else {
+//                    Toast.makeText(ForgotEmailActivity.this, "Lỗi gửi email, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+//                }
             }
 
             @Override

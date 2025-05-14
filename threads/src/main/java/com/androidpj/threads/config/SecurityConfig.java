@@ -16,9 +16,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public SecurityConfig(JwtFilter jwtFilter) {
+    public SecurityConfig(JwtFilter jwtFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.jwtFilter = jwtFilter;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Bean
@@ -27,39 +29,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Các endpoint công khai (không cần đăng nhập)
                         .requestMatchers(
-                                "/login",
-                                "/register",
-                                "/activate",
-                                "/posts",                    // GET all posts
-                                "/posts/{postId}",           // GET post by ID
-                                "/posts/user/{userId}",
-                                "likes/postCount",
-                                "likes/commentCount",
-                                "comments/postCount",
-                                "comments/commentCount",
-                                "reposts/count/{postId}",
-                                "comments/post/{postId}",
-                                "comments/{id}",
-                                "comments/replies/{parentId}",
-                                "users/{userId}",
-                                "follows/count/{userId}",
-                                "reposts/my-reposts",
-                                "users",
-                                "reposts/my-reposts"
+                                SecurityConstants.PUBLIC_ENDPOINTS
                         ).permitAll()
-
-                        // Các endpoint yêu cầu xác thực
-                        .requestMatchers(
-                                "/posts/following",               // ví dụ: /posts/following (GET feed)
-                                "/posts/{postId}/isOwner",        // kiểm tra quyền sở hữu bài viết
-                                "/posts",                         // POST create post
-                                "/posts/{postId}"                 // DELETE hoặc PUT bài viết
-                        ).authenticated()
 
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint) // Thêm AuthenticationEntryPoint
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
