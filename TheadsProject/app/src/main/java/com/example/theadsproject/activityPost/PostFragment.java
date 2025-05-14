@@ -325,7 +325,7 @@ public class PostFragment extends Fragment {
         // Chuyển về HomeFragment sau khi đăng bài thành công
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_layout, new TabLayoutHomeFragment()) // Thay thế hoàn toàn fragment
+                .replace(R.id.frame_layout, new TabLayoutHomeFragment())
                 .commit();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.theadsproject.activitySearch;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.theadsproject.LoginRequiredDialogFragment;
 import com.example.theadsproject.R;
 import com.example.theadsproject.UserSessionManager;
+import com.example.theadsproject.activityCommon.LoginActivity;
 import com.example.theadsproject.adapter.SearchAdapter;
 import com.example.theadsproject.dto.UserResponse;
 import com.example.theadsproject.entity.User;
@@ -43,6 +45,21 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
+        sessionManager = new UserSessionManager();
+
+        // Kiểm tra đăng nhập
+        if (!sessionManager.isLoggedIn()) {
+            Toast.makeText(getContext(), "Vui lòng đăng nhập để sử dụng tính năng tìm kiếm", Toast.LENGTH_SHORT).show();
+            // Hiện Dialog yêu cầu đăng nhập (tùy chọn)
+            // new LoginRequiredDialogFragment().show(getParentFragmentManager(), "login_required");
+
+            // Chuyển về màn hình đăng nhập
+            startActivity(new Intent(getContext(), LoginActivity.class)); // Thay LoginActivity bằng tên Activity đăng nhập của bạn
+            getActivity().finish(); // Đóng activity hiện tại (nếu cần)
+            return view;
+        }
+
+        userId = sessionManager.getUserId(); // Lúc này chắc chắn đã đăng nhập rồi
 
         edtSearch = view.findViewById(R.id.edtSearch);
         recyclerView = view.findViewById(R.id.recyclerSearchResults);
@@ -71,6 +88,7 @@ public class SearchFragment extends Fragment {
 
         return view;
     }
+
 
     private void loadAllUsers() {
         sessionManager = new UserSessionManager();
