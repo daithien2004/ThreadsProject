@@ -8,6 +8,7 @@ import com.androidpj.threads.entity.Comment;
 import com.androidpj.threads.entity.Post;
 import com.androidpj.threads.entity.User;
 import com.androidpj.threads.repository.CommentRepository;
+import com.androidpj.threads.repository.LikeRepository;
 import com.androidpj.threads.repository.NotificationRepository;
 import com.androidpj.threads.repository.PostRepository;
 import com.androidpj.threads.repository.UserRepository;
