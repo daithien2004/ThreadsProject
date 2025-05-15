@@ -16,6 +16,8 @@ public interface SavedPostRepository extends JpaRepository<SavedPost, Long> {
 	
     Optional<SavedPost> findByUserUserIdAndPostPostId(Long userId, Long postId);
     boolean existsByUser_UserIdAndPost_PostId(Long userId, Long postId);
+    boolean existsByPost_PostId(Long postId);
+    void deleteByPost_PostId(Long postId);
 
 	@Query("SELECT sp.post FROM SavedPost sp WHERE sp.user.userId = :userId")
 	List<Post> findSavedPostsByUserId(@Param("userId") Long userId);

@@ -13,6 +13,7 @@ import com.androidpj.threads.repository.PostRepository;
 import com.androidpj.threads.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ public class CommentService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private LikeRepository likeRepository;
 
     public CommentResponse getCommentById(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
@@ -120,11 +124,25 @@ public class CommentService {
         return response;
     }
 
+    @Transactional
     public void deleteComment(Long commentId) {
-        if (!commentRepository.existsById(commentId)) {
-            throw new RuntimeException("Post not found");
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("Comment not found"));
+
+        // Xóa tất cả likes của comment
+        likeRepository.deleteByComment(comment);
+        
+        // Xóa tất cả replies (sub-comments) của comment
+        List<Comment> replies = commentRepository.findByParentCommentCommentId(commentId);
+        for (Comment reply : replies) {
+            // Xóa likes của replies
+            likeRepository.deleteByComment(reply);
+            // Xóa reply
+            commentRepository.delete(reply);
         }
-        commentRepository.deleteById(commentId);
+        
+        // Cuối cùng xóa comment chính
+        commentRepository.delete(comment);
     }
 
     public boolean isUserOwnerOfComment(Long commentId, Long userId) {

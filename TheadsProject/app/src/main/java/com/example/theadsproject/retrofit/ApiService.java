@@ -29,10 +29,10 @@ import retrofit2.http.Query;
 
 public interface ApiService {
     @DELETE("posts/{id}")
-    Call<Void> deletePost(@Path("id") Long postId);
+    Call<Void> deletePost(@Path("id") Long postId, @Query("userId") Long userId);
 
     @DELETE("comments/{id}")
-    Call<Void> deleteComment(@Path("id") Long commentId);
+    Call<Void> deleteComment(@Path("id") Long commentId, @Query("userId") Long userId);
 
     @GET("posts/{id}")
     Call<PostResponse> getPostById(@Path("id") Long postId);
