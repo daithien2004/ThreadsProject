@@ -80,4 +80,12 @@ public class PostController {
         PostResponse postResponse = postService.getPostById(postId);
         return ResponseEntity.ok(postResponse);
     }
+
+    @GetMapping("/paged")
+    public ResponseEntity<Map<String, Object>> getPagedPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Map<String, Object> response = postService.getPagedPosts(page, size);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -3,6 +3,8 @@ package com.androidpj.threads.service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.androidpj.threads.dto.PostRequest;
 import com.androidpj.threads.entity.Like;
@@ -87,6 +89,25 @@ public class PostService {
             .collect(Collectors.toList());
 
         return postResponses;
+    }
+
+    public Map<String, Object> getPagedPosts(int page, int size) {
+        org.springframework.data.domain.Pageable paging = org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by("createdAt").descending());
+        
+        org.springframework.data.domain.Page<Post> pageResult = postRepository.findAll(paging);
+        
+        List<PostResponse> posts = pageResult.getContent()
+            .stream()
+            .map(PostResponse::new)
+            .collect(Collectors.toList());
+            
+        Map<String, Object> response = new HashMap<>();
+        response.put("posts", posts);
+        response.put("currentPage", pageResult.getNumber());
+        response.put("totalItems", pageResult.getTotalElements());
+        response.put("totalPages", pageResult.getTotalPages());
+        
+        return response;
     }
 }
 

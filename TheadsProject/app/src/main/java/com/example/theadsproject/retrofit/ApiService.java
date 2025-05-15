@@ -40,6 +40,12 @@ public interface ApiService {
     @GET("posts")
     Call<List<PostResponse>> getAllPosts();
 
+    @GET("posts/page")
+    Call<List<PostResponse>> getPostsByPage(
+        @Query("page") int page,
+        @Query("size") int size
+    );
+
     // Lay bài đăng của user
     @GET("posts/user/{userId}")
     Call<List<PostResponse>> getUserPosts(@Path("userId") Long userId);
@@ -177,5 +183,11 @@ public interface ApiService {
     // GET thông tin user bất kỳ
     @GET("users/{userId}")
     Call<UserResponse> getUserById(@Path("userId") Long userId);
+
+    @GET("posts/paged")
+    Call<Map<String, Object>> getPagedPosts(
+        @Query("page") int page,
+        @Query("size") int size
+    );
 
 }
