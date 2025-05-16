@@ -24,6 +24,12 @@ Java 22
 Maven
 MySQL (dùng dịch vụ Railway)
 
+2. 📱 Android App
+✅ Yêu cầu
+Android Studio (Ladibug trở lên)
+Android SDK 35
+Thiết bị thật hoặc máy ảo
+
 ✅ Cấu hình kết nối database
 Mở file application.properties và cấu hình như sau:
 spring.datasource.url=jdbc:mysql://ballast.proxy.rlwy.net:17408/railway
