@@ -1,63 +1,60 @@
-📱 Threads Clone App
+# 📱 Threads Clone App
+
 Ứng dụng clone mạng xã hội Threads, bao gồm các tính năng cơ bản như: đăng bài, theo dõi người dùng, thả tim, bình luận, xác thực OTP qua email, và thông báo thời gian thực.
 
-🧰 Công nghệ sử dụng
+---
 
-📦 Backend (Spring Boot / IntelliJ)
-Java Spring Boot
+## 🧰 Công nghệ sử dụng
 
-Spring Security
+### 📦 Backend (Spring Boot / IntelliJ)
 
-Spring Data JPA
+- Java Spring Boot  
+- Spring Security  
+- Spring Data JPA  
+- MySQL (Railway)  
+- WebSocket (Real-time notifications)  
 
-MySQL (Railway)
+### 📱 Android (Frontend)
 
-WebSocket (Real-time notifications).
+- Java  
+- Retrofit2  
+- RecyclerView  
+- Glide  
+- ViewPager2  
+- TabLayout  
+- Email OTP  
 
+---
 
-📱 Android (Frontend)
+## ⚙️ Cách chạy ứng dụng
 
-Java
+### **1. 🚀 Backend (Spring Boot)**
 
-Retrofit2
+#### ✅ Yêu cầu:
 
-RecyclerView
+- Java 22  
+- Maven  
+- MySQL (dùng dịch vụ Railway)  
 
-Glide
+### **2. 📱 Android App**
 
-ViewPager2
+#### ✅ Yêu cầu:
 
-TabLayout
+- Android Studio (Ladibug trở lên)  
+- Android SDK 35  
+- Thiết bị thật hoặc máy ảo  
 
-Email OTP
+---
 
+### **3. Cấu hình kết nối Database**
 
-⚙️ Cách chạy ứng dụng
-**1. 🚀 Backend (Spring Boot)**
-✅ Yêu cầu
+Mở file `application.properties` và cấu hình như sau:
 
-Java 22
-
-Maven
-
-MySQL (dùng dịch vụ Railway)
-
-**2. 📱 Android App**
-   
-✅ Yêu cầu
-
-Android Studio (Ladibug trở lên)
-
-Android SDK 35
-
-Thiết bị thật hoặc máy ảo
-
-**3. Cấu hình kết nối database**
-
-Mở file application.properties và cấu hình như sau:
+```properties
 spring.datasource.url=jdbc:mysql://ballast.proxy.rlwy.net:17408/railway
 spring.datasource.username=root
 spring.datasource.password=vMBhuEMyZUcRyMPGWxPetvcAOMQDkSEk
+
 
 **Cách kết nối MySql:**
 
