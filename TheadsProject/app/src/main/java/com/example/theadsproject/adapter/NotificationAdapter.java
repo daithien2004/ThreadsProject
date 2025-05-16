@@ -3,6 +3,7 @@ package com.example.theadsproject.adapter;
 import static androidx.core.util.TypedValueCompat.dpToPx;
 
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.theadsproject.R;
-import com.example.theadsproject.dto.NotificationResponse;
 import com.example.theadsproject.entity.Notification;
+import com.example.theadsproject.dto.NotificationResponse;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -74,24 +75,49 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     private String getTimeAgo(String createdAt) {
+        final String TAG = "TimeAgoDebug";
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
+            Log.d(TAG, "Input date string: " + createdAt);
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             Date date = sdf.parse(createdAt);
-            if (date == null) return "vừa xong";
+            
+            if (date == null) {
+                Log.e(TAG, "Failed to parse date: null result");
+                return "vừa xong (lỗi)";
+            }
 
-            long diff = System.currentTimeMillis() - date.getTime();
+            long currentTime = System.currentTimeMillis();
+            long dateTime = date.getTime();
+            long diff = currentTime - dateTime;
+            
+            // Log time differences for debugging
+            Log.d(TAG, "Current time (ms): " + currentTime);
+            Log.d(TAG, "Current time (readable): " + new Date(currentTime).toString());
+            Log.d(TAG, "Date time (ms): " + dateTime);
+            Log.d(TAG, "Date time (readable): " + date.toString());
+            Log.d(TAG, "Difference in milliseconds: " + diff);
+            
             long seconds = diff / 1000;
             long minutes = seconds / 60;
             long hours = minutes / 60;
             long days = hours / 24;
 
+            Log.d(TAG, String.format("Time differences - Days: %d, Hours: %d, Minutes: %d, Seconds: %d", 
+                days, hours % 24, minutes % 60, seconds % 60));
+
             if (days > 0) return days + " ngày trước";
             else if (hours > 0) return hours + " giờ trước";
             else if (minutes > 0) return minutes + " phút trước";
+            else if (seconds > 0) return seconds + " giây trước";
             else return "vừa xong";
         } catch (ParseException e) {
-            e.printStackTrace();
-            return "vừa xong";
+            Log.e(TAG, "Parse error for date: " + createdAt);
+            Log.e(TAG, "Error message: " + e.getMessage());
+            return "vừa xong (lỗi)";
+        } catch (Exception e) {
+            Log.e(TAG, "Unexpected error: ", e);
+            return "vừa xong (lỗi không xác định)";
         }
     }
 

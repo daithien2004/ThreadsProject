@@ -6,6 +6,7 @@ import com.androidpj.threads.service.CommentService;
 import com.androidpj.threads.service.NotificationService;
 import com.androidpj.threads.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,9 +64,20 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
-        return ResponseEntity.ok("Comment deleted successfully");
+    public ResponseEntity<String> deleteComment(@PathVariable Long commentId, @RequestParam Long userId) {
+        try {
+            // Kiểm tra quyền sở hữu trước khi xóa
+            if (!commentService.isUserOwnerOfComment(commentId, userId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("You don't have permission to delete this comment");
+            }
+            
+            commentService.deleteComment(commentId);
+            return ResponseEntity.ok("Comment deleted successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Comment not found");
+        }
     }
 
     @GetMapping("/{commentId}/isOwner")

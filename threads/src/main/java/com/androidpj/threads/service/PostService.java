@@ -3,6 +3,8 @@ package com.androidpj.threads.service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.androidpj.threads.dto.PostRequest;
 import com.androidpj.threads.entity.Like;
@@ -18,6 +20,8 @@ import com.androidpj.threads.entity.Post;
 import com.androidpj.threads.entity.User;
 import com.androidpj.threads.repository.PostRepository;
 import com.androidpj.threads.repository.UserRepository;
+import com.androidpj.threads.repository.SavedPostRepository;
+import com.androidpj.threads.repository.CommentRepository;
 
 @Service
 public class PostService {
@@ -27,6 +31,10 @@ public class PostService {
 	private UserRepository userRepository;
 	@Autowired
 	private LikeRepository likeRepository;
+	@Autowired
+	private SavedPostRepository savedPostRepository;
+	@Autowired
+	private CommentRepository commentRepository;
 
 	public boolean isUserOwnerOfPost(Long postId, Long userId) {
         return postRepository.existsByPostIdAndUser_UserId(postId, userId);
@@ -53,12 +61,23 @@ public class PostService {
 		return new PostResponse(savedPost);
 	}
 
-	 public void deletePost(Long postId) {
-		if (!postRepository.existsById(postId)) {
-			throw new RuntimeException("Post not found");
-		}
-		postRepository.deleteById(postId);
-		}
+	@Transactional
+	public void deletePost(Long postId) {
+		Post post = postRepository.findById(postId)
+				.orElseThrow(() -> new RuntimeException("Post not found"));
+		
+        // Xóa tất cả likes của bài viết
+        likeRepository.deleteByPost(post);
+        
+        // Xóa tất cả lưu bài viết
+        savedPostRepository.deleteByPost_PostId(postId);
+        
+        // Xóa tất cả comments của bài viết
+        commentRepository.deleteByPost(post);
+        
+        // Cuối cùng xóa bài viết
+        postRepository.delete(post);
+	}
 
 	public PostResponse getPostById(Long postId) {
 		Post post = postRepository.findById(postId)
@@ -87,6 +106,25 @@ public class PostService {
             .collect(Collectors.toList());
 
         return postResponses;
+    }
+
+    public Map<String, Object> getPagedPosts(int page, int size) {
+        org.springframework.data.domain.Pageable paging = org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by("createdAt").descending());
+        
+        org.springframework.data.domain.Page<Post> pageResult = postRepository.findAll(paging);
+        
+        List<PostResponse> posts = pageResult.getContent()
+            .stream()
+            .map(PostResponse::new)
+            .collect(Collectors.toList());
+            
+        Map<String, Object> response = new HashMap<>();
+        response.put("posts", posts);
+        response.put("currentPage", pageResult.getNumber());
+        response.put("totalItems", pageResult.getTotalElements());
+        response.put("totalPages", pageResult.getTotalPages());
+        
+        return response;
     }
 }
 

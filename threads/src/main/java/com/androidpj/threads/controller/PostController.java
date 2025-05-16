@@ -70,14 +70,33 @@ public class PostController {
 
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
-        return ResponseEntity.ok("Post deleted successfully");
+    public ResponseEntity<String> deletePost(@PathVariable Long postId, @RequestParam Long userId) {
+        try {
+            // Kiểm tra quyền sở hữu trước khi xóa
+            if (!postService.isUserOwnerOfPost(postId, userId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("You don't have permission to delete this post");
+            }
+            
+            postService.deletePost(postId);
+            return ResponseEntity.ok("Post deleted successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Post not found");
+        }
     }
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable Long postId) {
         PostResponse postResponse = postService.getPostById(postId);
         return ResponseEntity.ok(postResponse);
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<Map<String, Object>> getPagedPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Map<String, Object> response = postService.getPagedPosts(page, size);
+        return ResponseEntity.ok(response);
     }
 }

@@ -83,17 +83,68 @@ public class BindingUtils {
             holder.txtTextPost.setVisibility(View.VISIBLE);
         }
 
-        likeHandler.checkIfLiked(item.getUser().getUserId(), item.getId(), new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                boolean isLiked = response.body() != null && response.body();
-                item.setIsLoved(isLiked);
-                holder.ivLove.setImageResource(isLiked ? R.drawable.heart_red : R.drawable.heart);
-            }
+        UserSessionManager sessionManager = new UserSessionManager();
+        boolean isLoggedIn = sessionManager.isLoggedIn();
 
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) { }
-        });
+        if (!isLoggedIn) {
+            holder.llLove.setOnClickListener(v -> {
+                if (context instanceof AppCompatActivity) {
+                    LoginRequiredDialogFragment dialog = new LoginRequiredDialogFragment();
+                    dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "LoginDialog");
+                }
+            });
+        } else {
+            User currentUser = sessionManager.getUser();
+            Long currentUserId = currentUser.getUserId();
+
+            // Kiểm tra trạng thái like
+            likeHandler.checkIfLiked(currentUserId, item.getId(), new Callback<Boolean>() {
+                @Override
+                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                    boolean isLiked = response.body() != null && response.body();
+                    item.setIsLoved(isLiked);
+                    holder.ivLove.setImageResource(isLiked ? R.drawable.heart_red : R.drawable.heart);
+                }
+
+                @Override
+                public void onFailure(Call<Boolean> call, Throwable t) { }
+            });
+
+            // Bấm thả tim
+            holder.llLove.setOnClickListener(v -> {
+                boolean isLoved = item.getIsLoved();
+
+                if (isLoved) {
+                    likeHandler.unlike(currentUserId, item.getId(), new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                holder.ivLove.setImageResource(R.drawable.heart);
+                                item.setIsLoved(false);
+                                updateLikeCount(holder, item.getId(), likeHandler);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) { }
+                    });
+                } else {
+                    likeHandler.like(currentUserId, item.getId(), new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                holder.ivLove.setImageResource(R.drawable.heart_red);
+                                item.setIsLoved(true);
+                                updateLikeCount(holder, item.getId(), likeHandler);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) { }
+                    });
+                }
+            });
+        }
 
         // Hiển thị số lượng like
         likeHandler.countLikes(item.getId(), new Callback<Long>() {
@@ -124,64 +175,6 @@ public class BindingUtils {
                 holder.tvConversation.setText("0");
             }
         });
-
-        // Lấy thông tin người dùng hiện tại
-        UserSessionManager sessionManager = new UserSessionManager();
-
-        if (!sessionManager.isLoggedIn()) {
-            holder.llLove.setOnClickListener(v -> {
-                if (context instanceof AppCompatActivity) {
-                    LoginRequiredDialogFragment dialog = new LoginRequiredDialogFragment();
-                    dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "LoginDialog");
-                }
-            });
-        } else {
-            User currentUser = sessionManager.getUser();
-            Long currentUserId = currentUser.getUserId();
-
-            // Bấm thả tim
-            holder.llLove.setOnClickListener(v -> {
-                boolean isLoved = item.getIsLoved();
-
-                if (isLoved) {
-                    likeHandler.unlike(currentUserId, item.getId(), new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            holder.ivLove.setImageResource(R.drawable.heart);
-                            item.setIsLoved(false);
-                            updateLikeCount(holder, item.getId(), likeHandler);
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) { }
-                    });
-                } else {
-                    likeHandler.like(currentUserId, item.getId(), new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            holder.ivLove.setImageResource(R.drawable.heart_red);
-                            item.setIsLoved(true);
-                            updateLikeCount(holder, item.getId(), likeHandler);
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) { }
-                    });
-                }
-            });
-
-            likeHandler.checkIfLiked(item.getUser().getUserId(), item.getId(), new Callback<Boolean>() {
-                @Override
-                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                    boolean isLiked = response.body() != null && response.body();
-                    item.setIsLoved(isLiked);
-                    holder.ivLove.setImageResource(isLiked ? R.drawable.heart_red : R.drawable.heart);
-                }
-
-                @Override
-                public void onFailure(Call<Boolean> call, Throwable t) { }
-            });
-        }
     }
 
     private static void updateLikeCount(CommonViewHolder holder, Long itemId, LikeHandler likeHandler) {

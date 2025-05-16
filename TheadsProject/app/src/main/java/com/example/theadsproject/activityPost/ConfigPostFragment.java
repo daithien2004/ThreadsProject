@@ -222,7 +222,7 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
 
     private void deletePost() {
         ApiService apiService = RetrofitClient.getApiService();
-        apiService.deletePost(id).enqueue(new Callback<Void>() {
+        apiService.deletePost(id, userId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (!isAdded()) return;
@@ -232,22 +232,27 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
                         deleteListener.onDelete(type, id);
                     dismiss();
                 } else {
-                    Log.e("ERROR", "Xóa thất bại: " + response.code());
-                    Toast.makeText(requireContext(), "Lỗi xóa bài viết, có thể bạn đang lưu bài viết này", Toast.LENGTH_SHORT).show();
+                    String errorMessage;
+                    if (response.code() == 403) {
+                        errorMessage = "Bạn không có quyền xóa bài viết này";
+                    } else {
+                        errorMessage = "Không thể xóa bài viết";
+                    }
+                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Log.e("ERROR", "Lỗi kết nối API: " + t.getMessage());
-                Toast.makeText(requireContext(), "Lỗi kết nối khi xóa bài viết", Toast.LENGTH_SHORT).show();
+                if (!isAdded()) return;
+                Toast.makeText(requireContext(), "Lỗi kết nối", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void deleteComment() {
         ApiService apiService = RetrofitClient.getApiService();
-        apiService.deleteComment(id).enqueue(new Callback<Void>() {
+        apiService.deleteComment(id, userId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (!isAdded()) return;
@@ -257,15 +262,20 @@ public class ConfigPostFragment extends BottomSheetDialogFragment {
                         deleteListener.onDelete(type, id);
                     dismiss();
                 } else {
-                    Log.e("ERROR", "Xóa thất bại: " + response.code());
-                    Toast.makeText(requireContext(), "Lỗi xóa bình luận", Toast.LENGTH_SHORT).show();
+                    String errorMessage;
+                    if (response.code() == 403) {
+                        errorMessage = "Bạn không có quyền xóa bình luận này";
+                    } else {
+                        errorMessage = "Không thể xóa bình luận";
+                    }
+                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Log.e("ERROR", "Lỗi kết nối API: " + t.getMessage());
-                Toast.makeText(requireContext(), "Lỗi kết nối khi xóa bình luận", Toast.LENGTH_SHORT).show();
+                if (!isAdded()) return;
+                Toast.makeText(requireContext(), "Lỗi kết nối", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -29,16 +29,22 @@ import retrofit2.http.Query;
 
 public interface ApiService {
     @DELETE("posts/{id}")
-    Call<Void> deletePost(@Path("id") Long postId);
+    Call<Void> deletePost(@Path("id") Long postId, @Query("userId") Long userId);
 
     @DELETE("comments/{id}")
-    Call<Void> deleteComment(@Path("id") Long commentId);
+    Call<Void> deleteComment(@Path("id") Long commentId, @Query("userId") Long userId);
 
     @GET("posts/{id}")
     Call<PostResponse> getPostById(@Path("id") Long postId);
 
     @GET("posts")
     Call<List<PostResponse>> getAllPosts();
+
+    @GET("posts/page")
+    Call<List<PostResponse>> getPostsByPage(
+        @Query("page") int page,
+        @Query("size") int size
+    );
 
     // Lay bài đăng của user
     @GET("posts/user/{userId}")
@@ -177,5 +183,11 @@ public interface ApiService {
     // GET thông tin user bất kỳ
     @GET("users/{userId}")
     Call<UserResponse> getUserById(@Path("userId") Long userId);
+
+    @GET("posts/paged")
+    Call<Map<String, Object>> getPagedPosts(
+        @Query("page") int page,
+        @Query("size") int size
+    );
 
 }

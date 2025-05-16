@@ -22,7 +22,6 @@
     public class SocketManager {
         private static final String TAG = "SocketManager";
 //      private static final String SOCKET_URL = "wss://threadsproject.onrender.com/ws/websocket";
-        private static final String SOCKET_URL = "ws://192.168.110.227:8080/ws/websocket";
 
         private static volatile StompClient stompClient;
         private static final List<NotificationListener> listeners = new CopyOnWriteArrayList<>();
